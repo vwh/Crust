@@ -1,15 +1,7 @@
-# crust
+# Crust 🥐
 
-To install dependencies:
+⚠️ **Under Active Development** ⚠️
 
-```bash
-bun install
-```
+## Overview
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.1.42. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Crust is a simple toy scripting language designed to run on the BunJS runtime. This project is an exploration of language design and implementation
