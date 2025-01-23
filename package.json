@@ -2,10 +2,13 @@
   "name": "crust",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "repl": "bun run index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.0.0"
   }
 }
