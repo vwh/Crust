@@ -1,5 +1,7 @@
 import Parser from "./front-end/parser";
 
+import { log } from "./utils";
+
 function repl() {
   const parser = new Parser();
 
@@ -13,7 +15,7 @@ function repl() {
     }
 
     const program = parser.produceAst(input);
-    console.log(JSON.stringify(program, null, 2)); // TODO: MAKE OUTPUT BETTER
+    log(program);
   }
 }
 

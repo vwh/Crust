@@ -96,35 +96,3 @@ function isInteger(src: string): boolean {
 function isSkippable(src: string): boolean {
   return src === " " || src === "\n" || src === "\t";
 }
-
-function printNameOfToken(token: Token): string {
-  switch (token.type) {
-    case TokenType.Let:
-      return "Let";
-    case TokenType.Number:
-      return "Number";
-    case TokenType.Identifier:
-      return "Identifier";
-    case TokenType.Equals:
-      return "Equals";
-    case TokenType.BinaryOperator:
-      return "BinaryOperator";
-    case TokenType.OpenParen:
-      return "OpenParen";
-    case TokenType.CloseParen:
-      return "CloseParen";
-    case TokenType.EOF:
-      return "EOF";
-  }
-}
-
-// const code = `
-// let a = ((10 + 20) * 30);
-// let b = 20
-// let c = a + b
-// `;
-
-// const tokens = tokenizer(code);
-// for (const token of tokens) {
-//   console.log(printNameOfToken(token), token.value);
-// }

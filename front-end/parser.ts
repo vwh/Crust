@@ -6,8 +6,8 @@ import type {
   Identifier,
   NumericLiteral,
 } from "./ast";
-
 import { tokenizer, type Token, TokenType } from "./lexer";
+import { logNameOfToken } from "../utils";
 
 export default class Parser {
   private tokens: Token[] = [];
@@ -40,7 +40,9 @@ export default class Parser {
     const previous = this.eatToken();
     if (previous.type !== type || !previous) {
       console.error(
-        `Parse error at ( ${previous.value} ):\n ${errorMessage} \n Expected ${type}`
+        `Parse error at ( ${
+          previous.value
+        } ):\n ${errorMessage} \n Expected ${logNameOfToken(type)}`
       );
       process.exit(1);
     }
