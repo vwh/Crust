@@ -29,7 +29,7 @@ function token(type: TokenType, value: string): Token {
   return { type, value };
 }
 
-function tokenizer(soruceCode: string): Token[] {
+export function tokenizer(soruceCode: string): Token[] {
   const tokens: Token[] = [];
 
   const src = soruceCode.split("");
@@ -45,7 +45,13 @@ function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.OpenParen, char));
     } else if (char === ")") {
       tokens.push(token(TokenType.CloseParen, char));
-    } else if (char === "+" || char === "-" || char === "*" || char === "/") {
+    } else if (
+      char === "+" ||
+      char === "-" ||
+      char === "*" ||
+      char === "/" ||
+      char === "%"
+    ) {
       tokens.push(token(TokenType.BinaryOperator, char));
     } else if (char === "=") {
       tokens.push(token(TokenType.Equals, char));
@@ -112,13 +118,13 @@ function printNameOfToken(token: Token): string {
   }
 }
 
-const code = `
-let a = ((10 + 20) * 30);
-let b = 20
-let c = a + b
-`;
+// const code = `
+// let a = ((10 + 20) * 30);
+// let b = 20
+// let c = a + b
+// `;
 
-const tokens = tokenizer(code);
-for (const token of tokens) {
-  console.log(printNameOfToken(token), token.value);
-}
+// const tokens = tokenizer(code);
+// for (const token of tokens) {
+//   console.log(printNameOfToken(token), token.value);
+// }
