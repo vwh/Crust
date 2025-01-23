@@ -1,9 +1,14 @@
 // let n = 25;
 
 export enum TokenType {
-  Let,
+  // Literal
   Number,
   Identifier,
+
+  // Keywords
+  Let,
+
+  // Operators
   Equals,
   BinaryOperator,
   OpenParen,
@@ -70,6 +75,7 @@ function tokenizer(soruceCode: string): Token[] {
     }
   }
 
+  tokens.push(token(TokenType.EOF, "EOF"));
   return tokens;
 }
 
