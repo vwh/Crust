@@ -1,3 +1,5 @@
+// index.ts | The entry point of our REPL
+
 import Parser from "./front-end/parser";
 
 import { log } from "./utils";
@@ -14,6 +16,7 @@ function repl() {
       break;
     }
 
+    // Produce AST from the source code
     const program = parser.produceAst(input);
     log(program);
   }

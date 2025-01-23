@@ -1,3 +1,5 @@
+// parser.ts | Responsible for parsing the source code into an AST
+
 import type {
   Statement,
   Program,
@@ -9,6 +11,9 @@ import type {
 import { tokenizer, type Token, TokenType } from "./lexer";
 import { logNameOfToken } from "../utils";
 
+/**
+ * Front-end parser responsible for parsing the source code into an AST
+ */
 export default class Parser {
   private tokens: Token[] = [];
 
@@ -27,15 +32,23 @@ export default class Parser {
     return program;
   }
 
+  // Checks if the current token is the end of the file
+  private notEOF(): boolean {
+    return this.tokenAt().type !== TokenType.EOF;
+  }
+
+  // Returns the token at the given index
   private tokenAt(index = 0): Token {
     return this.tokens[index];
   }
 
+  // Eats the token at the front of the token list
   private eatToken(): Token {
     const previous = this.tokenAt();
     return this.tokens.shift() as Token;
   }
 
+  // Eats the token at the front of the token list and checks if it is of the given type
   private expectToken(type: TokenType, errorMessage: string): Token {
     const previous = this.eatToken();
     if (previous.type !== type || !previous) {
@@ -49,24 +62,23 @@ export default class Parser {
     return previous;
   }
 
-  private notEOF(): boolean {
-    return this.tokenAt().type !== TokenType.EOF;
-  }
-
+  // Handle statements parsing
   private parseStatement(): Statement {
     // we don't have statements yet other than Program
     return this.parseExpression();
   }
 
-  // --- Orders Of Precedence ---
+  // --- Orders Of Expression Precedence ---
   // AdditiveExpression
   // MultiplicitaveExpression
   // PrimaryExpression
 
+  // Handle expressions parsing
   private parseExpression(): Expression {
     return this.parseAdditiveExpression();
   }
 
+  // Handle additive expressions parsing ( Addition, Subtraction )
   private parseAdditiveExpression(): Expression {
     let left = this.parseMultiplicativeExpression();
 
@@ -85,6 +97,7 @@ export default class Parser {
     return left;
   }
 
+  // Handle multiplicative expressions parsing ( Multiplication, Division, Modulo )
   private parseMultiplicativeExpression(): Expression {
     let left = this.parsePrimaryExpression();
 
@@ -107,6 +120,7 @@ export default class Parser {
     return left;
   }
 
+  // Handle primary expressions parsing ( Identifiers, Numbers, Parentheses )
   private parsePrimaryExpression(): Expression {
     const token = this.eatToken();
 
