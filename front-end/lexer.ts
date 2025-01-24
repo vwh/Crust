@@ -3,6 +3,7 @@
 // Represents the type of a token our lexer produces
 export enum TokenType {
   // Literal
+  Null,
   Number,
   Identifier,
 
@@ -26,6 +27,7 @@ export interface Token {
 // Keywords, Constant lookup for keywords and known identifiers and symbols
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
+  null: TokenType.Null,
 };
 
 // Creates a new token from a given type and value
@@ -80,7 +82,7 @@ export function tokenizer(soruceCode: string): Token[] {
 
         // Check if the identifier is a keyword
         const reserved = KEYWORDS[id];
-        if (reserved) {
+        if (typeof reserved === "number") {
           tokens.push(token(reserved, id));
         } else {
           tokens.push(token(TokenType.Identifier, id));
