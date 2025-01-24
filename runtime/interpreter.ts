@@ -1,22 +1,32 @@
 // interpreter.ts | Responsible for evaluating the AST
 
-import type { RuntimeValue, NumberValue, NullValue } from "./values";
 import type {
   Statement,
   NumericLiteral,
   BinaryExpression,
   Program,
+  Identifier,
 } from "../front-end/ast";
+import {
+  type RuntimeValue,
+  type NumberValue,
+  type NullValue,
+  makeNullValue,
+} from "./values";
+import type Environment from "./environment";
 
 // Evaluates the Program AST
-function evaluateProgram(program: Program): RuntimeValue {
+function evaluateProgram(
+  program: Program,
+  environment: Environment
+): RuntimeValue {
   let lastEvaluated: RuntimeValue = {
     type: "null",
-    value: "null",
+    value: null,
   } as RuntimeValue;
 
   for (const statement of program.body) {
-    lastEvaluated = evaluate(statement);
+    lastEvaluated = evaluate(statement, environment);
   }
 
   return lastEvaluated;
@@ -24,10 +34,11 @@ function evaluateProgram(program: Program): RuntimeValue {
 
 // Evaluates the BinaryExpression AST
 function evaluateBinaryExpression(
-  BinaryExpression: BinaryExpression
+  BinaryExpression: BinaryExpression,
+  environment: Environment
 ): RuntimeValue {
-  const left = evaluate(BinaryExpression.left);
-  const right = evaluate(BinaryExpression.right);
+  const left = evaluate(BinaryExpression.left, environment);
+  const right = evaluate(BinaryExpression.right, environment);
 
   if (left.type === "number" && right.type === "number") {
     return evaluateNumericBinaryExpression(
@@ -38,10 +49,7 @@ function evaluateBinaryExpression(
   }
 
   // One or both are NULL
-  return {
-    type: "null",
-    value: "null",
-  } as NullValue;
+  return makeNullValue();
 }
 
 // Evaluates the Numeric Binary Expression
@@ -74,23 +82,35 @@ function evaluateNumericBinaryExpression(
   } as NumberValue;
 }
 
+// Evaluates the Identifier AST
+function evaluateIdentifier(
+  identifier: Identifier,
+  environment: Environment
+): RuntimeValue {
+  return environment.getVariable(identifier.symbol);
+}
+
 // Evaluates the AST
-export function evaluate(ast: Statement): RuntimeValue {
+export function evaluate(
+  ast: Statement,
+  environment: Environment
+): RuntimeValue {
   switch (ast.kind) {
     case "Program":
-      return evaluateProgram(ast as Program);
+      return evaluateProgram(ast as Program, environment);
     case "NumericLiteral":
       return {
         type: "number",
         value: (ast as NumericLiteral).value,
       } as NumberValue;
     case "NullLiteral":
-      return {
-        type: "null",
-        value: "null",
-      } as NullValue;
+      return makeNullValue();
     case "BinaryExpression":
-      return evaluateBinaryExpression(ast as BinaryExpression);
+      return evaluateBinaryExpression(ast as BinaryExpression, environment);
+    case "Identifier":
+      return evaluateIdentifier(ast as Identifier, environment);
+
+    // Unhandled AST node
     default: {
       console.error("This AST node is not supported yet:", ast);
       process.exit(1);

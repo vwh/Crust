@@ -134,7 +134,7 @@ export default class Parser {
       case TokenType.Null:
         return {
           kind: "NullLiteral",
-          value: "null",
+          value: null,
         } as NullLiteral;
       case TokenType.Number:
         return {

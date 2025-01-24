@@ -67,5 +67,5 @@ export interface NumericLiteral extends Expression {
 
 export interface NullLiteral extends Expression {
   kind: "NullLiteral";
-  value: "null";
+  value: null;
 }
