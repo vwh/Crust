@@ -7,12 +7,7 @@ import type {
   Program,
   Identifier,
 } from "../front-end/ast";
-import {
-  type RuntimeValue,
-  type NumberValue,
-  type NullValue,
-  makeNullValue,
-} from "./values";
+import { type RuntimeValue, type NumberValue, makeNullValue } from "./values";
 import type Environment from "./environment";
 
 // Evaluates the Program AST
@@ -103,8 +98,6 @@ export function evaluate(
         type: "number",
         value: (ast as NumericLiteral).value,
       } as NumberValue;
-    case "NullLiteral":
-      return makeNullValue();
     case "BinaryExpression":
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
     case "Identifier":

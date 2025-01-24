@@ -3,7 +3,6 @@
 // Represents the type of a token our lexer produces
 export enum TokenType {
   // Literal
-  Null,
   Number,
   Identifier,
 
@@ -27,7 +26,6 @@ export interface Token {
 // Keywords, Constant lookup for keywords and known identifiers and symbols
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
-  null: TokenType.Null,
 };
 
 // Creates a new token from a given type and value

@@ -7,7 +7,6 @@ import type {
   BinaryExpression,
   Identifier,
   NumericLiteral,
-  NullLiteral,
 } from "./ast";
 import { tokenizer, type Token, TokenType } from "./lexer";
 import { logNameOfToken } from "../utils";
@@ -131,11 +130,6 @@ export default class Parser {
           kind: "Identifier",
           symbol: token.value,
         } as Identifier;
-      case TokenType.Null:
-        return {
-          kind: "NullLiteral",
-          value: null,
-        } as NullLiteral;
       case TokenType.Number:
         return {
           kind: "NumericLiteral",
