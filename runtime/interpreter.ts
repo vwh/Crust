@@ -7,18 +7,21 @@ import type {
   Program,
   Identifier,
 } from "../front-end/ast";
-import { type RuntimeValue, type NumberValue, makeNullValue } from "./values";
+import {
+  type RuntimeValue,
+  type NumberValue,
+  makeNullValue,
+  makeNumberValue,
+} from "./values";
 import type Environment from "./environment";
+import { throwAnError } from "../utils";
 
 // Evaluates the Program AST
 function evaluateProgram(
   program: Program,
   environment: Environment
 ): RuntimeValue {
-  let lastEvaluated: RuntimeValue = {
-    type: "null",
-    value: null,
-  } as RuntimeValue;
+  let lastEvaluated: RuntimeValue = makeNullValue();
 
   // Evaluate the program body statements
   for (const statement of program.body) {
@@ -69,14 +72,13 @@ function evaluateNumericBinaryExpression(
   } else if (operator === "%") {
     result = left.value % right.value;
   } else {
-    console.error("Unknown operator:", operator);
-    process.exit(1);
+    return throwAnError(
+      "RuntimeError",
+      `at the operator [ ${operator} ]: \n Operator is not supported`
+    );
   }
 
-  return {
-    type: "number",
-    value: result,
-  } as NumberValue;
+  return makeNumberValue(result);
 }
 
 // Evaluates the Identifier AST
@@ -96,10 +98,7 @@ export function evaluate(
     case "Program":
       return evaluateProgram(ast as Program, environment);
     case "NumericLiteral":
-      return {
-        type: "number",
-        value: (ast as NumericLiteral).value,
-      } as NumberValue;
+      return makeNumberValue((ast as NumericLiteral).value);
     case "BinaryExpression":
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
     case "Identifier":
@@ -107,8 +106,10 @@ export function evaluate(
 
     // Unhandled AST node
     default: {
-      console.error("This AST node is not supported yet:", ast);
-      process.exit(1);
+      return throwAnError(
+        "RuntimeError",
+        `at the ast [ ${ast} ]: \n This AST node is not supported yet`
+      );
     }
   }
 }

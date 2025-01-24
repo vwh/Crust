@@ -27,3 +27,10 @@ export function getNameOfToken(token: TokenType): string {
       return "EOF";
   }
 }
+
+export function throwAnError(type: ErrorType, message: string): never {
+  console.error(`${type} thrown ${message}`);
+  process.exit(1);
+}
+
+type ErrorType = "ParseError" | "LexerError" | "RuntimeError";

@@ -9,7 +9,7 @@ import type {
   NumericLiteral,
 } from "./ast";
 import { tokenizer, type Token, TokenType } from "./lexer";
-import { getNameOfToken } from "../utils";
+import { getNameOfToken, throwAnError } from "../utils";
 
 /**
  * Front-end parser responsible for parsing the source code into an AST
@@ -49,13 +49,14 @@ export default class Parser {
   private expectToken(type: TokenType, errorMessage: string): Token {
     const previous = this.eatToken();
 
+    // If the previous token is not of the given type
     if (previous.type !== type || !previous) {
-      console.error(
-        `Parse error at ( ${
+      return throwAnError(
+        "ParseError",
+        `at the token [ ${
           previous.value
-        } ):\n ${errorMessage} \n Expected ${getNameOfToken(type)}`
+        } ]:\n ${errorMessage} \n Expected ${getNameOfToken(type)}`
       );
-      process.exit(1);
     }
 
     return previous;
@@ -142,11 +143,14 @@ export default class Parser {
         return value;
       }
 
-      // Unknown token
+      // Unprocessed tokens
       default:
-        // TODO: MAKE ERROR MESSAGES
-        console.error("Error: Unknown token:", token);
-        process.exit(1);
+        throwAnError(
+          "ParseError",
+          `at the token [ ${token.value} ]: \n ${getNameOfToken(
+            token.type
+          )} token is not supported`
+        );
     }
   }
 }

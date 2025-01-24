@@ -1,5 +1,7 @@
 // lexer.ts | Responsible for producing tokens from the source code
 
+import { throwAnError } from "../utils";
+
 // Represents the type of a token our lexer produces
 export enum TokenType {
   // Literal
@@ -85,9 +87,14 @@ export function tokenizer(soruceCode: string): Token[] {
         } else {
           tokens.push(token(TokenType.Identifier, id));
         }
-      } // Handle unknown tokens
+      }
+
+      // Unknown tokens
       else {
-        console.error("Unknown token:", char);
+        throwAnError(
+          "LexerError",
+          `at the token [ ${char} ]: \n Token is not supported`
+        );
       }
     }
   }
