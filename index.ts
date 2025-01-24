@@ -1,7 +1,7 @@
 // index.ts | The entry point of our REPL
 
 import Parser from "./front-end/parser";
-
+import { evaluate } from "./runtime/interpreter";
 import { log } from "./utils";
 
 function repl() {
@@ -18,7 +18,10 @@ function repl() {
 
     // Produce AST from the source code
     const program = parser.produceAst(input);
-    log(program);
+    // log(program);
+
+    const result = evaluate(program);
+    log(result);
   }
 }
 
