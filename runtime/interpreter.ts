@@ -20,6 +20,7 @@ function evaluateProgram(
     value: null,
   } as RuntimeValue;
 
+  // Evaluate the program body statements
   for (const statement of program.body) {
     lastEvaluated = evaluate(statement, environment);
   }
@@ -35,6 +36,7 @@ function evaluateBinaryExpression(
   const left = evaluate(BinaryExpression.left, environment);
   const right = evaluate(BinaryExpression.right, environment);
 
+  // if left hand side is a number and right hand side is a number
   if (left.type === "number" && right.type === "number") {
     return evaluateNumericBinaryExpression(
       left as NumberValue,
@@ -43,7 +45,7 @@ function evaluateBinaryExpression(
     );
   }
 
-  // One or both are NULL
+  // if both sides are not numbers or one of them
   return makeNullValue();
 }
 

@@ -19,16 +19,13 @@ export default class Parser {
 
   public produceAst(soruceCode: string): Program {
     this.tokens = tokenizer(soruceCode);
-
     const program: Program = {
       kind: "Program",
       body: [],
     };
 
-    while (this.notEOF()) {
-      program.body.push(this.parseStatement());
-    }
-
+    // Parse the program body until the end of the file
+    while (this.notEOF()) program.body.push(this.parseStatement());
     return program;
   }
 
@@ -51,6 +48,7 @@ export default class Parser {
   // Eats the token at the front of the token list and checks if it is of the given type
   private expectToken(type: TokenType, errorMessage: string): Token {
     const previous = this.eatToken();
+
     if (previous.type !== type || !previous) {
       console.error(
         `Parse error at ( ${
@@ -59,6 +57,7 @@ export default class Parser {
       );
       process.exit(1);
     }
+
     return previous;
   }
 
@@ -85,7 +84,6 @@ export default class Parser {
     while (this.tokenAt().value === "+" || this.tokenAt().value === "-") {
       const operator = this.eatToken();
       const right = this.parseMultiplicativeExpression();
-
       left = {
         kind: "BinaryExpression",
         left,
@@ -143,9 +141,11 @@ export default class Parser {
         );
         return value;
       }
+
+      // Unknown token
       default:
         // TODO: MAKE ERROR MESSAGES
-        console.error("Debug.Error: Unknown token:", token);
+        console.error("Error: Unknown token:", token);
         process.exit(1);
     }
   }

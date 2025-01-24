@@ -1,21 +1,31 @@
 export type ValueType = "null" | "number" | "boolean";
 
-//*
-
+/**
+ * Represents a value in the runtime
+ */
 export interface RuntimeValue {
   type: ValueType;
 }
 
+/**
+ * Represents a null value in the runtime
+ */
 export interface NullValue extends RuntimeValue {
   type: "null";
   value: null;
 }
 
+/**
+ * Represents a number value in the runtime
+ */
 export interface NumberValue extends RuntimeValue {
   type: "number";
   value: number;
 }
 
+/**
+ * Represents a boolean value in the runtime
+ */
 export interface BooleanValue extends RuntimeValue {
   type: "boolean";
   value: boolean;
