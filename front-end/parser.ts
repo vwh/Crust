@@ -9,7 +9,7 @@ import type {
   NumericLiteral,
 } from "./ast";
 import { tokenizer, type Token, TokenType } from "./lexer";
-import { logNameOfToken } from "../utils";
+import { getNameOfToken } from "../utils";
 
 /**
  * Front-end parser responsible for parsing the source code into an AST
@@ -53,7 +53,7 @@ export default class Parser {
       console.error(
         `Parse error at ( ${
           previous.value
-        } ):\n ${errorMessage} \n Expected ${logNameOfToken(type)}`
+        } ):\n ${errorMessage} \n Expected ${getNameOfToken(type)}`
       );
       process.exit(1);
     }

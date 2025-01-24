@@ -1,20 +1,22 @@
 // index.ts | The entry point of our REPL
 
-import Parser from "./front-end/parser";
-import Environment from "./runtime/environment";
-import { evaluate } from "./runtime/interpreter";
 import {
   makeBooleanValue,
   makeNullValue,
   makeNumberValue,
 } from "./runtime/values";
+import Parser from "./front-end/parser";
+import Environment from "./runtime/environment";
+import { evaluate } from "./runtime/interpreter";
 import { log } from "./utils";
 
 function repl() {
   const parser = new Parser();
 
+  // Global environment
   const environment = new Environment();
-  environment.declareVariable("x", makeNumberValue(100));
+  // Global variables
+  environment.declareVariable("test", makeNumberValue(100));
   environment.declareVariable("true", makeBooleanValue(true));
   environment.declareVariable("false", makeBooleanValue(false));
   environment.declareVariable("null", makeNullValue());
@@ -32,6 +34,7 @@ function repl() {
     const program = parser.produceAst(input);
     // log(program);
 
+    // Evaluate the AST
     const result = evaluate(program, environment);
     log(result);
   }

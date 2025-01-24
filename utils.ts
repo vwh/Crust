@@ -1,11 +1,13 @@
 import util from "node:util";
-import { type Token, TokenType } from "./front-end/lexer";
+import { TokenType } from "./front-end/lexer";
 
+// Logs the given object to the console
 export function log(obj: unknown) {
   console.log(util.inspect(obj, { depth: null, colors: true, compact: true }));
 }
 
-export function logNameOfToken(token: TokenType): string {
+// Gets the name of the given token from the TokenType enum
+export function getNameOfToken(token: TokenType): string {
   switch (token) {
     case TokenType.Let:
       return "Let";
