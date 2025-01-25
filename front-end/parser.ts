@@ -8,6 +8,7 @@ import type {
   Identifier,
   NumericLiteral,
   VariableDeclaration,
+  AssignmentExpression,
 } from "./ast";
 import { tokenizer, type Token, TokenType } from "./lexer";
 import { getNameOfToken, throwAnError } from "../utils";
@@ -132,7 +133,24 @@ export default class Parser {
 
   // Handle expressions parsing
   private parseExpression(): Expression {
-    return this.parseAdditiveExpression();
+    return this.parseAssignmentExpression();
+  }
+
+  // Handle assignment expressions parsing assignment expressions
+  private parseAssignmentExpression(): Expression {
+    const left = this.parseAdditiveExpression();
+
+    if (this.tokenAt().type === TokenType.Equals) {
+      this.eatToken(); // Eat the equals
+      const value = this.parseAssignmentExpression(); // allowing chained assignments like ( x = y = z = 69 )
+      return {
+        kind: "AssignmentExpression",
+        assignment: left,
+        value,
+      } as AssignmentExpression;
+    }
+
+    return left;
   }
 
   // Handle additive expressions parsing ( Addition, Subtraction )

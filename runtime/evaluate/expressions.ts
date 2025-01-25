@@ -4,10 +4,33 @@ import { evaluate } from "../interpreter";
 import { makeNullValue, makeNumberValue } from "../values";
 import { throwAnError } from "../../utils";
 
-import type { BinaryExpression, Identifier } from "../../front-end/ast";
+import type {
+  AssignmentExpression,
+  BinaryExpression,
+  Identifier,
+} from "../../front-end/ast";
 import type Environment from "../environment";
 import type { NumberValue, RuntimeValue } from "../values";
 
+// Evaluates the AssignmentExpression AST
+export function evaluateAssignmentExpression(
+  node: AssignmentExpression,
+  environment: Environment
+): RuntimeValue {
+  if (node.assignment.kind !== "Identifier") {
+    return throwAnError(
+      "RuntimeError",
+      `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
+    );
+  }
+
+  const value = evaluate(node.value, environment);
+  const identifier = node.assignment as Identifier;
+
+  environment.assignVariable(identifier.symbol, value);
+
+  return value;
+}
 // Evaluates the BinaryExpression AST
 export function evaluateBinaryExpression(
   BinaryExpression: BinaryExpression,
