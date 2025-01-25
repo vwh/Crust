@@ -1,5 +1,8 @@
 // parser.ts | Responsible for parsing the source code into an AST
 
+import { tokenizer, TokenType } from "./lexer";
+import { getNameOfToken, throwAnError } from "../utils";
+
 import type {
   Statement,
   Program,
@@ -10,8 +13,7 @@ import type {
   VariableDeclaration,
   AssignmentExpression,
 } from "./ast";
-import { tokenizer, type Token, TokenType } from "./lexer";
-import { getNameOfToken, throwAnError } from "../utils";
+import type { Token } from "./lexer";
 
 /**
  * Front-end parser responsible for parsing the source code into an AST
@@ -19,6 +21,7 @@ import { getNameOfToken, throwAnError } from "../utils";
 export default class Parser {
   private tokens: Token[] = [];
 
+  // Produces the AST from the source code
   public produceAst(soruceCode: string): Program {
     this.tokens = tokenizer(soruceCode);
     const program: Program = {

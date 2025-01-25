@@ -7,7 +7,7 @@ export function log(obj: unknown) {
 }
 
 // Gets the name of the given token from the TokenType enum
-export function getNameOfToken(token: TokenType): string {
+export function getNameOfToken(token: TokenType) {
   switch (token) {
     case TokenType.Let:
       return "Let";
@@ -25,6 +25,8 @@ export function getNameOfToken(token: TokenType): string {
       return "CloseParen";
     case TokenType.EOF:
       return "EOF";
+    default:
+      return "Unknown Token";
   }
 }
 
