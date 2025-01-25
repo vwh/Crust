@@ -1,4 +1,7 @@
+// environment.ts | Responsible for managing the variables in the runtime
+
 import { throwAnError } from "../utils";
+
 import type { RuntimeValue } from "./values";
 
 /**
@@ -8,14 +11,20 @@ export default class Environment {
   // The parent is the environment which holds the variable
   private parent?: Environment;
   private variables: Map<string, RuntimeValue>;
+  private constants: Set<string>;
 
   constructor(parent?: Environment) {
     this.parent = parent;
     this.variables = new Map();
+    this.constants = new Set();
   }
 
   // Declares a variable
-  public declareVariable(name: string, value: RuntimeValue): RuntimeValue {
+  public declareVariable(
+    name: string,
+    value: RuntimeValue,
+    isConstant = false
+  ) {
     if (this.variables.has(name)) {
       return throwAnError(
         "RuntimeError",
@@ -24,6 +33,7 @@ export default class Environment {
     }
 
     this.variables.set(name, value);
+    if (isConstant) this.constants.add(name);
 
     return value;
   }
@@ -37,6 +47,14 @@ export default class Environment {
   // Assigns the value to the variable
   public assignVariable(name: string, value: RuntimeValue): RuntimeValue {
     const environment = this.resolveVariable(name);
+
+    if (environment.constants.has(name)) {
+      return throwAnError(
+        "RuntimeError",
+        `at the variable [ ${name} ]: \n Cannot reassign constant variable`
+      );
+    }
+
     environment.variables.set(name, value);
 
     return value;

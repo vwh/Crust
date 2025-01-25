@@ -1,13 +1,14 @@
 //  ast.ts | Defines the structure of our languages AST
 
 export type NodeType =
+  // Statements
   | "Program"
+  | "VariableDeclaration"
+
+  // Expressions
   | "NumericLiteral"
   | "Identifier"
   | "BinaryExpression";
-//   | "UnaryExpression"
-//   | "CallExpression"
-//   | "FunctionDeclaration";
 
 // let x = 45; ( Is a Statement ) will return nothing
 // In our scripting language statements don't return anything
@@ -29,6 +30,13 @@ export interface Statement {
 export interface Program extends Statement {
   kind: "Program";
   body: Statement[];
+}
+
+export interface VariableDeclaration extends Statement {
+  kind: "VariableDeclaration";
+  constant: boolean;
+  identifier: string;
+  value?: Expression; // it is optional because it may be undefined
 }
 
 /**

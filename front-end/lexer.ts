@@ -10,12 +10,14 @@ export enum TokenType {
 
   // Keywords
   Let,
+  Const,
 
   // Operators
   Equals,
   BinaryOperator,
   OpenParen,
   CloseParen,
+  Semicolon,
   EOF, // End of File
 }
 
@@ -28,6 +30,7 @@ export interface Token {
 // Keywords, Constant lookup for keywords and known identifiers and symbols
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
+  const: TokenType.Const,
 };
 
 // Creates a new token from a given type and value
@@ -63,6 +66,8 @@ export function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.BinaryOperator, char));
     } else if (char === "=") {
       tokens.push(token(TokenType.Equals, char));
+    } else if (char === ";") {
+      tokens.push(token(TokenType.Semicolon, char));
     } else {
       // Start parsing multicharacter tokens
 

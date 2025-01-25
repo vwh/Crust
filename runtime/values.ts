@@ -1,3 +1,5 @@
+// values.ts | The values in the runtime
+
 export type ValueType = "null" | "number" | "boolean";
 
 /**

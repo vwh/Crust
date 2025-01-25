@@ -16,10 +16,10 @@ function repl() {
   // Global environment
   const environment = new Environment();
   // Global variables
-  environment.declareVariable("test", makeNumberValue(100));
-  environment.declareVariable("true", makeBooleanValue(true));
-  environment.declareVariable("false", makeBooleanValue(false));
-  environment.declareVariable("null", makeNullValue());
+  environment.declareVariable("test", makeNumberValue(100), true);
+  environment.declareVariable("true", makeBooleanValue(true), true);
+  environment.declareVariable("false", makeBooleanValue(false), true);
+  environment.declareVariable("null", makeNullValue(), true);
 
   console.log("Crust REPL");
 

@@ -7,6 +7,7 @@ import type {
   BinaryExpression,
   Identifier,
   NumericLiteral,
+  VariableDeclaration,
 } from "./ast";
 import { tokenizer, type Token, TokenType } from "./lexer";
 import { getNameOfToken, throwAnError } from "../utils";
@@ -64,8 +65,64 @@ export default class Parser {
 
   // Handle statements parsing
   private parseStatement(): Statement {
-    // we don't have statements yet other than Program
-    return this.parseExpression();
+    switch (this.tokenAt().type) {
+      case TokenType.Let:
+      case TokenType.Const:
+        return this.parseVariableDeclaration();
+      default:
+        return this.parseExpression();
+    }
+  }
+
+  // Handle variable declarations parsing
+  // let identifier;
+  // ( const | let ) identifier = expression;
+  private parseVariableDeclaration(): Statement {
+    const isConstant = this.eatToken().type === TokenType.Const;
+    const identifier = this.expectToken(
+      TokenType.Identifier,
+      "Expected identifier name for variable declaration"
+    ).value;
+
+    // Parsing the let identifier;
+    if (this.tokenAt().type === TokenType.Semicolon) {
+      this.eatToken(); // Eat the semicolon
+      if (isConstant)
+        throwAnError(
+          "ParseError",
+          `at the token [ ${identifier} ]: \n ${getNameOfToken(
+            TokenType.Semicolon
+          )} Must assign a value to a constant expression`
+        );
+
+      return {
+        kind: "VariableDeclaration",
+        constant: false,
+        identifier,
+        value: undefined,
+      } as VariableDeclaration;
+    }
+
+    this.expectToken(
+      TokenType.Equals,
+      "Expected an equals sign to assign a value to the variable"
+    );
+
+    // Parsing the let identifier = expression;
+    const declaration: VariableDeclaration = {
+      kind: "VariableDeclaration",
+      constant: isConstant,
+      identifier,
+      value: this.parseExpression(),
+    };
+
+    // Check and eat the semicolon
+    this.expectToken(
+      TokenType.Semicolon,
+      "Expected a semicolon to end the variable declaration"
+    );
+
+    return declaration;
   }
 
   // --- Orders Of Expression Precedence ---
