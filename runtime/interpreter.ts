@@ -8,6 +8,7 @@ import {
   evaluateAssignmentExpression,
   evaluateBinaryExpression,
   evaluateIdentifier,
+  evaluateObjectLiteral,
 } from "./evaluate/expressions";
 import { makeNumberValue } from "./values";
 import { throwAnError } from "../utils";
@@ -20,6 +21,7 @@ import type {
   Identifier,
   VariableDeclaration,
   AssignmentExpression,
+  ObjectLiteral,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -45,6 +47,8 @@ export function evaluate(
         ast as AssignmentExpression,
         environment
       );
+    case "ObjectLiteral":
+      return evaluateObjectLiteral(ast as ObjectLiteral, environment);
     case "NumericLiteral":
       return makeNumberValue((ast as NumericLiteral).value);
     case "BinaryExpression":

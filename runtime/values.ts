@@ -1,6 +1,6 @@
 // values.ts | The values in the runtime
 
-export type ValueType = "null" | "number" | "boolean";
+export type ValueType = "null" | "number" | "boolean" | "object";
 
 /**
  * Represents a value in the runtime
@@ -31,6 +31,14 @@ export interface NumberValue extends RuntimeValue {
 export interface BooleanValue extends RuntimeValue {
   type: "boolean";
   value: boolean;
+}
+
+/**
+ * Represents an object value in the runtime
+ */
+export interface ObjectValue extends RuntimeValue {
+  type: "object";
+  properties: Map<string, RuntimeValue>;
 }
 
 // Creates a new NumberValue

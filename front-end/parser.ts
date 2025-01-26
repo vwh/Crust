@@ -12,6 +12,8 @@ import type {
   NumericLiteral,
   VariableDeclaration,
   AssignmentExpression,
+  Property,
+  ObjectLiteral,
 } from "./ast";
 import type { Token } from "./lexer";
 
@@ -141,7 +143,7 @@ export default class Parser {
 
   // Handle assignment expressions parsing assignment expressions
   private parseAssignmentExpression(): Expression {
-    const left = this.parseAdditiveExpression();
+    const left = this.parseObjectExpression();
 
     if (this.tokenAt().type === TokenType.Equals) {
       this.eatToken(); // Eat the equals
@@ -154,6 +156,76 @@ export default class Parser {
     }
 
     return left;
+  }
+
+  // Handle object expressions parsing object expressions
+  private parseObjectExpression(): Expression {
+    if (this.tokenAt().type !== TokenType.OpenBrace) {
+      return this.parseAdditiveExpression();
+    }
+
+    this.eatToken(); // Eat the open brace
+    const properties: Property[] = [];
+
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      // Get the property key
+      const key = this.expectToken(
+        TokenType.Identifier,
+        "Expected an identifier for the object property key"
+      ).value;
+
+      // Handle shorthand property syntax { key, }
+      if (this.tokenAt().type === TokenType.Comma) {
+        this.eatToken(); // Eat the comma
+        properties.push({
+          kind: "Property",
+          key,
+          value: undefined,
+        });
+        continue;
+      }
+
+      // Handle shorthand property syntax { key }
+      if (this.tokenAt().type === TokenType.CloseBrace) {
+        properties.push({
+          kind: "Property",
+          key,
+          value: undefined,
+        });
+        continue;
+      }
+
+      // Handle full property syntax { key: value }
+      this.expectToken(
+        TokenType.Colon,
+        "Expected colon following property key"
+      );
+
+      const value = this.parseExpression();
+      properties.push({
+        kind: "Property",
+        key,
+        value,
+      });
+
+      // Handle comma after property
+      if (this.tokenAt().type !== TokenType.CloseBrace) {
+        this.expectToken(
+          TokenType.Comma,
+          "Expected comma to separate object properties"
+        );
+      }
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after object literal"
+    );
+
+    return {
+      kind: "ObjectLiteral",
+      properties,
+    } as ObjectLiteral;
   }
 
   // Handle additive expressions parsing ( Addition, Subtraction )

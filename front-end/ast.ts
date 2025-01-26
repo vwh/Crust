@@ -7,9 +7,13 @@ export type NodeType =
 
   // Expressions
   | "AssignmentExpression"
+  | "BinaryExpression"
+
+  // Literal
+  | "Property"
+  | "ObjectLiteral"
   | "NumericLiteral"
-  | "Identifier"
-  | "BinaryExpression";
+  | "Identifier";
 
 // let x = 45; ( Is a Statement ) will return nothing
 // In our scripting language statements don't return anything
@@ -80,4 +84,21 @@ export interface Identifier extends Expression {
 export interface NumericLiteral extends Expression {
   kind: "NumericLiteral";
   value: number;
+}
+
+/**
+ * Represents an Object Property.
+ */
+export interface Property extends Expression {
+  kind: "Property";
+  key: string;
+  value?: Expression;
+}
+
+/**
+ * Represents a Object Literal.
+ */
+export interface ObjectLiteral extends Expression {
+  kind: "ObjectLiteral";
+  properties: Property[];
 }

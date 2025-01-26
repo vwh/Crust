@@ -13,11 +13,16 @@ export enum TokenType {
   Const,
 
   // Operators
-  Equals,
-  BinaryOperator,
-  OpenParen,
-  CloseParen,
-  Semicolon,
+  BinaryOperator, // +, -, *, /, %
+  Equals, // =
+  Comma, // ,
+  Colon, // :
+  OpenParen, // (
+  CloseParen, // )
+  OpenBrace, // {
+  CloseBrace, // }
+  Semicolon, // ;
+
   EOF, // End of File
 }
 
@@ -55,7 +60,12 @@ export function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.OpenParen, char));
     } else if (char === ")") {
       tokens.push(token(TokenType.CloseParen, char));
-    } // Binary Operators
+    } else if (char === "{") {
+      tokens.push(token(TokenType.OpenBrace, char));
+    } else if (char === "}") {
+      tokens.push(token(TokenType.CloseBrace, char));
+    }
+    // Binary Operators
     else if (
       char === "+" ||
       char === "-" ||
@@ -66,6 +76,10 @@ export function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.BinaryOperator, char));
     } else if (char === "=") {
       tokens.push(token(TokenType.Equals, char));
+    } else if (char === ",") {
+      tokens.push(token(TokenType.Comma, char));
+    } else if (char === ":") {
+      tokens.push(token(TokenType.Colon, char));
     } else if (char === ";") {
       tokens.push(token(TokenType.Semicolon, char));
     } else {
@@ -121,5 +135,5 @@ function isInteger(char: string): boolean {
 
 // Checks if the given character is a whitespace
 function isSkippable(char: string): boolean {
-  return char === " " || char === "\n" || char === "\t";
+  return char === " " || char === "\n" || char === "\t" || char === "\r";
 }

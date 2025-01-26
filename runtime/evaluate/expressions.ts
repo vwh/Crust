@@ -8,9 +8,10 @@ import type {
   AssignmentExpression,
   BinaryExpression,
   Identifier,
+  ObjectLiteral,
 } from "../../front-end/ast";
 import type Environment from "../environment";
-import type { NumberValue, RuntimeValue } from "../values";
+import type { NumberValue, ObjectValue, RuntimeValue } from "../values";
 
 // Evaluates the AssignmentExpression AST
 export function evaluateAssignmentExpression(
@@ -87,4 +88,24 @@ export function evaluateIdentifier(
   environment: Environment
 ): RuntimeValue {
   return environment.getVariable(identifier.symbol);
+}
+
+// Evaluates the Object Literal AST
+export function evaluateObjectLiteral(
+  node: ObjectLiteral,
+  environment: Environment
+): RuntimeValue {
+  const object = { type: "object", properties: new Map() } as ObjectValue;
+
+  for (const { key, value } of node.properties) {
+    const runtimeValue =
+      value === undefined
+        ? environment.getVariable(key)
+        : evaluate(value, environment);
+
+    object.properties.set(key, runtimeValue);
+  }
+
+  console.log(object);
+  return object;
 }

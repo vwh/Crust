@@ -1,2 +1,11 @@
-let x = 100;
-x
+const foo = 100;
+
+const obj = {
+  x: 100,
+  y: 32,
+  foo,
+  test: false,
+  complex: {
+    bar: true,
+  },
+};
