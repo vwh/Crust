@@ -1,8 +1,17 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
 import { throwAnError } from "../utils";
+import { makeNumberValue, makeNullValue, makeBooleanValue } from "./values";
 
 import type { RuntimeValue } from "./values";
+
+// Sets up the global scope
+function setupGlobalScope(environment: Environment) {
+  environment.declareVariable("test", makeNumberValue(100), true);
+  environment.declareVariable("true", makeBooleanValue(true), true);
+  environment.declareVariable("false", makeBooleanValue(false), true);
+  environment.declareVariable("null", makeNullValue(), true);
+}
 
 /**
  * Represents an environment which holds variables.
@@ -14,9 +23,13 @@ export default class Environment {
   private constants: Set<string>;
 
   constructor(parent?: Environment) {
+    const isGlobal = !parent;
+
     this.parent = parent;
     this.variables = new Map();
     this.constants = new Set();
+
+    if (isGlobal) setupGlobalScope(this);
   }
 
   // Declares a variable
