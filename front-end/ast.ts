@@ -8,6 +8,8 @@ export type NodeType =
   // Expressions
   | "AssignmentExpression"
   | "BinaryExpression"
+  | "MemberExpression"
+  | "CallExpression"
 
   // Literal
   | "Property"
@@ -57,6 +59,28 @@ export interface AssignmentExpression extends Expression {
   kind: "AssignmentExpression";
   assignment: Expression;
   value: Expression;
+}
+
+/**
+ * Represents a member expression.
+ * - Supported Operators: .
+ * foo.bar()
+ * foo["bar"]() // this is computed
+ */
+export interface MemberExpression extends Expression {
+  kind: "MemberExpression";
+  object: Expression;
+  property: Expression;
+  computed: boolean;
+}
+
+/**
+ * Represents a call expression.
+ */
+export interface CallExpression extends Expression {
+  kind: "CallExpression";
+  caller: Expression;
+  arguments: Expression[];
 }
 
 /**

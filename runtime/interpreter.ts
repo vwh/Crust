@@ -11,7 +11,7 @@ import {
   evaluateObjectLiteral,
 } from "./evaluate/expressions";
 import { makeNumberValue } from "./values";
-import { throwAnError } from "../utils";
+import { log, throwAnError } from "../utils";
 
 import type {
   Statement,
@@ -58,9 +58,10 @@ export function evaluate(
 
     // Unhandled AST node
     default: {
+      log(ast);
       return throwAnError(
         "RuntimeError",
-        `at the ast [ ${ast} ]: \n This AST node is not supported yet`
+        "at the ast the following ast: \n This AST node is not supported yet"
       );
     }
   }

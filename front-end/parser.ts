@@ -14,6 +14,8 @@ import type {
   AssignmentExpression,
   Property,
   ObjectLiteral,
+  CallExpression,
+  MemberExpression,
 } from "./ast";
 import type { Token } from "./lexer";
 
@@ -132,9 +134,13 @@ export default class Parser {
   }
 
   // --- Orders Of Expression Precedence ---
+  // AssignmentExpression ( Lowest )
+  // ObjectExpression
   // AdditiveExpression
   // MultiplicitaveExpression
-  // PrimaryExpression
+  // CallExpression
+  // MemberExpression
+  // PrimaryExpression ( Highest )
 
   // Handle expressions parsing
   private parseExpression(): Expression {
@@ -246,9 +252,110 @@ export default class Parser {
     return left;
   }
 
+  // Handle call member expressions parsing ( Function call )
+  // foo.bar ()
+  private parseCallMemberExpression(): Expression {
+    const member = this.parseMemberExpression();
+
+    if (this.tokenAt().type === TokenType.OpenParen) {
+      return this.parseCallExpression(member);
+    }
+
+    return member;
+  }
+
+  // Handle call expressions parsing ( Function call )
+  // like foo ()
+  private parseCallExpression(caller: Expression): Expression {
+    let callExpression: Expression = {
+      kind: "CallExpression",
+      caller: caller,
+      arguments: this.parseArguments(),
+    } as CallExpression;
+
+    // To handle chain function calls, the case of foo.bar()()()
+    if (this.tokenAt().type === TokenType.OpenParen) {
+      callExpression = this.parseCallExpression(callExpression);
+    }
+
+    return callExpression;
+  }
+
+  // Handles the function call arguments
+  private parseArguments(): Expression[] {
+    this.expectToken(TokenType.OpenParen, "Expected '(' after arguments");
+
+    const args =
+      this.tokenAt().type === TokenType.CloseParen
+        ? []
+        : this.parseArgumentsList();
+
+    this.expectToken(TokenType.CloseParen, "Expected ')' after arguments");
+
+    return args;
+  }
+
+  // Handles parsing a list of arguments in a function call
+  private parseArgumentsList(): Expression[] {
+    const args = [this.parseAssignmentExpression()];
+
+    // Loop until we reach the end of the arguments list
+    while (this.tokenAt().type === TokenType.Comma && this.eatToken()) {
+      args.push(this.parseAssignmentExpression());
+    }
+
+    return args;
+  }
+
+  // Handles parsing member expressions
+  // Like foo.bar.baz
+  private parseMemberExpression(): Expression {
+    let object = this.parsePrimaryExpression();
+
+    while (
+      this.tokenAt().type === TokenType.Dot ||
+      this.tokenAt().type === TokenType.OpenBracket
+    ) {
+      const operator = this.eatToken();
+      let property: Expression;
+      let computed = false;
+
+      // Non-computed property
+      if (operator.type === TokenType.Dot) {
+        // Getting the identifier after the dot
+        property = this.parsePrimaryExpression();
+
+        if (property.kind !== "Identifier")
+          throwAnError(
+            "ParseError",
+            "Cannot use dot operator without the right hand side being an identifier"
+          );
+      }
+      // Computed property
+      else {
+        computed = true;
+        property = this.parseExpression();
+
+        this.expectToken(
+          TokenType.CloseBracket,
+          "Expected ']' after computed property"
+        );
+      }
+
+      object = {
+        kind: "MemberExpression",
+        object,
+        property,
+        computed,
+      } as MemberExpression;
+    }
+
+    return object;
+  }
+
   // Handle multiplicative expressions parsing ( Multiplication, Division, Modulo )
   private parseMultiplicativeExpression(): Expression {
-    let left = this.parsePrimaryExpression();
+    let left = this.parseCallMemberExpression();
 
     while (
       this.tokenAt().value === "/" ||
@@ -256,7 +363,7 @@ export default class Parser {
       this.tokenAt().value === "%"
     ) {
       const operator = this.eatToken();
-      const right = this.parsePrimaryExpression();
+      const right = this.parseCallMemberExpression();
 
       left = {
         kind: "BinaryExpression",

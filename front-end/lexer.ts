@@ -21,7 +21,10 @@ export enum TokenType {
   CloseParen, // )
   OpenBrace, // {
   CloseBrace, // }
+  OpenBracket, // [
+  CloseBracket, // ]
   Semicolon, // ;
+  Dot, // .
 
   EOF, // End of File
 }
@@ -62,6 +65,10 @@ export function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.CloseParen, char));
     } else if (char === "{") {
       tokens.push(token(TokenType.OpenBrace, char));
+    } else if (char === "[") {
+      tokens.push(token(TokenType.OpenBracket, char));
+    } else if (char === "]") {
+      tokens.push(token(TokenType.CloseBracket, char));
     } else if (char === "}") {
       tokens.push(token(TokenType.CloseBrace, char));
     }
@@ -82,6 +89,8 @@ export function tokenizer(soruceCode: string): Token[] {
       tokens.push(token(TokenType.Colon, char));
     } else if (char === ";") {
       tokens.push(token(TokenType.Semicolon, char));
+    } else if (char === ".") {
+      tokens.push(token(TokenType.Dot, char));
     } else {
       // Start parsing multicharacter tokens
 

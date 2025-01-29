@@ -1,4 +1,4 @@
-const foo = 100;
+const foo = 100 / 2;
 
 const obj = {
   x: 100,
@@ -9,3 +9,5 @@ const obj = {
     bar: true,
   },
 };
+
+print(obj[getFoo()])

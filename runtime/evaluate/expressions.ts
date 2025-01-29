@@ -106,6 +106,5 @@ export function evaluateObjectLiteral(
     object.properties.set(key, runtimeValue);
   }
 
-  console.log(object);
   return object;
 }
