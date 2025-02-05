@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "repl": "bun run index.ts",
+    "test": "bun run index.ts test.crust",
     "tests": "bun test ./tests/index.ts"
   },
   "devDependencies": {

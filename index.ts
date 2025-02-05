@@ -53,4 +53,9 @@ function run(fileName: string) {
   });
 }
 
-run("test.crust");
+const args = process.argv.slice(2);
+if (args.length === 0) {
+  repl();
+} else {
+  run(args[0]);
+}

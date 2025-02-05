@@ -12,4 +12,4 @@ const obj = {
 
 let x = get(foo);
 
-obj.complex.bar = false
+obj.complex.bar
