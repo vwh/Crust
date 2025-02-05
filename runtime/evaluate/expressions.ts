@@ -10,6 +10,7 @@ import type {
   Identifier,
   ObjectLiteral,
   CallExpression,
+  MemberExpression,
 } from "../../front-end/ast";
 import type Environment from "../environment";
 import type {
@@ -113,6 +114,32 @@ export function evaluateObjectLiteral(
   }
 
   return object;
+}
+
+// Evaluates the Member Expression AST
+export function evaluateMemberExpression(
+  node: MemberExpression,
+  environment: Environment
+): RuntimeValue {
+  const object = evaluate(node.object, environment) as ObjectValue;
+
+  if (object.type !== "object") {
+    return throwAnError(
+      "RuntimeError",
+      `at the member expression [ ${node.object} ]: \n Member expression is not supported`
+    );
+  }
+
+  if (node.property.kind !== "Identifier") {
+    return throwAnError(
+      "RuntimeError",
+      `at the member expression [ ${node.property} ]: \n Member expression is not supported`
+    );
+  }
+
+  const property = node.property as Identifier;
+
+  return object.properties.get(property.symbol) as RuntimeValue;
 }
 
 // Evaluates the Call Expression AST

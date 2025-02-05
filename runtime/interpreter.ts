@@ -8,6 +8,7 @@ import {
   evaluateAssignmentExpression,
   evaluateBinaryExpression,
   evaluateIdentifier,
+  evaluateMemberExpression,
   evaluateNativeFunction,
   evaluateObjectLiteral,
 } from "./evaluate/expressions";
@@ -24,6 +25,7 @@ import type {
   AssignmentExpression,
   ObjectLiteral,
   CallExpression,
+  MemberExpression,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -57,6 +59,8 @@ export function evaluate(
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
     case "Identifier":
       return evaluateIdentifier(ast as Identifier, environment);
+    case "MemberExpression":
+      return evaluateMemberExpression(ast as MemberExpression, environment);
     case "CallExpression":
       return evaluateNativeFunction(ast as CallExpression, environment);
 

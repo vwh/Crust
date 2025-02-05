@@ -10,8 +10,6 @@ const obj = {
   },
 };
 
-print(foo)
-
 let x = get(foo);
 
-print(x)
+obj.complex.bar = false
