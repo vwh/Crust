@@ -1,6 +1,13 @@
 // values.ts | The values in the runtime
 
-export type ValueType = "null" | "number" | "boolean" | "object";
+import type Environment from "./environment";
+
+export type ValueType =
+  | "null"
+  | "number"
+  | "boolean"
+  | "object"
+  | "native-function";
 
 /**
  * Represents a value in the runtime
@@ -63,4 +70,27 @@ export function makeBooleanValue(value: boolean): BooleanValue {
     type: "boolean",
     value,
   } as BooleanValue;
+}
+
+export type FunctionCall = (
+  args: RuntimeValue[],
+  env: Environment
+) => RuntimeValue;
+
+/**
+ * Represents a native function value in the runtime
+ */
+export interface NativeFunctionValue extends RuntimeValue {
+  type: "native-function";
+  call: FunctionCall;
+}
+
+// Creates a new NativeFunctionValue
+export function makeNativeFunctionValue(
+  call: FunctionCall
+): NativeFunctionValue {
+  return {
+    type: "native-function",
+    call,
+  } as NativeFunctionValue;
 }

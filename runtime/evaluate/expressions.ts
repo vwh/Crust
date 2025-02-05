@@ -9,9 +9,15 @@ import type {
   BinaryExpression,
   Identifier,
   ObjectLiteral,
+  CallExpression,
 } from "../../front-end/ast";
 import type Environment from "../environment";
-import type { NumberValue, ObjectValue, RuntimeValue } from "../values";
+import type {
+  NativeFunctionValue,
+  NumberValue,
+  ObjectValue,
+  RuntimeValue,
+} from "../values";
 
 // Evaluates the AssignmentExpression AST
 export function evaluateAssignmentExpression(
@@ -107,4 +113,25 @@ export function evaluateObjectLiteral(
   }
 
   return object;
+}
+
+// Evaluates the Call Expression AST
+export function evaluateNativeFunction(
+  node: CallExpression,
+  environment: Environment
+): RuntimeValue {
+  const args = node.arguments.map((arg) => evaluate(arg, environment));
+  const fn = evaluate(node.caller, environment);
+
+  if (fn.type !== "native-function") {
+    return throwAnError(
+      "RuntimeError",
+      `at the call expression [ ${node.caller} ]: \n Call expression is not supported`
+    );
+  }
+
+  // it will be evaluated in the runtime
+  const result = (fn as NativeFunctionValue).call(args, environment);
+
+  return result;
 }

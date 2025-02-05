@@ -8,6 +8,7 @@ import {
   evaluateAssignmentExpression,
   evaluateBinaryExpression,
   evaluateIdentifier,
+  evaluateNativeFunction,
   evaluateObjectLiteral,
 } from "./evaluate/expressions";
 import { makeNumberValue } from "./values";
@@ -22,6 +23,7 @@ import type {
   VariableDeclaration,
   AssignmentExpression,
   ObjectLiteral,
+  CallExpression,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -55,6 +57,8 @@ export function evaluate(
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
     case "Identifier":
       return evaluateIdentifier(ast as Identifier, environment);
+    case "CallExpression":
+      return evaluateNativeFunction(ast as CallExpression, environment);
 
     // Unhandled AST node
     default: {

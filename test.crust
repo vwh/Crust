@@ -10,4 +10,8 @@ const obj = {
   },
 };
 
-print(obj[getFoo()])
+print(foo)
+
+let x = get(foo);
+
+print(x)
