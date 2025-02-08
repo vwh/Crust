@@ -29,23 +29,30 @@ test("Math Operators", () => {
 });
 
 test("Variable Declaration & Identifier", () => {
-  const result = execute("let x = 100; x") as NumberValue;
+  const result = execute("set x = 100; x") as NumberValue;
   expect(result.value).toBe(100);
 });
 
 test("Assignment Expression", () => {
-  const result = execute("let x = 100; x = x + 100") as NumberValue;
+  const result = execute("set x = 100; x = x + 100") as NumberValue;
   expect(result.value).toBe(200);
 });
 
 test("Object Literal & Member Expression", () => {
   const result = execute(
-    "let obj = { x: 100, y: 32, foo: 100 / 2, test: false, complex: { bar: true } }; obj.complex.bar"
+    "set obj = { x: 100, y: 32, foo: 100 / 2, test: false, complex: { bar: true } }; obj.complex.bar"
   ) as BooleanValue;
   expect(result.value).toBe(true);
 });
 
 test("Call Expression", () => {
-  const result = execute("let x = get(100 / 2); x") as NumberValue;
+  const result = execute("set x = get(100 / 2); x") as NumberValue;
   expect(result.value).toBe(50);
+});
+
+test("Function Declaration", () => {
+  const result = execute(
+    "fn add(x, y) { set z = x + y; z } add(100, 100)"
+  ) as NumberValue;
+  expect(result.value).toBe(200);
 });
