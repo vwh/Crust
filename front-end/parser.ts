@@ -75,8 +75,8 @@ export default class Parser {
   // Handle statements parsing
   private parseStatement(): Statement {
     switch (this.tokenAt().type) {
-      case TokenType.Let:
-      case TokenType.Const:
+      case TokenType.Set:
+      case TokenType.Keep:
         return this.parseVariableDeclaration();
       case TokenType.Fn:
         return this.parseFunctionDeclaration();
@@ -89,7 +89,7 @@ export default class Parser {
   // let identifier;
   // ( const | let ) identifier = expression;
   private parseVariableDeclaration(): Statement {
-    const isConstant = this.eatToken().type === TokenType.Const;
+    const isConstant = this.eatToken().type === TokenType.Keep;
     const identifier = this.expectToken(
       TokenType.Identifier,
       "Expected identifier name for variable declaration"

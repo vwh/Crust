@@ -9,8 +9,8 @@ export enum TokenType {
   Identifier,
 
   // Keywords
-  Let,
-  Const,
+  Set,
+  Keep,
   Fn, // Function
 
   // Operators
@@ -38,8 +38,8 @@ export interface Token {
 
 // Keywords, Constant lookup for keywords and known identifiers and symbols
 const KEYWORDS: Record<string, TokenType> = {
-  let: TokenType.Let,
-  const: TokenType.Const,
+  set: TokenType.Set,
+  keep: TokenType.Keep,
   fn: TokenType.Fn,
 };
 

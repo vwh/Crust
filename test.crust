@@ -1,15 +1,22 @@
-let x = 5;
+set person = {
+  someThing: null,
+  isGay: true,
+  nested: {
+    age: 69,
+  },
+};
 
 fn makeAdder(offset) {
   fn add(x, y) {
-    let z = x + y + offset;
+    set z = x + y + offset;
     z
   }
 
   add
 }
 
-let add = makeAdder(2);
-const y = add(5, 5) + x;
+set add = makeAdder(2);
+keep y = add(5, 5) + person.nested.age;
 
-print(y)
+output(y)
+

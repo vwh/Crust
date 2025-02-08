@@ -20,7 +20,7 @@ function setupGlobalScope(environment: Environment) {
 
   // Global bulit-in functions
   environment.declareVariable(
-    "print",
+    "output",
     makeNativeFunctionValue((args) => {
       console.log(...args);
       return makeNullValue();
