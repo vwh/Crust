@@ -1,15 +1,15 @@
-const foo = 100 / 2;
+let x = 5;
 
-const obj = {
-  x: 100,
-  y: 32,
-  foo,
-  test: false,
-  complex: {
-    bar: true,
-  },
-};
+fn makeAdder(offset) {
+  fn add(x, y) {
+    let z = x + y + offset;
+    z
+  }
 
-let x = get(foo);
+  add
+}
 
-obj.complex.bar
+let add = makeAdder(2);
+const y = add(5, 5) + x;
+
+print(y)

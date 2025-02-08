@@ -1,6 +1,7 @@
 // expressions.ts | Evaluates the expressions in the runtime
 
 import { evaluate } from "../interpreter";
+import Environment from "../environment";
 import { makeNullValue, makeNumberValue } from "../values";
 import { throwAnError } from "../../utils";
 
@@ -12,8 +13,8 @@ import type {
   CallExpression,
   MemberExpression,
 } from "../../front-end/ast";
-import type Environment from "../environment";
 import type {
+  FunctionValue,
   NativeFunctionValue,
   NumberValue,
   ObjectValue,
@@ -150,15 +151,35 @@ export function evaluateNativeFunction(
   const args = node.arguments.map((arg) => evaluate(arg, environment));
   const fn = evaluate(node.caller, environment);
 
-  if (fn.type !== "native-function") {
-    return throwAnError(
-      "RuntimeError",
-      `at the call expression [ ${node.caller} ]: \n Call expression is not supported`
-    );
+  if (fn.type === "native-function") {
+    // it will be evaluated in the runtime
+    const result = (fn as NativeFunctionValue).call(args, environment);
+
+    return result;
   }
 
-  // it will be evaluated in the runtime
-  const result = (fn as NativeFunctionValue).call(args, environment);
+  // user-defined functions
+  if (fn.type === "function") {
+    const userfn = fn as FunctionValue;
+    const scope = new Environment(userfn.environment);
 
-  return result;
+    // Create the variables for the function parameters
+    for (let i = 0; i < userfn.parameters.length; i++) {
+      // TODO: check args/parameters bounds and throw an error if needed
+      const varname = userfn.parameters[i];
+      scope.declareVariable(varname, args[i], false);
+    }
+
+    let result: RuntimeValue = makeNullValue();
+    for (const statement of userfn.body) {
+      result = evaluate(statement, scope);
+    }
+
+    return result;
+  }
+
+  return throwAnError(
+    "RuntimeError",
+    `at the call expression [ ${node.caller} ]: \n Call expression is not supported`
+  );
 }

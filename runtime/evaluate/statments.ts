@@ -3,9 +3,14 @@
 import { evaluate } from "../interpreter";
 import { makeNullValue } from "../values";
 
-import type { Program, VariableDeclaration } from "../../front-end/ast";
+import type {
+  FunctionDeclaration,
+  Program,
+  VariableDeclaration,
+} from "../../front-end/ast";
 import type Environment from "../environment";
-import type { RuntimeValue } from "../values";
+import type { FunctionValue, RuntimeValue } from "../values";
+import { env } from "bun";
 
 // Evaluates the Program AST
 export function evaluateProgram(
@@ -39,4 +44,20 @@ export function evaluateVariableDeclaration(
   );
 
   return undefined as unknown as RuntimeValue;
+}
+
+// Evaluates the Function Declaration AST
+export function evaluateFunctionDeclaration(
+  functionDeclaration: FunctionDeclaration,
+  environment: Environment
+) {
+  const fn = {
+    type: "function",
+    name: functionDeclaration.name,
+    parameters: functionDeclaration.parameters,
+    environment,
+    body: functionDeclaration.body,
+  } as FunctionValue;
+
+  return environment.declareVariable(functionDeclaration.name, fn, true);
 }

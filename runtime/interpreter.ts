@@ -1,6 +1,7 @@
 // interpreter.ts | Responsible for evaluating the AST
 
 import {
+  evaluateFunctionDeclaration,
   evaluateProgram,
   evaluateVariableDeclaration,
 } from "./evaluate/statments";
@@ -26,6 +27,7 @@ import type {
   ObjectLiteral,
   CallExpression,
   MemberExpression,
+  FunctionDeclaration,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -42,6 +44,11 @@ export function evaluate(
     case "VariableDeclaration":
       return evaluateVariableDeclaration(
         ast as VariableDeclaration,
+        environment
+      );
+    case "FunctionDeclaration":
+      return evaluateFunctionDeclaration(
+        ast as FunctionDeclaration,
         environment
       );
 

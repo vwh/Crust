@@ -16,6 +16,7 @@ import type {
   ObjectLiteral,
   CallExpression,
   MemberExpression,
+  FunctionDeclaration,
 } from "./ast";
 import type { Token } from "./lexer";
 
@@ -77,6 +78,8 @@ export default class Parser {
       case TokenType.Let:
       case TokenType.Const:
         return this.parseVariableDeclaration();
+      case TokenType.Fn:
+        return this.parseFunctionDeclaration();
       default:
         return this.parseExpression();
     }
@@ -131,6 +134,55 @@ export default class Parser {
     );
 
     return declaration;
+  }
+
+  // Handle function declarations parsing
+  private parseFunctionDeclaration(): Statement {
+    this.eatToken(); // Eat the fn keyword
+
+    const name = this.expectToken(
+      TokenType.Identifier,
+      "Expected identifier name for function declaration"
+    ).value;
+
+    const args = this.parseArguments();
+
+    // parseArguments returns expressions, but we need to convert them to strings
+    // as we are handling arguments not parameters
+    const parameters: string[] = [];
+    for (const arg of args) {
+      if (arg.kind !== "Identifier")
+        throwAnError(
+          "ParseError",
+          "Expected a string identifier for function parameter"
+        );
+
+      parameters.push((arg as Identifier).symbol);
+    }
+
+    this.expectToken(
+      TokenType.OpenBrace,
+      "Expected opening brace after function declaration"
+    );
+
+    const body: Statement[] = [];
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      body.push(this.parseStatement());
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after function declaration"
+    );
+
+    const fn = {
+      kind: "FunctionDeclaration",
+      name,
+      parameters,
+      body,
+    } as FunctionDeclaration;
+
+    return fn;
   }
 
   // --- Orders Of Expression Precedence ---

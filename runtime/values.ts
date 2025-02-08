@@ -1,5 +1,6 @@
 // values.ts | The values in the runtime
 
+import type { Statement } from "../front-end/ast";
 import type Environment from "./environment";
 
 export type ValueType =
@@ -7,7 +8,8 @@ export type ValueType =
   | "number"
   | "boolean"
   | "object"
-  | "native-function";
+  | "native-function"
+  | "function";
 
 /**
  * Represents a value in the runtime
@@ -93,4 +95,15 @@ export function makeNativeFunctionValue(
     type: "native-function",
     call,
   } as NativeFunctionValue;
+}
+
+/**
+ * Represents a user-defined function value in the runtime
+ */
+export interface FunctionValue extends RuntimeValue {
+  type: "function";
+  name: string;
+  parameters: string[];
+  environment: Environment;
+  body: Statement[];
 }

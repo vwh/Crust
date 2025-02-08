@@ -11,6 +11,7 @@ export enum TokenType {
   // Keywords
   Let,
   Const,
+  Fn, // Function
 
   // Operators
   BinaryOperator, // +, -, *, /, %
@@ -39,6 +40,7 @@ export interface Token {
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
   const: TokenType.Const,
+  fn: TokenType.Fn,
 };
 
 // Creates a new token from a given type and value

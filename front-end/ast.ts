@@ -4,6 +4,7 @@ export type NodeType =
   // Statements
   | "Program"
   | "VariableDeclaration"
+  | "FunctionDeclaration"
 
   // Expressions
   | "AssignmentExpression"
@@ -39,11 +40,26 @@ export interface Program extends Statement {
   body: Statement[];
 }
 
+/**
+ * Represents a variable declaration.
+ * - const and let are both variable declarations
+ */
+
 export interface VariableDeclaration extends Statement {
   kind: "VariableDeclaration";
   constant: boolean;
   identifier: string;
   value?: Expression; // it is optional because it may be undefined
+}
+
+/**
+ * Represents a function declaration.
+ */
+export interface FunctionDeclaration extends Statement {
+  kind: "FunctionDeclaration";
+  name: string;
+  parameters: string[];
+  body: Statement[];
 }
 
 /**
