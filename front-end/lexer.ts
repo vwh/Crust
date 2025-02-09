@@ -7,6 +7,7 @@ export enum TokenType {
   // Literal
   Number,
   Identifier,
+  String,
 
   // Keywords
   Set,
@@ -96,14 +97,32 @@ export function tokenizer(soruceCode: string): Token[] {
     } else {
       // Start parsing multicharacter tokens
 
+      // Handle string literals like "Hello World"
+      if (char === '"') {
+        let str = "";
+        while (src.length > 0 && src[0] !== '"') {
+          str += src.shift() as string;
+        }
+        // Check if the string is terminated
+        if (src.length === 0)
+          throwAnError(
+            "LexerError",
+            "Unterminated string literal: Missing closing quote"
+          );
+        src.shift(); // eat the closing quote
+        tokens.push(token(TokenType.String, str));
+      }
+
       // Handle numeric literals like integers
-      if (isInteger(char)) {
+      else if (isInteger(char)) {
         let num = char;
         while (isInteger(src[0]) && src.length > 0) {
           num += src.shift() as string;
         }
         tokens.push(token(TokenType.Number, num));
-      } // Handle identifiers and keywords
+      }
+
+      // Handle identifiers and keywords
       else if (isAlphabet(char)) {
         let id = char; // haha, let, var, const, class, function, etc.
         while (isAlphabet(src[0]) && src.length > 0) {

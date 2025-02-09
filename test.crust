@@ -1,4 +1,5 @@
 set person = {
+  name: "Yazan",
   someThing: null,
   isGay: true,
   nested: {
@@ -15,8 +16,12 @@ fn makeAdder(offset) {
   add
 }
 
+fn getName(person) {
+  person.name
+}
+
 set add = makeAdder(2);
 keep y = add(5, 5) + person.nested.age;
 
 output(y)
-
+output(getName(person))

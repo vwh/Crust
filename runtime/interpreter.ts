@@ -13,7 +13,7 @@ import {
   evaluateNativeFunction,
   evaluateObjectLiteral,
 } from "./evaluate/expressions";
-import { makeNumberValue } from "./values";
+import { makeNumberValue, makeStringValue } from "./values";
 import { log, throwAnError } from "../utils";
 
 import type {
@@ -28,6 +28,7 @@ import type {
   CallExpression,
   MemberExpression,
   FunctionDeclaration,
+  StringLiteral,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -62,6 +63,8 @@ export function evaluate(
       return evaluateObjectLiteral(ast as ObjectLiteral, environment);
     case "NumericLiteral":
       return makeNumberValue((ast as NumericLiteral).value);
+    case "StringLiteral":
+      return makeStringValue((ast as StringLiteral).value);
     case "BinaryExpression":
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
     case "Identifier":

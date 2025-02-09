@@ -9,7 +9,8 @@ export type ValueType =
   | "boolean"
   | "object"
   | "native-function"
-  | "function";
+  | "function"
+  | "string";
 
 /**
  * Represents a value in the runtime
@@ -50,6 +51,14 @@ export interface ObjectValue extends RuntimeValue {
   properties: Map<string, RuntimeValue>;
 }
 
+/**
+ * Represents a string value in the runtime
+ */
+export interface StringValue extends RuntimeValue {
+  type: "string";
+  value: string;
+}
+
 // Creates a new NumberValue
 export function makeNumberValue(value: number): NumberValue {
   return {
@@ -72,6 +81,14 @@ export function makeBooleanValue(value: boolean): BooleanValue {
     type: "boolean",
     value,
   } as BooleanValue;
+}
+
+// Creates a new StringValue
+export function makeStringValue(value: string): StringValue {
+  return {
+    type: "string",
+    value,
+  } as StringValue;
 }
 
 export type FunctionCall = (

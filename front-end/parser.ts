@@ -17,6 +17,7 @@ import type {
   CallExpression,
   MemberExpression,
   FunctionDeclaration,
+  StringLiteral,
 } from "./ast";
 import type { Token } from "./lexer";
 
@@ -304,6 +305,29 @@ export default class Parser {
     return left;
   }
 
+  // Handle multiplicative expressions parsing ( Multiplication, Division, Modulo )
+  private parseMultiplicativeExpression(): Expression {
+    let left = this.parseCallMemberExpression();
+
+    while (
+      this.tokenAt().value === "/" ||
+      this.tokenAt().value === "*" ||
+      this.tokenAt().value === "%"
+    ) {
+      const operator = this.eatToken();
+      const right = this.parseCallMemberExpression();
+
+      left = {
+        kind: "BinaryExpression",
+        left,
+        right,
+        operator: operator.value,
+      } as BinaryExpression;
+    }
+
+    return left;
+  }
+
   // Handle call member expressions parsing ( Function call )
   // foo.bar ()
   private parseCallMemberExpression(): Expression {
@@ -405,29 +429,6 @@ export default class Parser {
     return object;
   }
 
-  // Handle multiplicative expressions parsing ( Multiplication, Division, Modulo )
-  private parseMultiplicativeExpression(): Expression {
-    let left = this.parseCallMemberExpression();
-
-    while (
-      this.tokenAt().value === "/" ||
-      this.tokenAt().value === "*" ||
-      this.tokenAt().value === "%"
-    ) {
-      const operator = this.eatToken();
-      const right = this.parseCallMemberExpression();
-
-      left = {
-        kind: "BinaryExpression",
-        left,
-        right,
-        operator: operator.value,
-      } as BinaryExpression;
-    }
-
-    return left;
-  }
-
   // Handle primary expressions parsing ( Identifiers, Numbers, Parentheses )
   private parsePrimaryExpression(): Expression {
     const token = this.eatToken();
@@ -443,6 +444,11 @@ export default class Parser {
           kind: "NumericLiteral",
           value: Number.parseFloat(token.value),
         } as NumericLiteral;
+      case TokenType.String:
+        return {
+          kind: "StringLiteral",
+          value: token.value,
+        } as StringLiteral;
       case TokenType.OpenParen: {
         const value = this.parseExpression();
         this.expectToken(

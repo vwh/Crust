@@ -10,7 +10,6 @@ import type {
 } from "../../front-end/ast";
 import type Environment from "../environment";
 import type { FunctionValue, RuntimeValue } from "../values";
-import { env } from "bun";
 
 // Evaluates the Program AST
 export function evaluateProgram(
