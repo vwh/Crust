@@ -86,3 +86,8 @@ test("Function Declaration", () => {
   ) as NumberValue;
   expect(result.value).toBe(200);
 });
+
+test("Math Global Object", () => {
+  const result = execute("Math.pow(2, 5)") as NumberValue;
+  expect(result.value).toBe(32);
+});

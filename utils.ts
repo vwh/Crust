@@ -1,13 +1,21 @@
 import util from "node:util";
 import { TokenType } from "./front-end/lexer";
 
-import type {
-  FunctionValue,
-  RuntimeValue,
-  StringValue,
-  NumberValue,
-  BooleanValue,
-  ObjectValue,
+import {
+  type FunctionValue,
+  type RuntimeValue,
+  type StringValue,
+  type NumberValue,
+  type BooleanValue,
+  type ObjectValue,
+  makeBooleanValue,
+  makeNullValue,
+  makeNumberValue,
+  makeStringValue,
+  makeNativeFunctionValue,
+  type NativeFunctionValue,
+  type FunctionCall,
+  type NullValue,
 } from "./runtime/values";
 
 // Logs the given object to the console
@@ -92,6 +100,55 @@ export function runtimeValueToString(valueObject: RuntimeValue) {
     )}>`;
 
   return "unknown";
+}
+
+// Converts a javascript object to a crust object
+export function javascriptObjectToCrustObject(obj: Record<string, unknown>) {
+  const crustObj = new Map();
+  for (const [key, value] of Object.entries(obj)) {
+    crustObj.set(key, javascriptValueToCrustValue(value));
+  }
+  return {
+    type: "object",
+    properties: crustObj,
+  } as ObjectValue;
+}
+
+// Converts a javascript value to a runtime value
+export function javascriptValueToCrustValue(value: unknown): RuntimeValue {
+  if (value === null) return makeNullValue();
+  if (typeof value === "boolean") return makeBooleanValue(value);
+  if (typeof value === "number") return makeNumberValue(value);
+  if (typeof value === "string") return makeStringValue(value);
+  if (typeof value === "function")
+    return makeNativeFunctionValue((args) => {
+      const jsArgs = args.map((arg) => {
+        if (arg.type === "number") return (arg as NumberValue).value;
+        if (arg.type === "string") return (arg as StringValue).value;
+        if (arg.type === "boolean") return (arg as BooleanValue).value;
+        if (arg.type === "object") return (arg as ObjectValue).properties;
+        return null;
+      });
+
+      const result = value(...jsArgs);
+      return makeNumberValue(result);
+    });
+  if (Array.isArray(value)) {
+    const array = value.map((item) => javascriptValueToCrustValue(item));
+    return {
+      type: "object",
+      properties: new Map(array.map((item, index) => [index.toString(), item])),
+    } as ObjectValue;
+  }
+
+  if (typeof value === "object" && value !== null) {
+    return javascriptObjectToCrustObject(value as Record<string, unknown>);
+  }
+
+  throwAnError(
+    "RuntimeError",
+    "Cannot convert javascript value to runtime value"
+  );
 }
 
 type ErrorType = "ParseError" | "LexerError" | "RuntimeError";
