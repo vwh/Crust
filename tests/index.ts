@@ -4,7 +4,12 @@ import Parser from "../front-end/parser";
 import { evaluate } from "../runtime/interpreter";
 import Environment from "../runtime/environment";
 
-import type { BooleanValue, NumberValue } from "../runtime/values";
+import type {
+  BooleanValue,
+  NullValue,
+  NumberValue,
+  StringValue,
+} from "../runtime/values";
 
 function execute(code: string) {
   const parser = new Parser();
@@ -17,6 +22,26 @@ function execute(code: string) {
   const result = evaluate(program, environment);
   return result;
 }
+
+test("String Literal", () => {
+  const result = execute('"Hello World"') as StringValue;
+  expect(result.value).toBe("Hello World");
+});
+
+test("Null Literal", () => {
+  const result = execute("null") as NullValue;
+  expect(result.value).toBe(null);
+});
+
+test("Boolean Literal", () => {
+  const result = execute("true") as BooleanValue;
+  expect(result.value).toBe(true);
+});
+
+test("Numeric Literal", () => {
+  const result = execute("100") as NumberValue;
+  expect(result.value).toBe(100);
+});
 
 test("Binary Expression", () => {
   const result = execute("(100 / 2) + 100 * 2 + (2 + 4)") as NumberValue;
