@@ -18,8 +18,30 @@ export function log(obj: unknown) {
 // Gets the name of the given token from the TokenType enum
 export function getNameOfToken(token: TokenType) {
   switch (token) {
-    case TokenType.Let:
-      return "Let";
+    case TokenType.Set:
+      return "Set";
+    case TokenType.Keep:
+      return "Keep";
+    case TokenType.Fn:
+      return "Fn";
+    case TokenType.String:
+      return "String";
+    case TokenType.CloseBrace:
+      return "CloseBrace";
+    case TokenType.CloseBracket:
+      return "CloseBracket";
+    case TokenType.OpenBrace:
+      return "OpenBrace";
+    case TokenType.OpenBracket:
+      return "OpenBracket";
+    case TokenType.Semicolon:
+      return "Semicolon";
+    case TokenType.Comma:
+      return "Comma";
+    case TokenType.Colon:
+      return "Colon";
+    case TokenType.Dot:
+      return "Dot";
     case TokenType.Number:
       return "Number";
     case TokenType.Identifier:
@@ -44,6 +66,8 @@ export function throwAnError(type: ErrorType, message: string): never {
   process.exit(1);
 }
 
+// Converts the given runtime value to a string
+// Used on global output() function
 export function runtimeValueToString(valueObject: RuntimeValue) {
   if (valueObject.type === "null") return "null";
 
