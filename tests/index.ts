@@ -71,8 +71,8 @@ test("Object Literal & Member Expression", () => {
 });
 
 test("Call Expression", () => {
-  const result = execute("set x = get(100 / 2); x") as NumberValue;
-  expect(result.value).toBe(50);
+  const result = execute("fn returnFive(x) { x } returnFive(5)") as NumberValue;
+  expect(result.value).toBe(5);
 });
 
 test("Function Declaration", () => {

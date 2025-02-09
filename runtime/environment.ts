@@ -1,6 +1,6 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
-import { throwAnError } from "../utils";
+import { runtimeValueToString, throwAnError } from "../utils";
 import {
   makeNumberValue,
   makeNullValue,
@@ -13,25 +13,32 @@ import type { RuntimeValue } from "./values";
 // Sets up the global scope
 function setupGlobalScope(environment: Environment) {
   // Global variables
-  environment.declareVariable("test", makeNumberValue(100), true);
   environment.declareVariable("true", makeBooleanValue(true), true);
   environment.declareVariable("false", makeBooleanValue(false), true);
   environment.declareVariable("null", makeNullValue(), true);
 
   // Global bulit-in functions
   environment.declareVariable(
-    "output",
+    "debug",
     makeNativeFunctionValue((args) => {
       console.log(...args);
       return makeNullValue();
     }),
     true
   );
-
   environment.declareVariable(
-    "get",
+    "typeof",
     makeNativeFunctionValue((args) => {
-      return args[0];
+      console.log(...args.map((arg) => arg.type));
+      return makeNullValue();
+    }),
+    true
+  );
+  environment.declareVariable(
+    "output",
+    makeNativeFunctionValue((args) => {
+      console.log(...args.map((arg) => runtimeValueToString(arg)));
+      return makeNullValue();
     }),
     true
   );
