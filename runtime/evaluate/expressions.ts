@@ -3,7 +3,7 @@
 import { evaluate } from "../interpreter";
 import Environment from "../environment";
 import { makeNullValue, makeNumberValue, makeStringValue } from "../values";
-import { throwAnError } from "../../utils";
+import { throwAnError } from "../../utils/errors";
 
 import type {
   AssignmentExpression,

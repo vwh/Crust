@@ -1,18 +1,16 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
 import {
-  javascriptObjectToCrustObject,
-  runtimeValueToString,
-  throwAnError,
-} from "../utils";
-import {
   makeNumberValue,
   makeNullValue,
   makeBooleanValue,
   makeNativeFunctionValue,
 } from "./values";
+import { throwAnError } from "../utils/errors";
+import { javascriptObjectToCrustObject } from "../utils/javascript";
+import { runtimeValueToString } from "../utils/runtime";
 
-import type { ObjectValue, RuntimeValue } from "./values";
+import type { RuntimeValue } from "./values";
 
 // Sets up the global scope
 function setupGlobalScope(environment: Environment) {

@@ -3,6 +3,7 @@
 import type { Statement } from "../front-end/ast";
 import type Environment from "./environment";
 
+// Represents the type of a value in the runtime
 export type ValueType =
   | "null"
   | "number"

@@ -1,8 +1,9 @@
 // parser.ts | Responsible for parsing the source code into an AST
 
 import { tokenizer, TokenType } from "./lexer";
-import { getNameOfToken, throwAnError } from "../utils";
+import { getNameOfToken, throwAnError } from "../utils/errors";
 
+import type { Token } from "./lexer";
 import type {
   Statement,
   Program,
@@ -19,7 +20,6 @@ import type {
   FunctionDeclaration,
   StringLiteral,
 } from "./ast";
-import type { Token } from "./lexer";
 
 /**
  * Front-end parser responsible for parsing the source code into an AST

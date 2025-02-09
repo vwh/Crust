@@ -12,14 +12,14 @@ export type NodeType =
   | "MemberExpression"
   | "CallExpression"
 
-  // Literal
+  // Literals
   | "Property"
   | "ObjectLiteral"
   | "StringLiteral"
   | "NumericLiteral"
   | "Identifier";
 
-// let x = 45; ( Is a Statement ) will return nothing
+// set x = 45; ( Is a Statement ) will return nothing
 // In our scripting language statements don't return anything
 // x = 5; ( Is an assignment expression ) will return 5
 
@@ -43,7 +43,7 @@ export interface Program extends Statement {
 
 /**
  * Represents a variable declaration.
- * - const and let are both variable declarations
+ * - keep and set are both variable declarations
  */
 
 export interface VariableDeclaration extends Statement {

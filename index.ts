@@ -3,7 +3,7 @@
 import Parser from "./front-end/parser";
 import Environment from "./runtime/environment";
 import { evaluate } from "./runtime/interpreter";
-import { log } from "./utils";
+import { log } from "./utils/errors";
 import fs from "node:fs";
 
 function repl() {

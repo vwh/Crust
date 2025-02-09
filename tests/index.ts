@@ -1,5 +1,6 @@
-import { expect, test } from "bun:test";
+// tests/index.ts | The entry point of our tests
 
+import { expect, test } from "bun:test";
 import Parser from "../front-end/parser";
 import { evaluate } from "../runtime/interpreter";
 import Environment from "../runtime/environment";

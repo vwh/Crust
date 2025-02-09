@@ -1,6 +1,6 @@
 // lexer.ts | Responsible for producing tokens from the source code
 
-import { throwAnError } from "../utils";
+import { throwAnError } from "../utils/errors";
 
 // Represents the type of a token our lexer produces
 export enum TokenType {

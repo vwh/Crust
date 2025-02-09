@@ -14,7 +14,7 @@ import {
   evaluateObjectLiteral,
 } from "./evaluate/expressions";
 import { makeNumberValue, makeStringValue } from "./values";
-import { log, throwAnError } from "../utils";
+import { log, throwAnError } from "../utils/errors";
 
 import type {
   Statement,
