@@ -2,7 +2,7 @@
 
 import { evaluate } from "../interpreter";
 import Environment from "../environment";
-import { makeNullValue, makeNumberValue } from "../values";
+import { makeNullValue, makeNumberValue, makeStringValue } from "../values";
 import { throwAnError } from "../../utils";
 
 import type {
@@ -19,6 +19,7 @@ import type {
   NumberValue,
   ObjectValue,
   RuntimeValue,
+  StringValue,
 } from "../values";
 
 // Evaluates the AssignmentExpression AST
@@ -57,8 +58,57 @@ export function evaluateBinaryExpression(
     );
   }
 
+  // if left hand side is a string and right hand side is a string
+  if (left.type === "string" && right.type === "string") {
+    return evaluateStringBinaryExpression(
+      left as StringValue,
+      right as StringValue,
+      BinaryExpression.operator
+    );
+  }
+
+  if (left.type === "string" || right.type === "number") {
+    return evaluateStringAndNumberBinaryExpression(
+      left as StringValue,
+      right as NumberValue,
+      BinaryExpression.operator
+    );
+  }
+
   // if both sides are not numbers or one of them
   return makeNullValue();
+}
+
+// Evaluates the String and Number Binary Expression
+export function evaluateStringAndNumberBinaryExpression(
+  left: StringValue,
+  right: NumberValue,
+  operator: string
+): RuntimeValue {
+  if (operator === "*") {
+    return makeStringValue(left.value.repeat(right.value));
+  }
+
+  return throwAnError(
+    "RuntimeError",
+    `at the operator [ ${operator} ]: \n Operator is not supported in strings`
+  );
+}
+
+// Evaluates the String Binary Expression
+export function evaluateStringBinaryExpression(
+  left: StringValue,
+  right: StringValue,
+  operator: string
+): RuntimeValue {
+  if (operator === "+") {
+    return makeStringValue(left.value + right.value);
+  }
+
+  return throwAnError(
+    "RuntimeError",
+    `at the operator [ ${operator} ]: \n Operator is not supported in strings`
+  );
 }
 
 // Evaluates the Numeric Binary Expression
@@ -83,7 +133,7 @@ export function evaluateNumericBinaryExpression(
   } else {
     return throwAnError(
       "RuntimeError",
-      `at the operator [ ${operator} ]: \n Operator is not supported`
+      `at the operator [ ${operator} ]: \n Operator is not supported in numbers`
     );
   }
 

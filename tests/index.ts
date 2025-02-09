@@ -43,9 +43,14 @@ test("Numeric Literal", () => {
   expect(result.value).toBe(100);
 });
 
-test("Binary Expression", () => {
+test("Numbers Binary Expression", () => {
   const result = execute("(100 / 2) + 100 * 2 + (2 + 4)") as NumberValue;
   expect(result.value).toBe(256);
+});
+
+test("Strings Binary Expression", () => {
+  const result = execute('"Hello " + "World" + ("!" * 3) ') as StringValue;
+  expect(result.value).toBe("Hello World!!!");
 });
 
 test("Math Operators", () => {
