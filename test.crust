@@ -1,13 +1,11 @@
 
+keep PI = Math.PI;
+keep x = Math.pow(2, 5);
 
+keep now = Date.now();
+keep someDate = Date.parse("2023-01-01");
 
-output("Numbers", 10 + ( 1 + 3) - 2)
-
-output("Strings", "Crust" + " " + "is" + " " + "awesome!")
-
-output("Strings Repeat", "Crust" * 3)
-
-set both = 10 + "Crust";
-
-output("Both", both)
-output(typeof(both))
+debug(now)
+output("PI", PI)
+output("x", x)
+output("now", now)

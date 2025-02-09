@@ -92,3 +92,8 @@ test("Math Global Object", () => {
   const result = execute("Math.pow(2, 5)") as NumberValue;
   expect(result.value).toBe(32);
 });
+
+test("Date Global Object", () => {
+  const result = execute('Date.parse("2023-01-01")') as NumberValue;
+  expect(result.value).toBeGreaterThan(0);
+});

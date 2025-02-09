@@ -7,65 +7,22 @@ import {
   makeNativeFunctionValue,
 } from "./values";
 import { throwAnError } from "../utils/errors";
-import { javascriptObjectToCrustObject } from "../utils/javascript";
+import { dateObject, jsonObject, mathObject } from "../utils/javascript";
 import { runtimeValueToString } from "../utils/runtime";
 
 import type { RuntimeValue } from "./values";
 
 // Sets up the global scope
 function setupGlobalScope(environment: Environment) {
-  const testMap = new Map();
-  testMap.set("x", makeNumberValue(100));
-  testMap.set("y", makeNumberValue(200));
   // Global variables
   environment.declareVariable("true", makeBooleanValue(true), true);
   environment.declareVariable("false", makeBooleanValue(false), true);
   environment.declareVariable("null", makeNullValue(), true);
 
   // Global bulit-in objects
-  environment.declareVariable(
-    "Math",
-    javascriptObjectToCrustObject({
-      PI: Math.PI,
-      E: Math.E,
-      abs: Math.abs,
-      acos: Math.acos,
-      acosh: Math.acosh,
-      asin: Math.asin,
-      asinh: Math.asinh,
-      atan: Math.atan,
-      atanh: Math.atanh,
-      atan2: Math.atan2,
-      cbrt: Math.cbrt,
-      ceil: Math.ceil,
-      clz32: Math.clz32,
-      cos: Math.cos,
-      cosh: Math.cosh,
-      exp: Math.exp,
-      expm1: Math.expm1,
-      floor: Math.floor,
-      fround: Math.fround,
-      hypot: Math.hypot,
-      imul: Math.imul,
-      log: Math.log,
-      log1p: Math.log1p,
-      log10: Math.log10,
-      log2: Math.log2,
-      max: Math.max,
-      min: Math.min,
-      pow: Math.pow,
-      random: Math.random,
-      round: Math.round,
-      sign: Math.sign,
-      sin: Math.sin,
-      sinh: Math.sinh,
-      sqrt: Math.sqrt,
-      tan: Math.tan,
-      tanh: Math.tanh,
-      trunc: Math.trunc,
-    }),
-    true
-  );
+  environment.declareVariable("Math", mathObject, true);
+  environment.declareVariable("Date", dateObject, true);
+  environment.declareVariable("JSON", jsonObject, true);
 
   // Global bulit-in functions
   environment.declareVariable(
