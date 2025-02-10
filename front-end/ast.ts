@@ -71,6 +71,7 @@ export interface Expression extends Statement {}
 
 /**
  * Represents an assignment expression.
+ * - Supported Operators: =
  */
 export interface AssignmentExpression extends Expression {
   kind: "AssignmentExpression";
@@ -80,9 +81,9 @@ export interface AssignmentExpression extends Expression {
 
 /**
  * Represents a member expression.
- * - Supported Operators: .
- * foo.bar()
- * foo["bar"]() // this is computed
+ * - Supported Operators:
+ *  foo.bar()
+ *  foo["bar"]() // this is computed
  */
 export interface MemberExpression extends Expression {
   kind: "MemberExpression";
@@ -102,7 +103,8 @@ export interface CallExpression extends Expression {
 
 /**
  * Represents a binary expression.
- * - Supported Operators: + | - | / | * | %
+ * - Handles all ( MultiplicativeExpression, AdditiveExpression, ComparisonExpression )
+ * - Supported Operators: + | - | / | * | % || ** || >= || <= || == || != || > || <
  */
 export interface BinaryExpression extends Expression {
   kind: "BinaryExpression";

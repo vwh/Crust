@@ -5,13 +5,13 @@ import { throwAnError } from "../utils/errors";
 // Represents the type of a token our lexer produces
 export enum TokenType {
   // Literal
-  Number,
-  Identifier,
-  String,
+  Number, // 123
+  Identifier, // foo
+  String, // "Hello World"
 
   // Keywords
-  Set,
-  Keep,
+  Set, // Mutable variable declaration
+  Keep, // Constant variable declaration
   Fn, // Function
 
   // Operators
