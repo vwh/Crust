@@ -22,7 +22,6 @@ export enum TokenType {
   ComparisonOperator, // ==, !=, <, >, <=, >=
   LogicalOperator, // &&, ||
   UnaryOperator, // +, -, !
-
   Equals, // =
   Comma, // ,
   Colon, // :
@@ -251,7 +250,7 @@ function readOperatorToken(
     }
   }
 
-  // For '+' , '-' and '!' decide if they are unary or binary.
+  // For '+' , '-' and '!' decide if they are unary or binary
   // (For example, if they appear at the start of an expression or immediately after an operator or an opening parenthesis,
   //  we treat them as unary.)
   if (initial === "+" || initial === "-" || initial === "!") {

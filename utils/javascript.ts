@@ -79,6 +79,20 @@ export function javascriptObjectToCrustObject(obj: Record<string, unknown>) {
   } as ObjectValue;
 }
 
+// Converts a javascript Date object to a crust Date object
+export const dateObject = javascriptObjectToCrustObject({
+  now: Date.now,
+  parse: Date.parse,
+  UTC: Date.UTC,
+});
+
+// Converts a javascript JSON object to a crust JSON object
+export const jsonObject = javascriptObjectToCrustObject({
+  parse: JSON.parse,
+  stringify: JSON.stringify,
+});
+
+// Converts a javascript Math object to a crust Math object
 export const mathObject = javascriptObjectToCrustObject({
   PI: Math.PI,
   E: Math.E,
@@ -117,15 +131,4 @@ export const mathObject = javascriptObjectToCrustObject({
   tan: Math.tan,
   tanh: Math.tanh,
   trunc: Math.trunc,
-});
-
-export const dateObject = javascriptObjectToCrustObject({
-  now: Date.now,
-  parse: Date.parse,
-  UTC: Date.UTC,
-});
-
-export const jsonObject = javascriptObjectToCrustObject({
-  parse: JSON.parse,
-  stringify: JSON.stringify,
 });

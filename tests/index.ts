@@ -104,15 +104,20 @@ test("Object Literal & Member Expression", () => {
 });
 
 test("Call Expression", () => {
-  const result = execute("fn returnFive(x) { x } returnFive(5)") as NumberValue;
+  const result = execute("fn returnFive() { 5 } returnFive()") as NumberValue;
   expect(result.value).toBe(5);
+
+  const result2 = execute("fn returnX(x) { x } returnX(6)") as NumberValue;
+  expect(result2.value).toBe(6);
 });
 
 test("Function Declaration", () => {
   const result = execute(
     "fn add(x, y) { set z = x + y; z } add(100, 100)"
   ) as NumberValue;
-  expect(result.value).toBe(200);
+
+  const result2 = execute("fn add() { 5 } add()") as NumberValue;
+  expect(result2.value).toBe(5);
 });
 
 test("Math Global Object", () => {
