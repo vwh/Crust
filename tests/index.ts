@@ -141,3 +141,14 @@ test("If Statement", () => {
   ) as NumberValue;
   expect(result3.value).toBe(300);
 });
+
+test("Logical Expression", () => {
+  const result = execute("true && false") as BooleanValue;
+  expect(result.value).toBe(false);
+
+  const result2 = execute("true || false") as BooleanValue;
+  expect(result2.value).toBe(true);
+
+  const result3 = execute("false || false") as BooleanValue;
+  expect(result3.value).toBe(false);
+});

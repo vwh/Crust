@@ -5,4 +5,4 @@ output(+x)
 
 output(! (22 >= 10) )
 
-output(!"Hello World")
+output(!"Hello World" && false)

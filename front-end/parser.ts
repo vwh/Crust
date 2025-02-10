@@ -26,12 +26,13 @@ import type {
 // --- Orders Of Expression Precedence ---
 // AssignmentExpression ( Lowest )
 // ObjectExpression
-// ComparisonExpression
-// AdditiveExpression
-// MultiplicitaveExpression
+// LogicalExpression (&&, ||)
+// ComparisonExpression (==, !=, <, >, <=, >=)
+// AdditiveExpression (+, -)
+// MultiplicitaveExpression (*, /, %, **)
 // CallExpression
 // MemberExpression
-// UnaryExpression
+// UnaryExpression (!, -, +)
 // PrimaryExpression ( Highest )
 
 /**
@@ -276,10 +277,29 @@ export default class Parser {
     return left;
   }
 
+  // Handle logical expressions parsing
+  private parseLogicalExpression(): Expression {
+    let left = this.parseComparisonExpression();
+
+    while (this.tokenAt().type === TokenType.LogicalOperator) {
+      const operator = this.eatToken();
+      const right = this.parseComparisonExpression();
+
+      left = {
+        kind: "BinaryExpression",
+        left,
+        right,
+        operator: operator.value,
+      } as BinaryExpression;
+    }
+
+    return left;
+  }
+
   // Handle object expressions parsing object expressions
   private parseObjectExpression(): Expression {
     if (this.tokenAt().type !== TokenType.OpenBrace) {
-      return this.parseComparisonExpression();
+      return this.parseLogicalExpression();
     }
 
     this.eatToken(); // Eat the open brace

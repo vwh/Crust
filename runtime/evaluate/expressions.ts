@@ -161,6 +161,10 @@ export function evaluateBooleanBinaryExpression(
     resultB = left.value === right.value;
   } else if (operator === "!=") {
     resultB = left.value !== right.value;
+  } else if (operator === "&&") {
+    resultB = left.value && right.value;
+  } else if (operator === "||") {
+    resultB = left.value || right.value;
   } else {
     return throwAnError(
       "RuntimeError",

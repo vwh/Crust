@@ -18,9 +18,11 @@ export enum TokenType {
   Elif, // else if
 
   // Operators and punctuation
-  BinaryOperator, // +, -, *, /, %, etc.
+  BinaryOperator, // +, -, *, /, %,
   ComparisonOperator, // ==, !=, <, >, <=, >=
-  UnaryOperator, // +, -, ! when used as unary operators
+  LogicalOperator, // &&, ||
+  UnaryOperator, // +, -, !
+
   Equals, // =
   Comma, // ,
   Colon, // :
@@ -237,6 +239,15 @@ function readOperatorToken(
     if (initial === "*" && next === "*") {
       op += src.shift();
       return token(TokenType.Power, op);
+    }
+    // Handle logical operators (and, or)
+    if (initial === "&" && next === "&") {
+      op += src.shift();
+      return token(TokenType.LogicalOperator, op);
+    }
+    if (initial === "|" && next === "|") {
+      op += src.shift();
+      return token(TokenType.LogicalOperator, op);
     }
   }
 
