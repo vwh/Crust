@@ -5,6 +5,7 @@ import {
   makeNullValue,
   makeBooleanValue,
   makeNativeFunctionValue,
+  makeStringValue,
 } from "./values";
 import { throwAnError } from "../utils/errors";
 import { dateObject, jsonObject, mathObject } from "../utils/javascript";
@@ -36,8 +37,8 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable(
     "typeof",
     makeNativeFunctionValue((args) => {
-      console.log(...args.map((arg) => arg.type));
-      return makeNullValue();
+      const value = args[0];
+      return makeStringValue(value.type);
     }),
     true
   );

@@ -1,3 +1,5 @@
 keep x = '123asd';
 
-parseInt(x)
+keep y = parseInt(x);
+
+output(typeof(y) == 'number')
