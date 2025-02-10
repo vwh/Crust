@@ -125,17 +125,18 @@ export function tokenizer(soruceCode: string): Token[] {
     } else {
       // Start parsing multicharacter tokens
 
-      // Handle string literals like "Hello World"
-      if (char === '"') {
+      // Handle string literals like "Hello World" or 'Hello World'
+      if (char === '"' || char === "'") {
+        const quoteType = char; // Remember which quote type we started with
         let str = "";
-        while (src.length > 0 && src[0] !== '"') {
+        while (src.length > 0 && src[0] !== quoteType) {
           str += src.shift() as string;
         }
         // Check if the string is terminated
         if (src.length === 0)
           throwAnError(
             "LexerError",
-            "Unterminated string literal: Missing closing quote"
+            `Unterminated string literal: Missing closing ${quoteType}`
           );
         src.shift(); // eat the closing quote
         tokens.push(token(TokenType.String, str));
