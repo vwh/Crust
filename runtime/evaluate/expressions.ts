@@ -19,6 +19,7 @@ import type {
   MemberExpression,
 } from "../../front-end/ast";
 import type {
+  BooleanValue,
   FunctionValue,
   NativeFunctionValue,
   NumberValue,
@@ -72,6 +73,15 @@ export function evaluateBinaryExpression(
     );
   }
 
+  // if left hand side is boolean and right hand side is boolean
+  if (left.type === "boolean" && right.type === "boolean") {
+    return evaluateBooleanBinaryExpression(
+      left as BooleanValue,
+      right as BooleanValue,
+      BinaryExpression.operator
+    );
+  }
+
   if (left.type === "string" || right.type === "number") {
     return evaluateStringAndNumberBinaryExpression(
       left as StringValue,
@@ -82,6 +92,27 @@ export function evaluateBinaryExpression(
 
   // if both sides are not numbers or one of them
   return makeNullValue();
+}
+
+export function evaluateBooleanBinaryExpression(
+  left: BooleanValue,
+  right: BooleanValue,
+  operator: string
+): RuntimeValue {
+  let resultB = false;
+
+  if (operator === "==") {
+    resultB = left.value === right.value;
+  } else if (operator === "!=") {
+    resultB = left.value !== right.value;
+  } else {
+    return throwAnError(
+      "RuntimeError",
+      `at the operator [ ${operator} ]: \n Operator is not supported in booleans`
+    );
+  }
+
+  return makeBooleanValue(resultB);
 }
 
 // Evaluates the String and Number Binary Expression
