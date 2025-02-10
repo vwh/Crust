@@ -5,6 +5,7 @@ export type NodeType =
   | "Program"
   | "VariableDeclaration"
   | "FunctionDeclaration"
+  | "IfStatement"
 
   // Expressions
   | "AssignmentExpression"
@@ -38,7 +39,7 @@ export interface Statement {
  */
 export interface Program extends Statement {
   kind: "Program";
-  body: Statement[];
+  body: Statement[]; // The statements in the program
 }
 
 /**
@@ -48,8 +49,8 @@ export interface Program extends Statement {
 
 export interface VariableDeclaration extends Statement {
   kind: "VariableDeclaration";
-  constant: boolean;
-  identifier: string;
+  constant: boolean; // Whether the variable is constant or not
+  identifier: string; // The name of the variable
   value?: Expression; // it is optional because it may be undefined
 }
 
@@ -58,9 +59,20 @@ export interface VariableDeclaration extends Statement {
  */
 export interface FunctionDeclaration extends Statement {
   kind: "FunctionDeclaration";
-  name: string;
-  parameters: string[];
-  body: Statement[];
+  name: string; // The name of the function
+  parameters: string[]; // The parameters of the function
+  body: Statement[]; // The code block that runs when the function is called
+}
+
+/**
+ * Represents an if statement.
+ * - Supported keywords: if, else, elif
+ */
+export interface IfStatement extends Statement {
+  kind: "IfStatement";
+  condition: Expression; // The condition to check (e.g., x > 0)
+  consequent: Statement[]; // The code block that runs if condition is true
+  alternate?: Statement[]; // The else block (optional)
 }
 
 /**
@@ -75,8 +87,8 @@ export interface Expression extends Statement {}
  */
 export interface AssignmentExpression extends Expression {
   kind: "AssignmentExpression";
-  assignment: Expression;
-  value: Expression;
+  assignment: Expression; // The value to assign
+  value: Expression; // The value to assign to
 }
 
 /**
@@ -87,9 +99,9 @@ export interface AssignmentExpression extends Expression {
  */
 export interface MemberExpression extends Expression {
   kind: "MemberExpression";
-  object: Expression;
-  property: Expression;
-  computed: boolean;
+  object: Expression; // The object to access
+  property: Expression; // The property to access
+  computed: boolean; // Whether the property is computed or not like foo["bar"]
 }
 
 /**
@@ -97,8 +109,8 @@ export interface MemberExpression extends Expression {
  */
 export interface CallExpression extends Expression {
   kind: "CallExpression";
-  caller: Expression;
-  arguments: Expression[];
+  caller: Expression; // The function to call
+  arguments: Expression[]; // The arguments to pass to the function
 }
 
 /**
@@ -108,9 +120,9 @@ export interface CallExpression extends Expression {
  */
 export interface BinaryExpression extends Expression {
   kind: "BinaryExpression";
-  left: Expression;
-  right: Expression;
-  operator: string;
+  left: Expression; // The left side of the expression
+  right: Expression; // The right side of the expression
+  operator: string; // The operator to use
 }
 
 /**
@@ -118,7 +130,7 @@ export interface BinaryExpression extends Expression {
  */
 export interface Identifier extends Expression {
   kind: "Identifier";
-  symbol: string;
+  symbol: string; // The name of the variable
 }
 
 /**
@@ -126,7 +138,7 @@ export interface Identifier extends Expression {
  */
 export interface NumericLiteral extends Expression {
   kind: "NumericLiteral";
-  value: number;
+  value: number; // The value of the literal
 }
 
 /**
@@ -134,7 +146,7 @@ export interface NumericLiteral extends Expression {
  */
 export interface StringLiteral extends Expression {
   kind: "StringLiteral";
-  value: string;
+  value: string; // The value of the literal
 }
 
 /**
@@ -142,8 +154,8 @@ export interface StringLiteral extends Expression {
  */
 export interface Property extends Expression {
   kind: "Property";
-  key: string;
-  value?: Expression;
+  key: string; // The key of the property
+  value?: Expression; // it is optional because it may be undefined
 }
 
 /**
@@ -151,5 +163,5 @@ export interface Property extends Expression {
  */
 export interface ObjectLiteral extends Expression {
   kind: "ObjectLiteral";
-  properties: Property[];
+  properties: Property[]; // The properties of the object
 }

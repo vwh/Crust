@@ -107,3 +107,20 @@ test("Date Global Object", () => {
   const result = execute('Date.parse("2023-01-01")') as NumberValue;
   expect(result.value).toBeGreaterThan(0);
 });
+
+test("If Statement", () => {
+  const result = execute(
+    "set x = 0; if true { x = x + 100 } elif false { x = x + 200 } else { x = x + 300 } x"
+  ) as NumberValue;
+  expect(result.value).toBe(100);
+
+  const result2 = execute(
+    "set x = 0; if false { x = x + 100 } elif true { x = x + 200 } else { x = x + 300 } x"
+  ) as NumberValue;
+  expect(result2.value).toBe(200);
+
+  const result3 = execute(
+    "set x = 0; if false { x = x + 100 } elif false { x = x + 200 } else { x = x + 300 } x"
+  ) as NumberValue;
+  expect(result3.value).toBe(300);
+});

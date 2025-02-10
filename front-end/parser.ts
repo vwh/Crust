@@ -19,6 +19,7 @@ import type {
   MemberExpression,
   FunctionDeclaration,
   StringLiteral,
+  IfStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -91,6 +92,9 @@ export default class Parser {
         return this.parseVariableDeclaration();
       case TokenType.Fn:
         return this.parseFunctionDeclaration();
+      case TokenType.If:
+      case TokenType.Elif:
+        return this.parseIfStatement();
       default:
         return this.parseExpression();
     }
@@ -194,6 +198,64 @@ export default class Parser {
     } as FunctionDeclaration;
 
     return fn;
+  }
+
+  // Handle if statements parsing
+  private parseIfStatement(): Statement {
+    this.eatToken(); // eat the if keyword
+
+    const condition = this.parseExpression();
+
+    this.expectToken(
+      TokenType.OpenBrace,
+      "Expected opening brace after if condition"
+    );
+
+    // The code block that runs if condition is true
+    const consequent: Statement[] = [];
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      consequent.push(this.parseStatement());
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after if consequent"
+    );
+
+    const alternate: Statement[] = [];
+    if (
+      this.tokenAt().type === TokenType.Else ||
+      this.tokenAt().type === TokenType.Elif
+    ) {
+      const isElif = this.tokenAt().type === TokenType.Elif;
+
+      if (isElif) {
+        alternate.push(this.parseStatement());
+      } else {
+        this.eatToken(); // eat the else token
+
+        this.expectToken(
+          TokenType.OpenBrace,
+          "Expected opening brace after else"
+        );
+
+        while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+          alternate.push(this.parseStatement());
+        }
+
+        this.expectToken(
+          TokenType.CloseBrace,
+          "Expected closing brace after else block"
+        );
+      }
+    }
+
+    return {
+      kind: "IfStatement",
+      condition,
+      consequent,
+      alternate,
+    } as IfStatement;
   }
 
   // Handle expressions parsing

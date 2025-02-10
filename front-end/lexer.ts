@@ -13,6 +13,9 @@ export enum TokenType {
   Set, // Mutable variable declaration
   Keep, // Constant variable declaration
   Fn, // Function
+  If,
+  Else,
+  Elif, // else if
 
   // Operators
   BinaryOperator, // +, -, *, /, %
@@ -44,6 +47,9 @@ const KEYWORDS: Record<string, TokenType> = {
   set: TokenType.Set,
   keep: TokenType.Keep,
   fn: TokenType.Fn,
+  if: TokenType.If,
+  else: TokenType.Else,
+  elif: TokenType.Elif,
 };
 
 // Creates a new token from a given type and value

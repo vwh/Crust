@@ -7,9 +7,10 @@ import type {
   FunctionDeclaration,
   Program,
   VariableDeclaration,
+  IfStatement,
 } from "../../front-end/ast";
 import type Environment from "../environment";
-import type { FunctionValue, RuntimeValue } from "../values";
+import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
 
 // Evaluates the Program AST
 export function evaluateProgram(
@@ -59,4 +60,39 @@ export function evaluateFunctionDeclaration(
   } as FunctionValue;
 
   return environment.declareVariable(functionDeclaration.name, fn, true);
+}
+
+// Evaluates the If Statement AST
+export function evaluateIfStatement(
+  expressionStatement: IfStatement,
+  environment: Environment
+): RuntimeValue {
+  const condition = evaluate(
+    expressionStatement.condition,
+    environment
+  ) as BooleanValue;
+
+  // If condition is true, evaluate consequent and return
+  if (condition.type === "boolean" && condition.value) {
+    for (const statement of expressionStatement.consequent)
+      evaluate(statement, environment);
+    return makeNullValue();
+  }
+
+  // If condition is false and there's an alternate, evaluate it
+  if (
+    expressionStatement.alternate &&
+    expressionStatement.alternate.length > 0
+  ) {
+    // Handle elif (which is a statement in alternate)
+    if (expressionStatement.alternate[0].kind === "IfStatement") {
+      return evaluate(expressionStatement.alternate[0], environment);
+    }
+    // Handle else block
+    for (const statement of expressionStatement.alternate) {
+      evaluate(statement, environment);
+    }
+  }
+
+  return makeNullValue();
 }

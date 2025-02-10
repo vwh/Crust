@@ -4,6 +4,7 @@ import {
   evaluateFunctionDeclaration,
   evaluateProgram,
   evaluateVariableDeclaration,
+  evaluateIfStatement,
 } from "./evaluate/statments";
 import {
   evaluateAssignmentExpression,
@@ -29,6 +30,7 @@ import type {
   MemberExpression,
   FunctionDeclaration,
   StringLiteral,
+  IfStatement,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -52,6 +54,8 @@ export function evaluate(
         ast as FunctionDeclaration,
         environment
       );
+    case "IfStatement":
+      return evaluateIfStatement(ast as IfStatement, environment);
 
     // Expressions
     case "AssignmentExpression":
