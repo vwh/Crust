@@ -1,8 +1,3 @@
-keep t = JSON.stringify(
-  '"{"name":"John","age":30,"cars":["Audi","BMW","Mercedes"]}"'
-);
+keep x = '123asd';
 
-keep o = Math.random();
-
-debug(t)
-debug(o)
+parseInt(x)

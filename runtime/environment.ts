@@ -10,7 +10,7 @@ import { throwAnError } from "../utils/errors";
 import { dateObject, jsonObject, mathObject } from "../utils/javascript";
 import { runtimeValueToString } from "../utils/runtime";
 
-import type { RuntimeValue } from "./values";
+import type { NumberValue, RuntimeValue, StringValue } from "./values";
 
 // Sets up the global scope
 function setupGlobalScope(environment: Environment) {
@@ -46,6 +46,20 @@ function setupGlobalScope(environment: Environment) {
     makeNativeFunctionValue((args) => {
       console.log(...args.map((arg) => runtimeValueToString(arg)));
       return makeNullValue();
+    }),
+    true
+  );
+  environment.declareVariable(
+    "parseInt",
+    makeNativeFunctionValue((args) => {
+      if (args.length === 0) return makeNumberValue(0);
+      if (args[0].type !== "string")
+        return throwAnError("TypeError", "parseInt: expected a string");
+
+      const string = args[0] as StringValue;
+      const radix =
+        args[1]?.type === "number" ? (args[1] as NumberValue).value : 10;
+      return makeNumberValue(Number.parseInt(string.value, radix));
     }),
     true
   );

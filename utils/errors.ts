@@ -59,4 +59,4 @@ export function throwAnError(type: ErrorType, message: string): never {
   process.exit(1);
 }
 
-type ErrorType = "ParseError" | "LexerError" | "RuntimeError";
+type ErrorType = "ParseError" | "LexerError" | "RuntimeError" | "TypeError";
