@@ -1,27 +1,8 @@
-set x = 0;
+keep t = JSON.stringify(
+  '"{"name":"John","age":30,"cars":["Audi","BMW","Mercedes"]}"'
+);
 
-set con1 = 10 > 20;
-set con2 = 30 == 20;
+keep o = Math.random();
 
-if con1 {
-  x = x + 5
-  output("hello")
-} elif con2 {
-  x = x + 10
-  output("world")
-} elif false {
-  x = x + 15
-  output("uwu")
-} else {
-  x = x + 20
-  output("meow")
-}
-
-output(x)
-
-
-set y = 0; 
-if false { y = y + 100 } 
-elif true { y = y + 200 } 
-else { y = y + 300 } 
-output(y)
+debug(t)
+debug(o)

@@ -24,19 +24,9 @@ export function javascriptValueToCrustValue(value: unknown): RuntimeValue {
   if (typeof value === "number") return makeNumberValue(value);
   if (typeof value === "string") return makeStringValue(value);
   if (typeof value === "function")
-    return makeNativeFunctionValue((args) => {
-      // convert javascript function arguments to runtime values
-      const jsArgs = args.map((arg) => {
-        if (arg.type === "number") return (arg as NumberValue).value;
-        if (arg.type === "string") return (arg as StringValue).value;
-        if (arg.type === "boolean") return (arg as BooleanValue).value;
-        if (arg.type === "object") return (arg as ObjectValue).properties;
-        return null;
-      });
-
-      const result = value(...jsArgs);
-      return makeNumberValue(result);
-    });
+    return javascriptFunctionToCrustFunction(
+      value as (...args: unknown[]) => unknown
+    );
 
   if (Array.isArray(value)) {
     const array = value.map((item) => javascriptValueToCrustValue(item));
@@ -57,12 +47,32 @@ export function javascriptValueToCrustValue(value: unknown): RuntimeValue {
   );
 }
 
+// Converts a javascript function to a crust function
+export function javascriptFunctionToCrustFunction(
+  value: (...args: unknown[]) => unknown
+) {
+  return makeNativeFunctionValue((args) => {
+    // convert javascript function arguments to runtime values
+    const jsArgs = args.map((arg) => {
+      if (arg.type === "number") return (arg as NumberValue).value;
+      if (arg.type === "string") return (arg as StringValue).value;
+      if (arg.type === "boolean") return (arg as BooleanValue).value;
+      if (arg.type === "object") return (arg as ObjectValue).properties;
+      return null;
+    });
+
+    const result = value(...jsArgs);
+    return javascriptValueToCrustValue(result);
+  });
+}
+
 // Converts a javascript object to a crust object
 export function javascriptObjectToCrustObject(obj: Record<string, unknown>) {
   const crustObj = new Map();
   for (const [key, value] of Object.entries(obj)) {
     crustObj.set(key, javascriptValueToCrustValue(value));
   }
+
   return {
     type: "object",
     properties: crustObj,
