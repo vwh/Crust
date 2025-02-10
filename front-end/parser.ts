@@ -101,8 +101,8 @@ export default class Parser {
   }
 
   // Handle variable declarations parsing
-  // let identifier;
-  // ( const | let ) identifier = expression;
+  // set identifier;
+  // ( keep | set ) identifier = expression;
   private parseVariableDeclaration(): Statement {
     const isConstant = this.eatToken().type === TokenType.Keep;
     const identifier = this.expectToken(
@@ -110,14 +110,14 @@ export default class Parser {
       "Expected identifier name for variable declaration"
     ).value;
 
-    // Parsing the let identifier;
-    if (this.tokenAt().type === TokenType.Semicolon) {
+    // Parsing the set identifier;
+    if (this.tokenAt().type !== TokenType.Equals) {
       this.eatToken(); // Eat the semicolon
       if (isConstant)
         throwAnError(
           "ParseError",
           `at the token [ ${identifier} ]: \n ${getNameOfToken(
-            TokenType.Semicolon
+            TokenType.Equals
           )} Must assign a value to a constant expression`
         );
 
@@ -134,19 +134,13 @@ export default class Parser {
       "Expected an equals sign to assign a value to the variable"
     );
 
-    // Parsing the let identifier = expression;
+    // Parsing the set identifier = expression;
     const declaration: VariableDeclaration = {
       kind: "VariableDeclaration",
       constant: isConstant,
       identifier,
       value: this.parseExpression(),
     };
-
-    // Check and eat the semicolon
-    this.expectToken(
-      TokenType.Semicolon,
-      "Expected a semicolon to end the variable declaration"
-    );
 
     return declaration;
   }

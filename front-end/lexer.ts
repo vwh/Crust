@@ -119,7 +119,8 @@ export function tokenizer(soruceCode: string): Token[] {
     } else if (char === ":") {
       tokens.push(token(TokenType.Colon, char));
     } else if (char === ";") {
-      tokens.push(token(TokenType.Semicolon, char));
+      // Skip semicolons for now ( we don't)
+      //tokens.push(token(TokenType.Semicolon, char));
     } else if (char === ".") {
       tokens.push(token(TokenType.Dot, char));
     } else {
@@ -153,7 +154,7 @@ export function tokenizer(soruceCode: string): Token[] {
 
       // Handle identifiers and keywords
       else if (isAlphabet(char)) {
-        let id = char; // haha, let, var, const, class, function, etc.
+        let id = char; // haha, set, keep, class, function, etc.
         while (isIdentifierChar(src[0]) && src.length > 0) {
           id += src.shift() as string;
         }

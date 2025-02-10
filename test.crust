@@ -1,5 +1,9 @@
-keep x = '123asd';
+set y = 69 set z = y + y ** 2
 
-keep y = parseInt(x);
+fn add(x, y) {
+  x + y;
+};
 
-output(typeof(y) == 'number')
+keep x = y + y
+
+debug(z);
