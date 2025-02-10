@@ -4,5 +4,6 @@ output("Hello World 123" >= "Hello World")
 
 keep x = (100 > 50) == (20 < 30);
 
-output(x)
-output(typeof(x))
+keep x2 = 2;
+
+output(x2)

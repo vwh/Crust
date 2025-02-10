@@ -147,7 +147,7 @@ export function tokenizer(soruceCode: string): Token[] {
       // Handle identifiers and keywords
       else if (isAlphabet(char)) {
         let id = char; // haha, let, var, const, class, function, etc.
-        while (isAlphabet(src[0]) && src.length > 0) {
+        while (isIdentifierChar(src[0]) && src.length > 0) {
           id += src.shift() as string;
         }
 
@@ -178,6 +178,11 @@ export function tokenizer(soruceCode: string): Token[] {
 // Checks if the given character is a letter
 function isAlphabet(char: string): boolean {
   return /^[a-zA-Z]+$/.test(char);
+}
+
+// Checks if the character can be part of an identifier (after first character)
+function isIdentifierChar(char: string): boolean {
+  return /^[a-zA-Z0-9_]$/.test(char);
 }
 
 // Checks if the given character is a digit
