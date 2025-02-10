@@ -90,6 +90,25 @@ export default class Parser {
     return previous;
   }
 
+  private parseBlock(): Statement[] {
+    this.expectToken(
+      TokenType.OpenBrace,
+      "Expected opening brace after function declaration"
+    );
+
+    const body: Statement[] = [];
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      body.push(this.parseStatement());
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after function declaration"
+    );
+
+    return body;
+  }
+
   // Handle statements parsing
   private parseStatement(): Statement {
     switch (this.tokenAt().type) {
@@ -191,20 +210,7 @@ export default class Parser {
       parameters.push((arg as Identifier).symbol);
     }
 
-    this.expectToken(
-      TokenType.OpenBrace,
-      "Expected opening brace after function declaration"
-    );
-
-    const body: Statement[] = [];
-    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
-      body.push(this.parseStatement());
-    }
-
-    this.expectToken(
-      TokenType.CloseBrace,
-      "Expected closing brace after function declaration"
-    );
+    const body = this.parseBlock();
 
     const fn = {
       kind: "FunctionDeclaration",
@@ -222,21 +228,7 @@ export default class Parser {
 
     const condition = this.parseExpression();
 
-    this.expectToken(
-      TokenType.OpenBrace,
-      "Expected opening brace after if condition"
-    );
-
-    // The code block that runs if condition is true
-    const consequent: Statement[] = [];
-    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
-      consequent.push(this.parseStatement());
-    }
-
-    this.expectToken(
-      TokenType.CloseBrace,
-      "Expected closing brace after if consequent"
-    );
+    const consequent: Statement[] = this.parseBlock();
 
     const alternate: Statement[] = [];
     if (
@@ -249,20 +241,7 @@ export default class Parser {
         alternate.push(this.parseStatement());
       } else {
         this.eatToken(); // eat the else token
-
-        this.expectToken(
-          TokenType.OpenBrace,
-          "Expected opening brace after else"
-        );
-
-        while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
-          alternate.push(this.parseStatement());
-        }
-
-        this.expectToken(
-          TokenType.CloseBrace,
-          "Expected closing brace after else block"
-        );
+        alternate.push(...this.parseBlock()); // The code block that runs if condition is true
       }
     }
 
@@ -279,21 +258,7 @@ export default class Parser {
     this.eatToken(); // eat the while keyword
 
     const condition = this.parseExpression();
-
-    this.expectToken(
-      TokenType.OpenBrace,
-      "Expected opening brace after while condition"
-    );
-
-    const body: Statement[] = [];
-    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
-      body.push(this.parseStatement());
-    }
-
-    this.expectToken(
-      TokenType.CloseBrace,
-      "Expected closing brace after while body"
-    );
+    const body: Statement[] = this.parseBlock();
 
     return {
       kind: "WhileStatement",

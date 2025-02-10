@@ -1,3 +1,17 @@
+keep xoa = {
+  x: 100,
+  n: {
+    y: 200,
+  }
+}
+
+output(xoa.n.y)
+
+fn add(x, y) {
+  set z = x + y
+  z
+};
+
 set x = 0
 set y = 5;
 
@@ -14,4 +28,4 @@ while x <= 5 {
   output(x)
 }
 
-output("The End", x)
+output("The End", x, add(x, y))
