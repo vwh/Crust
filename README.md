@@ -26,22 +26,22 @@ Crust Simple toy scripting language, JavaScript-like programming language.
 ### Code Examples
 
 ```crust
-// Variable declarations
+# Variables
 set x = 10
 keep PI = Math.PI
 
-// Functions
+# Functions
 fn add(x, y) {
   return x + y
 }
 
-// Objects
+# Objects
 set person = {
   name: "John",
   age: 30
 }
 
-// Control flow
+# Control flow
 if x > 5 {
   output("x is greater than 5")
 } elif x < 5 {
@@ -50,7 +50,7 @@ if x > 5 {
   output("x is equal to 5")
 }
 
-// While loops
+# While loops
 while x > 0 {
   x = x - 1
   if x == 5 {
@@ -62,7 +62,7 @@ while x > 0 {
 
 ## TODO List
 
-- [ ] Comments
+- [x] Comments
 - [ ] Float numbers
 - [ ] Arrays with proper array methods
 - [ ] String methods and operations

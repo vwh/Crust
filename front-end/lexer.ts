@@ -76,6 +76,15 @@ export function tokenizer(sourceCode: string): Token[] {
     // Skip whitespace characters
     if (isSkippable(char)) continue;
 
+    // Skip comments
+    if (char === "#") {
+      src.shift();
+      while (src[0] !== "\n" && src.length > 0) {
+        src.shift();
+      }
+      continue;
+    }
+
     // Handle single-character tokens (parentheses, braces, punctuation, etc.)
     if (isSingleCharToken(char)) {
       tokens.push(getSingleCharToken(char));
