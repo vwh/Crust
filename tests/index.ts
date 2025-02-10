@@ -49,6 +49,23 @@ test("Math Binary Expression", () => {
   expect(result.value).toBe(256);
 });
 
+test("Unary Expression", () => {
+  const result = execute("-100") as NumberValue;
+  expect(result.value).toBe(-100);
+
+  const result2 = execute("!true") as BooleanValue;
+  expect(result2.value).toBe(false);
+
+  const result3 = execute("!''") as BooleanValue;
+  expect(result3.value).toBe(false);
+
+  const result4 = execute("!0") as BooleanValue;
+  expect(result4.value).toBe(false);
+
+  const result5 = execute("-52") as NumberValue;
+  expect(result5.value).toBe(-52);
+});
+
 test("Strings Concatenation", () => {
   const result = execute('"Hello " + "World" + ("!" * 3) ') as StringValue;
   expect(result.value).toBe("Hello World!!!");

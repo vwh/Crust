@@ -13,6 +13,7 @@ import {
   evaluateMemberExpression,
   evaluateNativeFunction,
   evaluateObjectLiteral,
+  evaluateUnaryExpression,
 } from "./evaluate/expressions";
 import { makeNumberValue, makeStringValue } from "./values";
 import { log, throwAnError } from "../utils/errors";
@@ -31,6 +32,7 @@ import type {
   FunctionDeclaration,
   StringLiteral,
   IfStatement,
+  UnaryExpression,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -71,6 +73,8 @@ export function evaluate(
       return makeStringValue((ast as StringLiteral).value);
     case "BinaryExpression":
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
+    case "UnaryExpression":
+      return evaluateUnaryExpression(ast as UnaryExpression, environment);
     case "Identifier":
       return evaluateIdentifier(ast as Identifier, environment);
     case "MemberExpression":

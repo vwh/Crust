@@ -17,6 +17,7 @@ import type {
   ObjectLiteral,
   CallExpression,
   MemberExpression,
+  UnaryExpression,
 } from "../../front-end/ast";
 import type {
   BooleanValue,
@@ -47,6 +48,61 @@ export function evaluateAssignmentExpression(
 
   return value;
 }
+
+// Evaluates the UnaryExpression AST
+export function evaluateUnaryExpression(
+  node: UnaryExpression,
+  environment: Environment
+): RuntimeValue {
+  const value = evaluate(node.argument, environment);
+
+  if (value.type === "boolean") {
+    if (node.operator === "!") {
+      return makeBooleanValue(!(value as BooleanValue).value);
+    }
+
+    return throwAnError(
+      "RuntimeError",
+      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for booleans`
+    );
+  }
+
+  if (value.type === "string") {
+    if (node.operator === "!") {
+      return makeBooleanValue(!((value as StringValue).value.length === 0));
+    }
+
+    return throwAnError(
+      "RuntimeError",
+      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for strings`
+    );
+  }
+
+  if (value.type === "number") {
+    if (node.operator === "!") {
+      return makeBooleanValue(!((value as NumberValue).value === 0));
+    }
+
+    if (node.operator === "-") {
+      return makeNumberValue(-(value as NumberValue).value);
+    }
+
+    if (node.operator === "+") {
+      return makeNumberValue(Math.abs((value as NumberValue).value));
+    }
+
+    return throwAnError(
+      "RuntimeError",
+      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for numbers`
+    );
+  }
+
+  return throwAnError(
+    "RuntimeError",
+    `at the unary expression [ ${node.operator} ]: \n Unary expression is not supported`
+  );
+}
+
 // Evaluates the BinaryExpression AST
 export function evaluateBinaryExpression(
   BinaryExpression: BinaryExpression,

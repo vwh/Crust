@@ -1,9 +1,8 @@
-set y = 69 set z = y + y ** 2
+set x = -62
 
-fn add(x, y) {
-  x + y;
-};
+output(x)
+output(+x)
 
-keep x = y + y
+output(! (22 >= 10) )
 
-debug(z);
+output(!"Hello World")

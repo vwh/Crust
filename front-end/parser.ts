@@ -20,6 +20,7 @@ import type {
   FunctionDeclaration,
   StringLiteral,
   IfStatement,
+  UnaryExpression,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -30,6 +31,7 @@ import type {
 // MultiplicitaveExpression
 // CallExpression
 // MemberExpression
+// UnaryExpression
 // PrimaryExpression ( Highest )
 
 /**
@@ -463,7 +465,7 @@ export default class Parser {
   // Handles parsing member expressions
   // Like foo.bar.baz
   private parseMemberExpression(): Expression {
-    let object = this.parsePrimaryExpression();
+    let object = this.parseUnaryExpression();
 
     while (
       this.tokenAt().type === TokenType.Dot ||
@@ -476,7 +478,7 @@ export default class Parser {
       // Non-computed property
       if (operator.type === TokenType.Dot) {
         // Getting the identifier after the dot
-        property = this.parsePrimaryExpression();
+        property = this.parseUnaryExpression();
 
         if (property.kind !== "Identifier")
           throwAnError(
@@ -504,6 +506,22 @@ export default class Parser {
     }
 
     return object;
+  }
+
+  // Handle unary expressions parsing
+  private parseUnaryExpression(): Expression {
+    if (this.tokenAt().type !== TokenType.UnaryOperator) {
+      return this.parsePrimaryExpression();
+    }
+
+    const operator = this.eatToken(); // Eat the operator
+    const argument = this.parsePrimaryExpression();
+
+    return {
+      kind: "UnaryExpression",
+      operator: operator.value,
+      argument,
+    } as UnaryExpression;
   }
 
   // Handle primary expressions parsing ( Identifiers, Numbers, Parentheses )
