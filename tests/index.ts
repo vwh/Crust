@@ -157,3 +157,10 @@ test("Logical Expression", () => {
   const result3 = execute("false || false") as BooleanValue;
   expect(result3.value).toBe(false);
 });
+
+test("While Loop Statement & Break & Continue", () => {
+  const result = execute(
+    "set x = 0 set y = null while x <= 5 { x = x + 1 if x == 2 { y = 5 continue } elif x == 4 { break } } x - y"
+  ) as NumberValue;
+  expect(result.value).toBe(-1);
+});

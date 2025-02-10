@@ -1,8 +1,17 @@
-set x = -62
+set x = 0
+set y = 5;
 
-output(x)
-output(+x)
+while x <= 5 {
+  x = x + 1
 
-output(! (22 >= 10) )
+  if x == 2 {
+    y = 5
+    continue
+  } elif x == 4 {
+    break
+  }
 
-output(!"Hello World" && false)
+  output(x)
+}
+
+output("The End", x)

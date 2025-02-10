@@ -16,6 +16,9 @@ export enum TokenType {
   If,
   Else,
   Elif, // else if
+  While,
+  Break,
+  Continue,
 
   // Operators and punctuation
   BinaryOperator, // +, -, *, /, %,
@@ -46,6 +49,9 @@ const KEYWORDS: Record<string, TokenType> = {
   if: TokenType.If,
   else: TokenType.Else,
   elif: TokenType.Elif,
+  while: TokenType.While,
+  break: TokenType.Break,
+  continue: TokenType.Continue,
 };
 
 // Represents a single token from the source code

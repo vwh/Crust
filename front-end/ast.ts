@@ -6,6 +6,9 @@ export type NodeType =
   | "VariableDeclaration"
   | "FunctionDeclaration"
   | "IfStatement"
+  | "WhileStatement"
+  | "BreakStatement"
+  | "ContinueStatement"
 
   // Expressions
   | "AssignmentExpression"
@@ -74,6 +77,29 @@ export interface IfStatement extends Statement {
   condition: Expression; // The condition to check (e.g., x > 0)
   consequent: Statement[]; // The code block that runs if condition is true
   alternate?: Statement[]; // The else block (optional)
+}
+
+/**
+ * Represents a while loop statement.
+ */
+export interface WhileStatement extends Statement {
+  kind: "WhileStatement";
+  condition: Expression; // The condition to check (e.g., x > 0)
+  body: Statement[]; // The code block that runs if condition is true
+}
+
+/**
+ * Represents a break statement.
+ */
+export interface BreakStatement extends Statement {
+  kind: "BreakStatement";
+}
+
+/**
+ * Represents a continue statement.
+ */
+export interface ContinueStatement extends Statement {
+  kind: "ContinueStatement";
 }
 
 /**

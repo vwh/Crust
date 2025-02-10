@@ -5,6 +5,7 @@ import {
   evaluateProgram,
   evaluateVariableDeclaration,
   evaluateIfStatement,
+  evaluateWhileStatement,
 } from "./evaluate/statments";
 import {
   evaluateAssignmentExpression,
@@ -33,6 +34,7 @@ import type {
   StringLiteral,
   IfStatement,
   UnaryExpression,
+  WhileStatement,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -58,6 +60,12 @@ export function evaluate(
       );
     case "IfStatement":
       return evaluateIfStatement(ast as IfStatement, environment);
+    case "WhileStatement":
+      return evaluateWhileStatement(ast as WhileStatement, environment);
+    case "BreakStatement":
+      throw Error("break");
+    case "ContinueStatement":
+      throw Error("continue");
 
     // Expressions
     case "AssignmentExpression":

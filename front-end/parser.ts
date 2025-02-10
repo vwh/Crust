@@ -21,6 +21,9 @@ import type {
   StringLiteral,
   IfStatement,
   UnaryExpression,
+  WhileStatement,
+  BreakStatement,
+  ContinueStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -98,6 +101,22 @@ export default class Parser {
       case TokenType.If:
       case TokenType.Elif:
         return this.parseIfStatement();
+      case TokenType.While:
+        return this.parseWhileStatement();
+      case TokenType.Break: {
+        this.eatToken(); // Eat the break keyword
+        return {
+          kind: "BreakStatement",
+        } as BreakStatement;
+      }
+      case TokenType.Continue: {
+        this.eatToken(); // Eat the continue keyword
+        return {
+          kind: "ContinueStatement",
+        } as ContinueStatement;
+      }
+
+      // Handle expressions
       default:
         return this.parseExpression();
     }
@@ -253,6 +272,34 @@ export default class Parser {
       consequent,
       alternate,
     } as IfStatement;
+  }
+
+  // Handle while loop statements parsing
+  private parseWhileStatement(): Statement {
+    this.eatToken(); // eat the while keyword
+
+    const condition = this.parseExpression();
+
+    this.expectToken(
+      TokenType.OpenBrace,
+      "Expected opening brace after while condition"
+    );
+
+    const body: Statement[] = [];
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      body.push(this.parseStatement());
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after while body"
+    );
+
+    return {
+      kind: "WhileStatement",
+      condition,
+      body,
+    } as WhileStatement;
   }
 
   // Handle expressions parsing

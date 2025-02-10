@@ -8,9 +8,11 @@ import type {
   Program,
   VariableDeclaration,
   IfStatement,
+  WhileStatement,
 } from "../../front-end/ast";
 import type Environment from "../environment";
 import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
+import { throwAnError } from "../../utils/errors";
 
 // Evaluates the Program AST
 export function evaluateProgram(
@@ -59,7 +61,9 @@ export function evaluateFunctionDeclaration(
     body: functionDeclaration.body,
   } as FunctionValue;
 
-  return environment.declareVariable(functionDeclaration.name, fn, true);
+  environment.declareVariable(functionDeclaration.name, fn, true);
+
+  return makeNullValue();
 }
 
 // Evaluates the If Statement AST
@@ -75,8 +79,7 @@ export function evaluateIfStatement(
   // If condition is true, evaluate consequent and return
   if (condition.type === "boolean" && condition.value) {
     for (const statement of expressionStatement.consequent)
-      evaluate(statement, environment);
-    return makeNullValue();
+      return evaluate(statement, environment);
   }
 
   // If condition is false and there's an alternate, evaluate it
@@ -90,9 +93,63 @@ export function evaluateIfStatement(
     }
     // Handle else block
     for (const statement of expressionStatement.alternate) {
-      evaluate(statement, environment);
+      return evaluate(statement, environment);
     }
   }
 
   return makeNullValue();
+}
+
+// Evaluates the While loop Statement AST
+export function evaluateWhileStatement(
+  whileStatement: WhileStatement,
+  environment: Environment
+): RuntimeValue {
+  let lastEvaluated: RuntimeValue = makeNullValue();
+
+  while (true) {
+    const condition = evaluate(
+      whileStatement.condition,
+      environment
+    ) as BooleanValue;
+
+    if (condition.type !== "boolean") {
+      return throwAnError(
+        "RuntimeError",
+        `at the while loop condition [ ${condition} ]: \n While loop condition is not a boolean`
+      );
+    }
+
+    if (!condition.value) break; // Exit outer loop when condition is false
+
+    let shouldBreak = false; // Track when to break the outer loop
+    let shouldContinue = false; // Track when to restart the outer loop
+
+    let i = 0;
+    while (i < whileStatement.body.length) {
+      const statement = whileStatement.body[i];
+      try {
+        lastEvaluated = evaluate(statement, environment);
+      } catch (error) {
+        // Break/Continue signals
+        if (error instanceof Error) {
+          if (error.message === "break") {
+            shouldBreak = true; // Signal outer loop break
+            break; // Exit inner loop immediately
+          }
+          if (error.message === "continue") {
+            shouldContinue = true; // Signal outer loop restart
+            break; // Exit inner loop immediately
+          }
+        }
+      }
+
+      i++;
+    }
+
+    if (shouldBreak) break; // Break outer loop
+    if (shouldContinue) continue; // Restart outer loop immediately
+  }
+
+  return lastEvaluated;
 }
