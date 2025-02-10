@@ -44,14 +44,24 @@ test("Numeric Literal", () => {
   expect(result.value).toBe(100);
 });
 
-test("Numbers Binary Expression", () => {
+test("Math Binary Expression", () => {
   const result = execute("(100 / 2) + 100 * 2 + (2 + 4)") as NumberValue;
   expect(result.value).toBe(256);
 });
 
-test("Strings Binary Expression", () => {
+test("Strings Concatenation", () => {
   const result = execute('"Hello " + "World" + ("!" * 3) ') as StringValue;
   expect(result.value).toBe("Hello World!!!");
+});
+
+test("Numerics Comparison", () => {
+  const result = execute("100 > 50") as BooleanValue;
+  expect(result.value).toBe(true);
+});
+
+test("Strings Comparison", () => {
+  const result = execute('"Hello World" > "Hello"') as BooleanValue;
+  expect(result.value).toBe(true);
 });
 
 test("Math Operators", () => {

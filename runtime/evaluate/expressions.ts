@@ -2,7 +2,12 @@
 
 import { evaluate } from "../interpreter";
 import Environment from "../environment";
-import { makeNullValue, makeNumberValue, makeStringValue } from "../values";
+import {
+  makeBooleanValue,
+  makeNullValue,
+  makeNumberValue,
+  makeStringValue,
+} from "../values";
 import { throwAnError } from "../../utils/errors";
 
 import type {
@@ -101,14 +106,38 @@ export function evaluateStringBinaryExpression(
   right: StringValue,
   operator: string
 ): RuntimeValue {
+  let resultS = "";
+  let resultB = false;
+  let isComparison = false;
+
   if (operator === "+") {
-    return makeStringValue(left.value + right.value);
+    resultS = left.value + right.value;
+  } else if (operator === "==") {
+    isComparison = true;
+    resultB = left.value === right.value;
+  } else if (operator === "!=") {
+    isComparison = true;
+    resultB = left.value !== right.value;
+  } else if (operator === "<") {
+    isComparison = true;
+    resultB = left.value < right.value;
+  } else if (operator === ">") {
+    isComparison = true;
+    resultB = left.value > right.value;
+  } else if (operator === "<=") {
+    isComparison = true;
+    resultB = left.value <= right.value;
+  } else if (operator === ">=") {
+    isComparison = true;
+    resultB = left.value >= right.value;
+  } else {
+    return throwAnError(
+      "RuntimeError",
+      `at the operator [ ${operator} ]: \n Operator is not supported in strings`
+    );
   }
 
-  return throwAnError(
-    "RuntimeError",
-    `at the operator [ ${operator} ]: \n Operator is not supported in strings`
-  );
+  return isComparison ? makeBooleanValue(resultB) : makeStringValue(resultS);
 }
 
 // Evaluates the Numeric Binary Expression
@@ -117,19 +146,41 @@ export function evaluateNumericBinaryExpression(
   right: NumberValue,
   operator: string
 ): RuntimeValue {
-  let result = 0;
+  let resultN = 0;
+  let resultB = false;
+  let isComparison = false;
 
   if (operator === "+") {
-    result = left.value + right.value;
+    resultN = left.value + right.value;
   } else if (operator === "-") {
-    result = left.value - right.value;
+    resultN = left.value - right.value;
   } else if (operator === "*") {
-    result = left.value * right.value;
+    resultN = left.value * right.value;
   } else if (operator === "/") {
     // TODO: Handle division by zero
-    result = left.value / right.value;
+    resultN = left.value / right.value;
   } else if (operator === "%") {
-    result = left.value % right.value;
+    resultN = left.value % right.value;
+  } else if (operator === "**") {
+    resultN = left.value ** right.value;
+  } else if (operator === "==") {
+    isComparison = true;
+    resultB = left.value === right.value;
+  } else if (operator === "!=") {
+    isComparison = true;
+    resultB = left.value !== right.value;
+  } else if (operator === "<") {
+    isComparison = true;
+    resultB = left.value < right.value;
+  } else if (operator === ">") {
+    isComparison = true;
+    resultB = left.value > right.value;
+  } else if (operator === "<=") {
+    isComparison = true;
+    resultB = left.value <= right.value;
+  } else if (operator === ">=") {
+    isComparison = true;
+    resultB = left.value >= right.value;
   } else {
     return throwAnError(
       "RuntimeError",
@@ -137,7 +188,7 @@ export function evaluateNumericBinaryExpression(
     );
   }
 
-  return makeNumberValue(result);
+  return isComparison ? makeBooleanValue(resultB) : makeNumberValue(resultN);
 }
 
 // Evaluates the Identifier AST

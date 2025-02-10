@@ -16,6 +16,7 @@ export enum TokenType {
 
   // Operators
   BinaryOperator, // +, -, *, /, %
+  ComparisonOperator, // ==, !=, <, >, <=, >=
   Equals, // =
   Comma, // ,
   Colon, // :
@@ -27,6 +28,7 @@ export enum TokenType {
   CloseBracket, // ]
   Semicolon, // ;
   Dot, // .
+  Power, // **
 
   EOF, // End of File
 }
@@ -75,17 +77,37 @@ export function tokenizer(soruceCode: string): Token[] {
     } else if (char === "}") {
       tokens.push(token(TokenType.CloseBrace, char));
     }
-    // Binary Operators
-    else if (
-      char === "+" ||
-      char === "-" ||
-      char === "*" ||
-      char === "/" ||
-      char === "%"
-    ) {
+    // Binary Operators the ( * is handled in the next if ) due the case of power operator
+    else if (char === "+" || char === "-" || char === "/" || char === "%") {
       tokens.push(token(TokenType.BinaryOperator, char));
-    } else if (char === "=") {
-      tokens.push(token(TokenType.Equals, char));
+    } // Handle comparison and equals operators and power operator
+    else if (
+      char === "=" ||
+      char === "!" ||
+      char === "<" ||
+      char === ">" ||
+      char === "*"
+    ) {
+      let operator = char;
+      // Look ahead for second character
+      if (src[0] === "=") {
+        operator += src.shift(); // eat the second character
+        tokens.push(token(TokenType.ComparisonOperator, operator));
+      } else if (src[0] === "*") {
+        operator += src.shift(); // eat the second character
+        tokens.push(token(TokenType.Power, operator));
+      } else {
+        // Single = is assignment, single < > are comparison
+        if (char === "=") {
+          tokens.push(token(TokenType.Equals, char));
+        } else if (char === "*") {
+          tokens.push(token(TokenType.BinaryOperator, char));
+        } else if (char === "<" || char === ">") {
+          tokens.push(token(TokenType.ComparisonOperator, char));
+        } else {
+          throwAnError("LexerError", `Unexpected operator: ${char}`);
+        }
+      }
     } else if (char === ",") {
       tokens.push(token(TokenType.Comma, char));
     } else if (char === ":") {

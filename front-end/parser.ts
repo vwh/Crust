@@ -21,6 +21,16 @@ import type {
   StringLiteral,
 } from "./ast";
 
+// --- Orders Of Expression Precedence ---
+// AssignmentExpression ( Lowest )
+// ObjectExpression
+// ComparisonExpression
+// AdditiveExpression
+// MultiplicitaveExpression
+// CallExpression
+// MemberExpression
+// PrimaryExpression ( Highest )
+
 /**
  * Front-end parser responsible for parsing the source code into an AST
  */
@@ -186,15 +196,6 @@ export default class Parser {
     return fn;
   }
 
-  // --- Orders Of Expression Precedence ---
-  // AssignmentExpression ( Lowest )
-  // ObjectExpression
-  // AdditiveExpression
-  // MultiplicitaveExpression
-  // CallExpression
-  // MemberExpression
-  // PrimaryExpression ( Highest )
-
   // Handle expressions parsing
   private parseExpression(): Expression {
     return this.parseAssignmentExpression();
@@ -220,7 +221,7 @@ export default class Parser {
   // Handle object expressions parsing object expressions
   private parseObjectExpression(): Expression {
     if (this.tokenAt().type !== TokenType.OpenBrace) {
-      return this.parseAdditiveExpression();
+      return this.parseComparisonExpression();
     }
 
     this.eatToken(); // Eat the open brace
@@ -287,6 +288,25 @@ export default class Parser {
     } as ObjectLiteral;
   }
 
+  // Handle comparison expressions parsing ( Equality, Inequality )
+  private parseComparisonExpression(): Expression {
+    let left = this.parseAdditiveExpression();
+
+    while (this.tokenAt().type === TokenType.ComparisonOperator) {
+      const operator = this.eatToken();
+      const right = this.parseAdditiveExpression();
+
+      left = {
+        kind: "BinaryExpression",
+        left,
+        right,
+        operator: operator.value,
+      } as BinaryExpression;
+    }
+
+    return left;
+  }
+
   // Handle additive expressions parsing ( Addition, Subtraction )
   private parseAdditiveExpression(): Expression {
     let left = this.parseMultiplicativeExpression();
@@ -312,7 +332,8 @@ export default class Parser {
     while (
       this.tokenAt().value === "/" ||
       this.tokenAt().value === "*" ||
-      this.tokenAt().value === "%"
+      this.tokenAt().value === "%" ||
+      this.tokenAt().value === "**"
     ) {
       const operator = this.eatToken();
       const right = this.parseCallMemberExpression();

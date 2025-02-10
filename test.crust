@@ -1,11 +1,8 @@
+output(10 == 10)
 
-keep PI = Math.PI;
-keep x = Math.pow(2, 5);
+output("Hello World 123" >= "Hello World")
 
-keep now = Date.now();
-keep someDate = Date.parse("2023-01-01");
+keep x = 100 > 50;
 
-debug(now)
-output("PI", PI)
-output("x", x)
-output("now", now)
+output(x)
+output(typeof(x))
