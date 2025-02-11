@@ -81,11 +81,11 @@ export default class Parser {
 
     // If the previous token is not of the given type
     if (previous.type !== type || !previous) {
-      return throwAnError(
+      throwAnError(
         "ParseError",
-        `at the token [ ${
+        `Expected [ ${getNameOfToken(type)} ] but got [ ${
           previous.value
-        } ]:\n ${errorMessage} \n Expected ${getNameOfToken(type)}`
+        } ]\n ${errorMessage}`
       );
     }
 
@@ -132,7 +132,7 @@ export default class Parser {
   private parseBlockStatement(): BlockStatement {
     this.expectToken(
       TokenType.OpenBrace,
-      "Expected opening brace after function declaration"
+      "Expected opening brace at the start of a block statement"
     );
 
     const body: Statement[] = [];
@@ -142,7 +142,7 @@ export default class Parser {
 
     this.expectToken(
       TokenType.CloseBrace,
-      "Expected closing brace after function declaration"
+      "Expected closing brace at the end of a block statement"
     );
 
     return {
@@ -167,9 +167,7 @@ export default class Parser {
       if (isConstant)
         throwAnError(
           "ParseError",
-          `at the token [ ${identifier} ]: \n ${getNameOfToken(
-            TokenType.Equals
-          )} Must assign a value to a constant expression`
+          `Expected an equals sign to assign a value to the variable [ ${identifier} ] must assign a value to a constant expression`
         );
 
       return {
@@ -214,7 +212,7 @@ export default class Parser {
       if (arg.kind !== "Identifier")
         throwAnError(
           "ParseError",
-          "Expected a string identifier for function parameter"
+          `Expected a string identifier for function parameter but got [ ${arg.kind} ]`
         );
 
       parameters.push((arg as Identifier).symbol);
@@ -286,9 +284,11 @@ export default class Parser {
     const tryBlock = this.parseBlockStatement();
 
     if (this.tokenAt().type !== TokenType.Catch) {
-      return throwAnError(
+      throwAnError(
         "ParseError",
-        "Expected catch keyword after try block"
+        `Expected catch keyword after try block but got [ ${getNameOfToken(
+          this.tokenAt().type
+        )} ]`
       );
     }
 
@@ -299,12 +299,12 @@ export default class Parser {
       this.eatToken(); // Eat the (
       errorSymbol = this.expectToken(
         TokenType.Identifier,
-        "Expected identifier for error symbol"
+        "Expected identifier for error name"
       ).value;
 
       this.expectToken(
         TokenType.CloseParen,
-        "Expected closing brace after error symbol"
+        "Expected closing brace at the end of the error name"
       );
     }
 
@@ -522,14 +522,20 @@ export default class Parser {
 
   // Handles the function call arguments
   private parseArguments(): Expression[] {
-    this.expectToken(TokenType.OpenParen, "Expected '(' after arguments");
+    this.expectToken(
+      TokenType.OpenParen,
+      "Expected opening parenthesis at the start of arguments"
+    );
 
     const args =
       this.tokenAt().type === TokenType.CloseParen
         ? []
         : this.parseArgumentsList();
 
-    this.expectToken(TokenType.CloseParen, "Expected ')' after arguments");
+    this.expectToken(
+      TokenType.CloseParen,
+      "Expected closing parenthesis at the end of arguments"
+    );
 
     return args;
   }
@@ -567,7 +573,7 @@ export default class Parser {
         if (property.kind !== "Identifier")
           throwAnError(
             "ParseError",
-            "Cannot use dot operator without the right hand side being an identifier"
+            `Expected an identifier after the dot operator but got [ ${property.kind} ]`
           );
       }
       // Computed property
@@ -577,7 +583,7 @@ export default class Parser {
 
         this.expectToken(
           TokenType.CloseBracket,
-          "Expected ']' after computed property"
+          "Expected closing bracket at the end of computed property"
         );
       }
 
@@ -637,14 +643,9 @@ export default class Parser {
         return value;
       }
 
-      // Unprocessed tokens
+      // Unhandled tokens
       default:
-        throwAnError(
-          "ParseError",
-          `at the token [ ${token.value} ]: \n ${getNameOfToken(
-            token.type
-          )} token is not supported`
-        );
+        throwAnError("ParseError", `Not supported token [ ${token.value} ]`);
     }
   }
 }

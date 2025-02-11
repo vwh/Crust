@@ -21,6 +21,7 @@ import type {
 } from "../../front-end/ast";
 import type {
   BooleanValue,
+  ErrorValue,
   FunctionValue,
   NativeFunctionValue,
   NumberValue,
@@ -55,9 +56,9 @@ export function evaluateAssignmentExpression(
         environment
       ) as StringValue;
       if (propertyValue.type !== "string") {
-        return throwAnError(
+        throwAnError(
           "RuntimeError",
-          "You can only access object properties using strings"
+          `You can only access object properties using strings but got [ ${propertyValue.type} ]`
         );
       }
 
@@ -66,9 +67,9 @@ export function evaluateAssignmentExpression(
     }
 
     if (property.kind !== "Identifier") {
-      return throwAnError(
+      throwAnError(
         "RuntimeError",
-        `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
+        `Member Assignment expression must be an identifier but got [ ${property.kind} ]`
       );
     }
 
@@ -77,9 +78,9 @@ export function evaluateAssignmentExpression(
     return value;
   }
 
-  return throwAnError(
+  throwAnError(
     "RuntimeError",
-    `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
+    `Assignment expression is not supported for member expressions with property [ ${node.assignment.kind} ]`
   );
 }
 
@@ -95,9 +96,9 @@ export function evaluateUnaryExpression(
       return makeBooleanValue(!(value as BooleanValue).value);
     }
 
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for booleans`
+      `The operator [ ${node.operator} ] is not supported for unary expressions with booleans`
     );
   }
 
@@ -106,9 +107,9 @@ export function evaluateUnaryExpression(
       return makeBooleanValue(!((value as StringValue).value.length === 0));
     }
 
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for strings`
+      `The operator [ ${node.operator} ] is not supported for unary expressions with strings`
     );
   }
 
@@ -125,15 +126,15 @@ export function evaluateUnaryExpression(
       return makeNumberValue(Math.abs((value as NumberValue).value));
     }
 
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the unary expression [ ${node.argument} ]: \n Unary expression is not supported for numbers`
+      `The operator [ ${node.operator} ] is not supported for unary expressions with numbers`
     );
   }
 
-  return throwAnError(
+  throwAnError(
     "RuntimeError",
-    `at the unary expression [ ${node.operator} ]: \n Unary expression is not supported`
+    `The operator [ ${node.operator} ] is not supported for unary expressions`
   );
 }
 
@@ -180,8 +181,37 @@ export function evaluateBinaryExpression(
     );
   }
 
+  if (left.type === "error" || right.type === "string") {
+    return evaluateErrorAndStringBinaryExpression(
+      left as ErrorValue,
+      right as StringValue,
+      BinaryExpression.operator
+    );
+  }
+
   // If both sides are not numbers or one of them
   return makeNullValue();
+}
+
+export function evaluateErrorAndStringBinaryExpression(
+  left: ErrorValue,
+  right: StringValue,
+  operator: string
+): RuntimeValue {
+  let resultB = false;
+
+  if (operator === "==") {
+    resultB = left.value === right.value;
+  } else if (operator === "!=") {
+    resultB = left.value !== right.value;
+  } else {
+    throwAnError(
+      "RuntimeError",
+      `The operator [ ${operator} ] is not supported for error and string binary expressions`
+    );
+  }
+
+  return makeBooleanValue(resultB);
 }
 
 export function evaluateBooleanBinaryExpression(
@@ -200,9 +230,9 @@ export function evaluateBooleanBinaryExpression(
   } else if (operator === "||") {
     resultB = left.value || right.value;
   } else {
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the operator [ ${operator} ]: \n Operator is not supported in booleans`
+      `The operator [ ${operator} ] is not supported for boolean and boolean binary expressions`
     );
   }
 
@@ -219,9 +249,9 @@ export function evaluateStringAndNumberBinaryExpression(
     return makeStringValue(left.value.repeat(right.value));
   }
 
-  return throwAnError(
+  throwAnError(
     "RuntimeError",
-    `at the operator [ ${operator} ]: \n Operator is not supported in strings`
+    `The operator [ ${operator} ] is not supported for string and number binary expressions`
   );
 }
 
@@ -256,9 +286,9 @@ export function evaluateStringBinaryExpression(
     isComparison = true;
     resultB = left.value >= right.value;
   } else {
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the operator [ ${operator} ]: \n Operator is not supported in strings`
+      `The operator [ ${operator} ] is not supported for string and string binary expressions`
     );
   }
 
@@ -309,9 +339,9 @@ export function evaluateNumericBinaryExpression(
     isComparison = true;
     resultB = left.value >= right.value;
   } else {
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the operator [ ${operator} ]: \n Operator is not supported in numbers`
+      `The operator [ ${operator} ] is not supported for number and number binary expressions`
     );
   }
 
@@ -354,9 +384,9 @@ export function evaluateMemberExpression(
   const isComputed = node.computed;
 
   if (object.type !== "object") {
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the member expression [ ${node.object} ]: \n Member expression is not supported`
+      `The member expression is not supported for [ ${object.type} ]`
     );
   }
 
@@ -364,9 +394,9 @@ export function evaluateMemberExpression(
     const property = evaluate(node.property, environment) as StringValue;
 
     if (property.type !== "string") {
-      return throwAnError(
+      throwAnError(
         "RuntimeError",
-        "You can only access object properties using strings"
+        "You can only access object properties using strings but got [ ${property.type} ]"
       );
     }
 
@@ -374,9 +404,9 @@ export function evaluateMemberExpression(
   }
 
   if (node.property.kind !== "Identifier") {
-    return throwAnError(
+    throwAnError(
       "RuntimeError",
-      `at the member expression [ ${node.property} ]: \n Member expression is not supported`
+      `Member expression must be an identifier but got [ ${node.property.kind} ]`
     );
   }
 
@@ -420,8 +450,8 @@ export function evaluateNativeFunction(
     return result;
   }
 
-  return throwAnError(
+  throwAnError(
     "RuntimeError",
-    `at the call expression [ ${node.caller} ]: \n Call expression is not supported`
+    `Call expression is not supported for [ ${fn.type} ]`
   );
 }

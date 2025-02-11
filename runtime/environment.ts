@@ -58,9 +58,9 @@ export default class Environment {
     isConstant = false
   ) {
     if (this.variables.has(name)) {
-      return throwAnError(
+      throwAnError(
         "RuntimeError",
-        `at the variable [ ${name} ]: \n Cannot redeclare variable ${name}, it is already declared`
+        `The variable [ ${name} ] cannot redeclare variable its already declared`
       );
     }
 
@@ -81,9 +81,9 @@ export default class Environment {
     const environment = this.resolveVariable(name);
 
     if (environment.constants.has(name)) {
-      return throwAnError(
+      throwAnError(
         "RuntimeError",
-        `at the variable [ ${name} ]: \n Cannot reassign constant variable`
+        `Cannot reassign constant [ ${name} ] variable`
       );
     }
 
@@ -99,10 +99,7 @@ export default class Environment {
     }
 
     if (this.parent === undefined) {
-      return throwAnError(
-        "RuntimeError",
-        `at the variable [ ${name} ]: \n Variable ${name} is not declared`
-      );
+      throwAnError("RuntimeError", `The variable [ ${name} ] is not declared`);
     }
 
     return this.parent.resolveVariable(name);

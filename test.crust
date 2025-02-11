@@ -1,1 +1,13 @@
-set s = "" try { Int('a') } catch (e) { s = typeof(e) } s
+try { 
+    Int('a') 
+} catch (e) { 
+    output(e)
+    
+    # Is this a good way of handling errors?
+    if e == "TypeError" { 
+        output("You can't convert that mate!")
+    } else {
+        output("Some thing else happened")
+    }
+} 
+

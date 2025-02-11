@@ -101,10 +101,7 @@ export function evaluate(
     // Unhandled AST node
     default: {
       log(ast);
-      return throwAnError(
-        "RuntimeError",
-        "at the ast the following ast: \n This AST node is not supported yet"
-      );
+      throwAnError("RuntimeError", "The following AST node is not supported");
     }
   }
 }

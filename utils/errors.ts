@@ -3,6 +3,8 @@
 import util from "node:util";
 import { TokenType } from "../front-end/lexer";
 
+import type { ErrorType } from "../runtime/values";
+
 // Logs the given object to the console
 export function log(obj: unknown) {
   console.log(util.inspect(obj, { depth: null, colors: true, compact: true }));
@@ -54,8 +56,20 @@ export function getNameOfToken(token: TokenType) {
   }
 }
 
-export function throwAnError(type: ErrorType, message: string): never {
-  throw new Error(`${type} thrown ${message}`);
+export class CrustError extends Error {
+  constructor(type: ErrorType, message: string) {
+    super(`${message}`);
+  }
 }
 
-type ErrorType = "ParseError" | "LexerError" | "RuntimeError" | "TypeError";
+export class CrTypeError extends CrustError {
+  constructor(message: string) {
+    super("TypeError", message);
+  }
+}
+
+export function throwAnError(type: ErrorType, message: string): never {
+  if (type === "TypeError") throw new CrTypeError(message);
+
+  throw new CrustError(type, message);
+}

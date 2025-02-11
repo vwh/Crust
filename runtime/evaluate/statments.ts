@@ -113,9 +113,9 @@ export function evaluateWhileStatement(
     ) as BooleanValue;
 
     if (condition.type !== "boolean") {
-      return throwAnError(
+      throwAnError(
         "RuntimeError",
-        `at the while loop condition [ ${condition} ]: \n While loop condition is not a boolean`
+        `The condition of the while loop must be a boolean but got [ ${condition.type} ]`
       );
     }
 
@@ -186,13 +186,13 @@ export function evaluateTryCatchStatement(
       if (error instanceof Error) {
         scope.declareVariable(
           tryCatchStatement.errorSymbol,
-          makeErrorValue(error.message),
+          makeErrorValue("TypeError", error),
           false
         );
       } else {
         scope.declareVariable(
           tryCatchStatement.errorSymbol,
-          makeErrorValue("Unknown error"),
+          makeErrorValue("RuntimeError", new Error("Unknown error")),
           false
         );
       }

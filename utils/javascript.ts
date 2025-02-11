@@ -22,17 +22,17 @@ import type {
 export function javascriptValueToCrustValue(value: unknown): RuntimeValue {
   // throw and error when NaN or Symbol or BigInt
   if (typeof value === "symbol")
-    return throwAnError(
+    throwAnError(
       "TypeError",
       "JavaScript function passes (Symbol) to Crust, which is not supported"
     );
   if (typeof value === "bigint")
-    return throwAnError(
+    throwAnError(
       "TypeError",
       "JavaScript function passes (BigInt) to Crust, which is not supported"
     );
   if (Number.isNaN(value))
-    return throwAnError(
+    throwAnError(
       "TypeError",
       "JavaScript function passes (NaN) to Crust, which is not supported"
     );
@@ -62,7 +62,7 @@ export function javascriptValueToCrustValue(value: unknown): RuntimeValue {
 
   throwAnError(
     "RuntimeError",
-    `at the javascript value [ ${value} ]: \n Javascript value cannot be converted to a runtime value`
+    `The JavaScript value [ ${value} ] cannot be converted to a Crust value`
   );
 }
 
@@ -119,8 +119,8 @@ function javascriptFunctionToCrustFunction(
     try {
       const result = value(...jsArgs);
       return javascriptValueToCrustValue(result);
-    } catch (error) {
-      throwAnError("RuntimeError", "Error while calling JavaScript function");
+    } catch {
+      throwAnError("RuntimeError", "JavaScript function throws an error");
     }
   });
 }

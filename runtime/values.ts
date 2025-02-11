@@ -61,12 +61,19 @@ export interface StringValue extends RuntimeValue {
   value: string;
 }
 
+export type ErrorType =
+  | "ParseError"
+  | "LexerError"
+  | "RuntimeError"
+  | "TypeError";
+
 /**
  * Represents an error value in the runtime
  */
 export interface ErrorValue extends RuntimeValue {
   type: "error";
-  message: string;
+  value: ErrorType;
+  error: Error;
 }
 
 // Creates a new NumberValue
@@ -102,10 +109,11 @@ export function makeStringValue(value: string): StringValue {
 }
 
 // Creates a new ErrorValue
-export function makeErrorValue(message: string): ErrorValue {
+export function makeErrorValue(type: ErrorType, error: Error): ErrorValue {
   return {
     type: "error",
-    message,
+    value: type,
+    error,
   } as ErrorValue;
 }
 

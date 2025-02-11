@@ -36,7 +36,9 @@ export function runtimeValueToString(valueObject: RuntimeValue) {
     )}>`;
 
   if (valueObject.type === "error")
-    return `error<${(valueObject as ErrorValue).message}>`;
+    return `error(${(valueObject as ErrorValue).value})<${
+      (valueObject as ErrorValue).error.message
+    }>`;
 
   return "unknown";
 }

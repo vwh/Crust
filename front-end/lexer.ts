@@ -120,8 +120,11 @@ export function tokenizer(sourceCode: string): Token[] {
       continue;
     }
 
-    // Unknown token
-    throwAnError("LexerError", `Unexpected character: ${char}`);
+    // Unhandled tokens
+    throwAnError(
+      "LexerError",
+      `Not supported character: [ ${char} ] at position ${src.length}`
+    );
   }
 
   // End-of-file token
@@ -169,7 +172,10 @@ function getSingleCharToken(char: string): Token {
     case ".":
       return token(TokenType.Dot, char);
     default:
-      throwAnError("LexerError", `Unexpected single-character token: ${char}`);
+      throwAnError(
+        "LexerError",
+        `Not supported single-character token: [ ${char} ]`
+      );
   }
 }
 
@@ -182,7 +188,7 @@ function readStringToken(quoteType: string, src: string[]): Token {
   if (src.length === 0)
     throwAnError(
       "LexerError",
-      `Unterminated string literal: Missing closing ${quoteType}`
+      `Unterminated string literal: Missing closing [ ${quoteType} ] at position ${src.length}`
     );
   src.shift(); // consume the closing quote
   return token(TokenType.String, str);
@@ -199,9 +205,9 @@ function readNumberToken(initial: string, src: string[]): Token {
   // Check how many dots are there
   const dots = num.split(".").length - 1;
   if (dots > 1)
-    return throwAnError(
+    throwAnError(
       "LexerError",
-      `Unexpected token [ ${num} ]: \n Floating point numbers cannot have more than one dot`
+      `Unexpected token [ ${num} ]: Floating point numbers cannot have more than one dot`
     );
 
   return token(TokenType.Number, num);
@@ -309,7 +315,10 @@ function readOperatorToken(
     return token(TokenType.ComparisonOperator, op);
   }
 
-  throwAnError("LexerError", `Unexpected operator: ${initial}`);
+  throwAnError(
+    "LexerError",
+    `Not supported operator: [ ${initial} ] at position ${src.length}`
+  );
 }
 
 // Determines (using a simple heuristic) if an operator should be treated as unary.
