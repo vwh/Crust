@@ -10,6 +10,7 @@ import {
   evaluateTryCatchStatement,
 } from "./evaluate/statments";
 import {
+  evaluateArrayLiteral,
   evaluateAssignmentExpression,
   evaluateBinaryExpression,
   evaluateIdentifier,
@@ -39,6 +40,7 @@ import type {
   WhileStatement,
   BlockStatement,
   TryCatchStatement,
+  ArrayLiteral,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -83,6 +85,8 @@ export function evaluate(
       );
     case "ObjectLiteral":
       return evaluateObjectLiteral(ast as ObjectLiteral, environment);
+    case "ArrayLiteral":
+      return evaluateArrayLiteral(ast as ArrayLiteral, environment);
     case "NumericLiteral":
       return makeNumberValue((ast as NumericLiteral).value);
     case "StringLiteral":

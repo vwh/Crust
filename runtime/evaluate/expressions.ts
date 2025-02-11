@@ -18,8 +18,10 @@ import type {
   CallExpression,
   MemberExpression,
   UnaryExpression,
+  ArrayLiteral,
 } from "../../front-end/ast";
 import type {
+  ArrayValue,
   BooleanValue,
   ErrorValue,
   FunctionValue,
@@ -375,44 +377,75 @@ export function evaluateObjectLiteral(
   return object;
 }
 
+// Evaluates the Object Literal AST
+export function evaluateArrayLiteral(
+  node: ArrayLiteral,
+  environment: Environment
+): RuntimeValue {
+  const array = {
+    type: "array",
+    elements: [],
+  } as ArrayValue;
+
+  for (const element of node.elements) {
+    array.elements.push(evaluate(element, environment));
+  }
+
+  return array;
+}
+
 // Evaluates the Member Expression AST
 export function evaluateMemberExpression(
   node: MemberExpression,
   environment: Environment
 ): RuntimeValue {
-  const object = evaluate(node.object, environment) as ObjectValue;
+  const objectOrArray = evaluate(node.object, environment);
   const isComputed = node.computed;
 
-  if (object.type !== "object") {
-    throwAnError(
-      "RuntimeError",
-      `The member expression is not supported for [ ${object.type} ]`
-    );
-  }
+  if (objectOrArray.type === "object") {
+    const object = objectOrArray as ObjectValue;
+    if (isComputed) {
+      const property = evaluate(node.property, environment) as StringValue;
 
-  if (isComputed) {
-    const property = evaluate(node.property, environment) as StringValue;
+      if (property.type !== "string") {
+        throwAnError(
+          "RuntimeError",
+          `You can only access object properties using strings but got [ ${property.type} ]`
+        );
+      }
 
-    if (property.type !== "string") {
+      return object.properties.get(property.value) as RuntimeValue;
+    }
+
+    if (node.property.kind !== "Identifier") {
       throwAnError(
         "RuntimeError",
-        "You can only access object properties using strings but got [ ${property.type} ]"
+        `Member expression must be an identifier but got [ ${node.property.kind} ]`
       );
     }
 
-    return object.properties.get(property.value) as RuntimeValue;
+    const property = node.property as Identifier;
+
+    return object.properties.get(property.symbol) as RuntimeValue;
   }
 
-  if (node.property.kind !== "Identifier") {
-    throwAnError(
-      "RuntimeError",
-      `Member expression must be an identifier but got [ ${node.property.kind} ]`
-    );
+  if (objectOrArray.type === "array") {
+    const array = objectOrArray as ArrayValue;
+    const property = evaluate(node.property, environment) as NumberValue;
+    if (property.type !== "number") {
+      throwAnError(
+        "RuntimeError",
+        `You can only access object properties using strings but got [ ${property.type} ]`
+      );
+    }
+
+    return array.elements[property.value] as RuntimeValue;
   }
 
-  const property = node.property as Identifier;
-
-  return object.properties.get(property.symbol) as RuntimeValue;
+  throwAnError(
+    "RuntimeError",
+    `The member expression is not supported for [ ${objectOrArray.type} ]`
+  );
 }
 
 // Evaluates the Call Expression AST

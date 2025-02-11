@@ -140,6 +140,13 @@ test("Object Literal & Member Expression", () => {
   expect(result.value).toBe(true);
 });
 
+test("Array Literal & Member Expression", () => {
+  const result = execute(
+    "set arr = [100, 32, 100 / 2, false, { bar: true }]; arr[3]"
+  ) as BooleanValue;
+  expect(result.value).toBe(false);
+});
+
 test("Call Expression", () => {
   const result = execute("fn returnFive() { 5 } returnFive()") as NumberValue;
   expect(result.value).toBe(5);

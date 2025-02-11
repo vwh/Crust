@@ -24,6 +24,7 @@ export type NodeType =
   | "ObjectLiteral"
   | "StringLiteral"
   | "NumericLiteral"
+  | "ArrayLiteral"
   | "Identifier";
 
 // set x = 45; ( Is a Statement ) will return nothing
@@ -196,6 +197,14 @@ export interface Identifier extends Expression {
 export interface NumericLiteral extends Expression {
   kind: "NumericLiteral";
   value: number; // The value of the literal
+}
+
+/**
+ * Represents an array literal.
+ */
+export interface ArrayLiteral extends Expression {
+  kind: "ArrayLiteral";
+  elements: Expression[]; // The elements of the array
 }
 
 /**

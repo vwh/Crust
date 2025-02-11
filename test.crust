@@ -1,13 +1,20 @@
-try { 
-    Int('a') 
-} catch (e) { 
-    output(e)
-    
-    # Is this a good way of handling errors?
-    if e == "TypeError" { 
-        output("You can't convert that mate!")
-    } else {
-        output("Some thing else happened")
-    }
-} 
+keep person = {
+  name: "Yazan",
+  age: 105,
+  books: ["The Hobbit", "The Lord of the Rings", "Harry Potter"]
+}
+
+# yay we have arrays!
+keep random = [1, "Ford", true, null, 10.5, {x: 10}, typeof("x")]
+
+output(random)
+
+output(random.0)
+output(random[1])
+
+output(person.books[1])
+output(person.books.2)
+
+output(person["age"])
+output(person.age)
 

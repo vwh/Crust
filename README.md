@@ -16,6 +16,7 @@ Crust Simple toy scripting language, JavaScript-like programming language.
   - Booleans
   - Null
   - Objects
+  - Arrays
 - Operators
   - Arithmetic (`+`, `-`, `*`, `/`, `%`, `**`, `//`)
   - Comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`)

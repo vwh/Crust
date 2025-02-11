@@ -9,6 +9,7 @@ export type ValueType =
   | "number"
   | "boolean"
   | "object"
+  | "array"
   | "native-function"
   | "function"
   | "string"
@@ -51,6 +52,14 @@ export interface BooleanValue extends RuntimeValue {
 export interface ObjectValue extends RuntimeValue {
   type: "object";
   properties: Map<string, RuntimeValue>;
+}
+
+/**
+ * Represents an array value in the runtime
+ */
+export interface ArrayValue extends RuntimeValue {
+  type: "array";
+  elements: RuntimeValue[];
 }
 
 /**

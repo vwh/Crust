@@ -8,11 +8,13 @@ import type {
   ObjectValue,
   FunctionValue,
   ErrorValue,
+  ArrayValue,
 } from "../runtime/values";
 
 // Converts the given runtime value to a javascript string
 // Used on global output() function
 export function runtimeValueToString(valueObject: RuntimeValue) {
+  if (!valueObject) return "null";
   if (valueObject.type === "null") return "null";
 
   if (valueObject.type === "string") return (valueObject as StringValue).value;
@@ -34,6 +36,11 @@ export function runtimeValueToString(valueObject: RuntimeValue) {
       null,
       2
     )}>`;
+
+  if (valueObject.type === "array")
+    return `array<${(valueObject as ArrayValue).elements
+      .map(runtimeValueToString)
+      .join(", ")}>`;
 
   if (valueObject.type === "error")
     return `error(${(valueObject as ErrorValue).value})<${

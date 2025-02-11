@@ -26,6 +26,7 @@ import type {
   ContinueStatement,
   BlockStatement,
   TryCatchStatement,
+  ArrayLiteral,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -359,12 +360,47 @@ export default class Parser {
     return left;
   }
 
+  private parseArrayExpression(): Expression {
+    this.eatToken(); // Eat the open bracket
+    const elements: Expression[] = [];
+
+    // get the elements of the array
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBracket) {
+      if (this.tokenAt().type === TokenType.Comma) {
+        this.eatToken(); // Eat the comma
+        continue;
+      }
+
+      elements.push(this.parseExpression());
+    }
+
+    this.expectToken(
+      TokenType.CloseBracket,
+      "Expected closing bracket after array literal"
+    );
+
+    return {
+      kind: "ArrayLiteral",
+      elements,
+    } as ArrayLiteral;
+  }
+
   // Handle object expressions parsing object expressions
+  // Handling objects and arrays literals
   private parseObjectExpression(): Expression {
-    if (this.tokenAt().type !== TokenType.OpenBrace) {
+    if (
+      this.tokenAt().type !== TokenType.OpenBrace &&
+      this.tokenAt().type !== TokenType.OpenBracket
+    ) {
       return this.parseLogicalExpression();
     }
 
+    // Handle array literals
+    if (this.tokenAt().type === TokenType.OpenBracket) {
+      return this.parseArrayExpression();
+    }
+
+    // Handle object literals
     this.eatToken(); // Eat the open brace
     const properties: Property[] = [];
 
@@ -570,10 +606,13 @@ export default class Parser {
         // Getting the identifier after the dot
         property = this.parseUnaryExpression();
 
-        if (property.kind !== "Identifier")
+        if (
+          property.kind !== "Identifier" &&
+          property.kind !== "NumericLiteral"
+        )
           throwAnError(
             "ParseError",
-            `Expected an identifier after the dot operator but got [ ${property.kind} ]`
+            `Expected an identifier or a numeric literal after the dot operator but got [ ${property.kind} ]`
           );
       }
       // Computed property
