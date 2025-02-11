@@ -1,7 +1,7 @@
 // statments.ts | Evaluates the statements in the runtime
 
 import { evaluate } from "../interpreter";
-import { makeNullValue } from "../values";
+import { makeErrorValue, makeNullValue } from "../values";
 
 import type {
   FunctionDeclaration,
@@ -10,6 +10,7 @@ import type {
   IfStatement,
   WhileStatement,
   BlockStatement,
+  TryCatchStatement,
 } from "../../front-end/ast";
 import Environment from "../environment";
 import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
@@ -154,6 +155,7 @@ export function evaluateWhileStatement(
   return lastEvaluated;
 }
 
+// Evaluates the Block Statement AST
 export function evaluateBlockStatement(
   blockStatement: BlockStatement,
   environment: Environment
@@ -167,4 +169,35 @@ export function evaluateBlockStatement(
   }
 
   return lastEvaluated;
+}
+
+// Evaluates the Try-Catch Statement AST
+export function evaluateTryCatchStatement(
+  tryCatchStatement: TryCatchStatement,
+  environment: Environment
+): RuntimeValue {
+  try {
+    return evaluateBlockStatement(tryCatchStatement.tryBlock, environment);
+  } catch (error) {
+    // Add the error to the catch block scope
+    const scope = new Environment(environment);
+    // Check if the error symbol is declared
+    if (tryCatchStatement.errorSymbol) {
+      if (error instanceof Error) {
+        scope.declareVariable(
+          tryCatchStatement.errorSymbol,
+          makeErrorValue(error.message),
+          false
+        );
+      } else {
+        scope.declareVariable(
+          tryCatchStatement.errorSymbol,
+          makeErrorValue("Unknown error"),
+          false
+        );
+      }
+    }
+
+    return evaluateBlockStatement(tryCatchStatement.catchBlock, scope);
+  }
 }

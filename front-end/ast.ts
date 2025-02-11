@@ -10,6 +10,7 @@ export type NodeType =
   | "BreakStatement"
   | "ContinueStatement"
   | "BlockStatement"
+  | "TryCatchStatement"
 
   // Expressions
   | "AssignmentExpression"
@@ -109,6 +110,16 @@ export interface ContinueStatement extends Statement {
 export interface BlockStatement extends Statement {
   kind: "BlockStatement"; // The kind of the statement
   statements: Statement[]; // The statements in the block
+}
+
+/**
+ * Represents a try-catch statement.
+ */
+export interface TryCatchStatement extends Statement {
+  kind: "TryCatchStatement";
+  tryBlock: BlockStatement; // The code block that runs if condition is true
+  catchBlock: BlockStatement; // The code block that runs if condition is true
+  errorSymbol?: string; // The error symbol to catch
 }
 
 /**

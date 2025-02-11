@@ -7,6 +7,7 @@ import type {
   BooleanValue,
   ObjectValue,
   FunctionValue,
+  ErrorValue,
 } from "../runtime/values";
 
 // Converts the given runtime value to a javascript string
@@ -33,6 +34,9 @@ export function runtimeValueToString(valueObject: RuntimeValue) {
       null,
       2
     )}>`;
+
+  if (valueObject.type === "error")
+    return `error<${(valueObject as ErrorValue).message}>`;
 
   return "unknown";
 }

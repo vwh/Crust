@@ -205,3 +205,25 @@ test("While Loop Statement & Break & Continue", () => {
   ) as NumberValue;
   expect(result.value).toBe(-1);
 });
+
+test("Block Statement", () => {
+  const result = execute("set x = 0; { set x = 5 } x") as NumberValue;
+  expect(result.value).toBe(0);
+});
+
+test("Try-Catch Statement", () => {
+  const result = execute(
+    "set x = 0 try { Int('a') } catch { x = 10 } x"
+  ) as NumberValue;
+  expect(result.value).toBe(10);
+
+  const result2 = execute(
+    "set x = 0 try { x = 5 } catch { x = 10 } x"
+  ) as NumberValue;
+  expect(result2.value).toBe(5);
+
+  const result3 = execute(
+    "set s = '' try { Int('a') } catch (e) { s = typeof(e) } s"
+  ) as StringValue;
+  expect(result3.value).toBe("error");
+});

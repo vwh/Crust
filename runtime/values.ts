@@ -11,7 +11,8 @@ export type ValueType =
   | "object"
   | "native-function"
   | "function"
-  | "string";
+  | "string"
+  | "error";
 
 /**
  * Represents a value in the runtime
@@ -60,6 +61,14 @@ export interface StringValue extends RuntimeValue {
   value: string;
 }
 
+/**
+ * Represents an error value in the runtime
+ */
+export interface ErrorValue extends RuntimeValue {
+  type: "error";
+  message: string;
+}
+
 // Creates a new NumberValue
 export function makeNumberValue(value: number): NumberValue {
   return {
@@ -90,6 +99,14 @@ export function makeStringValue(value: string): StringValue {
     type: "string",
     value,
   } as StringValue;
+}
+
+// Creates a new ErrorValue
+export function makeErrorValue(message: string): ErrorValue {
+  return {
+    type: "error",
+    message,
+  } as ErrorValue;
 }
 
 export type FunctionCall = (

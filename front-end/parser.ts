@@ -25,6 +25,7 @@ import type {
   BreakStatement,
   ContinueStatement,
   BlockStatement,
+  TryCatchStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -96,16 +97,18 @@ export default class Parser {
     switch (this.tokenAt().type) {
       case TokenType.OpenBrace:
         return this.parseBlockStatement();
+      case TokenType.Fn:
+        return this.parseFunctionDeclaration();
       case TokenType.Set:
       case TokenType.Keep:
         return this.parseVariableDeclaration();
-      case TokenType.Fn:
-        return this.parseFunctionDeclaration();
       case TokenType.If:
       case TokenType.Elif:
         return this.parseIfStatement();
       case TokenType.While:
         return this.parseWhileStatement();
+      case TokenType.Try:
+        return this.parseTryStatement();
       case TokenType.Break: {
         this.eatToken(); // Eat the break keyword
         return {
@@ -275,6 +278,44 @@ export default class Parser {
       condition,
       body,
     } as WhileStatement;
+  }
+
+  private parseTryStatement(): Statement {
+    this.eatToken(); // Eat the try keyword
+
+    const tryBlock = this.parseBlockStatement();
+
+    if (this.tokenAt().type !== TokenType.Catch) {
+      return throwAnError(
+        "ParseError",
+        "Expected catch keyword after try block"
+      );
+    }
+
+    this.eatToken(); // Eat the catch keyword
+
+    let errorSymbol: string | undefined;
+    if (this.tokenAt().type === TokenType.OpenParen) {
+      this.eatToken(); // Eat the (
+      errorSymbol = this.expectToken(
+        TokenType.Identifier,
+        "Expected identifier for error symbol"
+      ).value;
+
+      this.expectToken(
+        TokenType.CloseParen,
+        "Expected closing brace after error symbol"
+      );
+    }
+
+    const catchBlock = this.parseBlockStatement();
+
+    return {
+      kind: "TryCatchStatement",
+      tryBlock,
+      catchBlock,
+      errorSymbol,
+    } as TryCatchStatement;
   }
 
   // Handle expressions parsing

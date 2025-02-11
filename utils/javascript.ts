@@ -120,7 +120,6 @@ function javascriptFunctionToCrustFunction(
       const result = value(...jsArgs);
       return javascriptValueToCrustValue(result);
     } catch (error) {
-      console.log(error);
       throwAnError("RuntimeError", "Error while calling JavaScript function");
     }
   });

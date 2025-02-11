@@ -1,7 +1,1 @@
-fn add(x, y) {
-  set z = x + y
-  z + 0.5
-};
-
-output(add(100, 100))
-debug(parseFloat("100.3aa"))
+set s = "" try { Int('a') } catch (e) { s = typeof(e) } s

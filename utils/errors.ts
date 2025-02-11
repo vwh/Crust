@@ -55,8 +55,7 @@ export function getNameOfToken(token: TokenType) {
 }
 
 export function throwAnError(type: ErrorType, message: string): never {
-  console.error(`${type} thrown ${message}`);
-  process.exit(1);
+  throw new Error(`${type} thrown ${message}`);
 }
 
 type ErrorType = "ParseError" | "LexerError" | "RuntimeError" | "TypeError";

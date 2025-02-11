@@ -19,6 +19,8 @@ export enum TokenType {
   While,
   Break,
   Continue,
+  Try,
+  Catch,
 
   // Operators and punctuation
   BinaryOperator, // +, -, *, /, %,
@@ -53,6 +55,8 @@ const KEYWORDS: Record<string, TokenType> = {
   while: TokenType.While,
   break: TokenType.Break,
   continue: TokenType.Continue,
+  try: TokenType.Try,
+  catch: TokenType.Catch,
 };
 
 // Represents a single token from the source code
