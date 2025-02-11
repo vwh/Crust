@@ -1,0 +1,27 @@
+keep r = ((Math.random() * 10) // 1) + 1;
+keep player = {
+  tries: 0,
+  guess: 0,
+  playAgain: false
+}
+
+while true {
+  while player.tries < 10 {
+    player.guess = Int(input("Guess the number: "))
+
+    if player.guess == r {
+      output("You win!")
+      break
+    } elif player.guess < r {
+      output("Too low!")
+    } elif player.guess > r {
+      output("Too high!")
+    }
+
+    player.tries = player.tries + 1;
+  }
+
+  player.playAgain = input("Play again? (y/n): ") == "y"
+  if player.playAgain { player.tries = 0;} 
+  else { break }
+}
