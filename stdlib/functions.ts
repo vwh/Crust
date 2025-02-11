@@ -23,6 +23,19 @@ const parseIntFN = makeNativeFunctionValue((args) => {
   const radix =
     args[1]?.type === "number" ? (args[1] as NumberValue).value : 10;
   return makeNumberValue(Number.parseInt(string.value, radix));
+
+  // TODO: throw and error when it return NaN
+});
+
+const parseFloatFN = makeNativeFunctionValue((args) => {
+  if (args.length === 0) return makeNumberValue(0);
+  if (args[0].type !== "string")
+    return throwAnError("TypeError", "parseFloat: expected a string");
+
+  const string = args[0] as StringValue;
+  return makeNumberValue(Number.parseFloat(string.value));
+
+  // TODO: throw and error when it return NaN
 });
 
 const input = makeNativeFunctionValue((args) => {
@@ -41,5 +54,6 @@ const input = makeNativeFunctionValue((args) => {
 export default {
   typeof: typeofFN,
   parseInt: parseIntFN,
+  parseFloat: parseFloatFN,
   input,
 };

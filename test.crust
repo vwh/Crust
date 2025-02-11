@@ -4,3 +4,4 @@ fn add(x, y) {
 };
 
 output(add(100, 100))
+debug(parseFloat("100.3aa"))
