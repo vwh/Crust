@@ -34,19 +34,53 @@ export function evaluateAssignmentExpression(
   node: AssignmentExpression,
   environment: Environment
 ): RuntimeValue {
-  if (node.assignment.kind !== "Identifier") {
-    return throwAnError(
-      "RuntimeError",
-      `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
-    );
+  const value = evaluate(node.value, environment);
+
+  if (node.assignment.kind === "Identifier") {
+    const identifier = node.assignment as Identifier;
+    environment.assignVariable(identifier.symbol, value);
+
+    return value;
   }
 
-  const value = evaluate(node.value, environment);
-  const identifier = node.assignment as Identifier;
+  if (node.assignment.kind === "MemberExpression") {
+    const member = node.assignment as MemberExpression;
+    const object = evaluate(member.object, environment) as ObjectValue;
+    const property = member.property as Identifier;
+    const computed = member.computed;
 
-  environment.assignVariable(identifier.symbol, value);
+    if (computed) {
+      const propertyValue = evaluate(
+        member.property,
+        environment
+      ) as StringValue;
+      if (propertyValue.type !== "string") {
+        return throwAnError(
+          "RuntimeError",
+          "You can only access object properties using strings"
+        );
+      }
 
-  return value;
+      object.properties.set(propertyValue.value, value);
+      return value;
+    }
+
+    if (property.kind !== "Identifier") {
+      return throwAnError(
+        "RuntimeError",
+        `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
+      );
+    }
+
+    object.properties.set(property.symbol, value);
+
+    return value;
+  }
+
+  return throwAnError(
+    "RuntimeError",
+    `at the assignment expression [ ${node.assignment} ]: \n Assignment expression is not supported`
+  );
 }
 
 // Evaluates the UnaryExpression AST
@@ -317,12 +351,26 @@ export function evaluateMemberExpression(
   environment: Environment
 ): RuntimeValue {
   const object = evaluate(node.object, environment) as ObjectValue;
+  const isComputed = node.computed;
 
   if (object.type !== "object") {
     return throwAnError(
       "RuntimeError",
       `at the member expression [ ${node.object} ]: \n Member expression is not supported`
     );
+  }
+
+  if (isComputed) {
+    const property = evaluate(node.property, environment) as StringValue;
+
+    if (property.type !== "string") {
+      return throwAnError(
+        "RuntimeError",
+        "You can only access object properties using strings"
+      );
+    }
+
+    return object.properties.get(property.value) as RuntimeValue;
   }
 
   if (node.property.kind !== "Identifier") {
