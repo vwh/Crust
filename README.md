@@ -67,8 +67,8 @@ while x > 0 {
 
 - [x] Comments
 - [x] Float numbers
-- [ ] Arrays with proper array methods
-- [ ] String methods and operations
+- [x] Arrays with proper array methods
+- [x] String methods and operations
 - [ ] For loops
 - [ ] Bitwise operators
 - [x] Error handling

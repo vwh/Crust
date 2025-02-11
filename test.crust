@@ -1,20 +1,6 @@
-keep person = {
-  name: "Yazan",
-  age: 105,
-  books: ["The Hobbit", "The Lord of the Rings", "Harry Potter"]
-}
+keep todos = []
 
-# yay we have arrays!
-keep random = [1, "Ford", true, null, 10.5, {x: 10}, typeof("x")]
+append(todos, "Hello World")
+append(todos, 5)
 
-output(random)
-
-output(random.0)
-output(random[1])
-
-output(person.books[1])
-output(person.books.2)
-
-output(person["age"])
-output(person.age)
-
+output(todos)
