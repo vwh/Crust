@@ -27,6 +27,9 @@ function execute(code: string) {
 test("String Literal", () => {
   const result = execute('"Hello World"') as StringValue;
   expect(result.value).toBe("Hello World");
+
+  const result2 = execute("'Hello World'") as StringValue;
+  expect(result2.value).toBe("Hello World");
 });
 
 test("Null Literal", () => {
@@ -37,6 +40,9 @@ test("Null Literal", () => {
 test("Boolean Literal", () => {
   const result = execute("true") as BooleanValue;
   expect(result.value).toBe(true);
+
+  const result2 = execute("false") as BooleanValue;
+  expect(result2.value).toBe(false);
 });
 
 test("Numeric Literal", () => {
@@ -47,6 +53,12 @@ test("Numeric Literal", () => {
 test("Math Binary Expression", () => {
   const result = execute("(100 / 2) + 100 * 2 + (2 + 4)") as NumberValue;
   expect(result.value).toBe(256);
+
+  const result2 = execute("2 ** 3") as NumberValue;
+  expect(result2.value).toBe(8);
+
+  const result3 = execute("4 // 3") as NumberValue;
+  expect(result3.value).toBe(1);
 });
 
 test("Unary Expression", () => {
@@ -74,21 +86,43 @@ test("Strings Concatenation", () => {
 test("Numerics Comparison", () => {
   const result = execute("100 > 50") as BooleanValue;
   expect(result.value).toBe(true);
+
+  const result2 = execute("100 < 50") as BooleanValue;
+  expect(result2.value).toBe(false);
+
+  const result3 = execute("100 <= 100") as BooleanValue;
+  expect(result3.value).toBe(true);
+
+  const result4 = execute("100 >= 50") as BooleanValue;
+  expect(result4.value).toBe(true);
+
+  const result5 = execute("100 == 50") as BooleanValue;
+  expect(result5.value).toBe(false);
 });
 
 test("Strings Comparison", () => {
   const result = execute('"Hello World" > "Hello"') as BooleanValue;
   expect(result.value).toBe(true);
-});
 
-test("Math Operators", () => {
-  const result = execute("100 + 100 * 100 / 100 - 100 % 100") as NumberValue;
-  expect(result.value).toBe(200);
+  const result2 = execute('"Hello World" < "Hello"') as BooleanValue;
+  expect(result2.value).toBe(false);
+
+  const result3 = execute('"Hello World" <= "Hello"') as BooleanValue;
+  expect(result3.value).toBe(false);
+
+  const result4 = execute('"Hello World" >= "Hello"') as BooleanValue;
+  expect(result4.value).toBe(true);
+
+  const result5 = execute('"Hello World" == "Hello"') as BooleanValue;
+  expect(result5.value).toBe(false);
 });
 
 test("Variable Declaration & Identifier", () => {
   const result = execute("set x = 100; x") as NumberValue;
   expect(result.value).toBe(100);
+
+  const result2 = execute("keep x = 100; x") as NumberValue;
+  expect(result2.value).toBe(100);
 });
 
 test("Assignment Expression", () => {
@@ -120,14 +154,15 @@ test("Function Declaration", () => {
   expect(result2.value).toBe(5);
 });
 
-test("Math Global Object", () => {
+test("Global Objects", () => {
   const result = execute("Math.pow(2, 5)") as NumberValue;
   expect(result.value).toBe(32);
-});
 
-test("Date Global Object", () => {
-  const result = execute('Date.parse("2023-01-01")') as NumberValue;
-  expect(result.value).toBeGreaterThan(0);
+  const result2 = execute('Date.parse("2023-01-01")') as NumberValue;
+  expect(result2.value).toBeGreaterThan(0);
+
+  const result3 = execute("parseInt('100a')") as NumberValue;
+  expect(result3.value).toBe(100);
 });
 
 test("If Statement", () => {

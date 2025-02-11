@@ -254,6 +254,8 @@ export function evaluateNumericBinaryExpression(
     resultN = left.value % right.value;
   } else if (operator === "**") {
     resultN = left.value ** right.value;
+  } else if (operator === "//") {
+    resultN = Math.floor(left.value / right.value);
   } else if (operator === "==") {
     isComparison = true;
     resultB = left.value === right.value;

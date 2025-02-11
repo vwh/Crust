@@ -32,7 +32,7 @@ import type {
 // LogicalExpression (&&, ||)
 // ComparisonExpression (==, !=, <, >, <=, >=)
 // AdditiveExpression (+, -)
-// MultiplicitaveExpression (*, /, %, **)
+// MultiplicitaveExpression (*, /, %, **, //)
 // CallExpression
 // MemberExpression
 // UnaryExpression (!, -, +)
@@ -423,7 +423,8 @@ export default class Parser {
       this.tokenAt().value === "/" ||
       this.tokenAt().value === "*" ||
       this.tokenAt().value === "%" ||
-      this.tokenAt().value === "**"
+      this.tokenAt().value === "**" ||
+      this.tokenAt().value === "//"
     ) {
       const operator = this.eatToken();
       const right = this.parseCallMemberExpression();

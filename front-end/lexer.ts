@@ -37,6 +37,7 @@ export enum TokenType {
   Semicolon, // ;
   Dot, // .
   Power, // **
+  FloorDivide, // //
 
   EOF, // End of File
 }
@@ -253,6 +254,11 @@ function readOperatorToken(
     if (initial === "*" && next === "*") {
       op += src.shift();
       return token(TokenType.Power, op);
+    }
+    // Handle floor divide operator
+    if (initial === "/" && next === "/") {
+      op += src.shift();
+      return token(TokenType.FloorDivide, op);
     }
     // Handle logical operators (and, or)
     if (initial === "&" && next === "&") {
