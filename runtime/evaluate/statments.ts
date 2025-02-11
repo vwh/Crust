@@ -9,8 +9,9 @@ import type {
   VariableDeclaration,
   IfStatement,
   WhileStatement,
+  BlockStatement,
 } from "../../front-end/ast";
-import type Environment from "../environment";
+import Environment from "../environment";
 import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
 import { throwAnError } from "../../utils/errors";
 
@@ -58,7 +59,7 @@ export function evaluateFunctionDeclaration(
     name: functionDeclaration.name,
     parameters: functionDeclaration.parameters,
     environment,
-    body: functionDeclaration.body,
+    body: functionDeclaration.body.statements,
   } as FunctionValue;
 
   environment.declareVariable(functionDeclaration.name, fn, true);
@@ -78,30 +79,20 @@ export function evaluateIfStatement(
 
   // If condition is true, evaluate all consequent statements
   if (condition.type === "boolean" && condition.value) {
-    let lastEvaluated: RuntimeValue = makeNullValue();
-    for (const statement of expressionStatement.consequent) {
-      lastEvaluated = evaluate(statement, environment);
-    }
-
-    return lastEvaluated;
+    return evaluateBlockStatement(expressionStatement.consequent, environment);
   }
 
   // If condition is false and there's an alternate, evaluate it
   if (
     expressionStatement.alternate &&
-    expressionStatement.alternate.length > 0
+    expressionStatement.alternate.statements.length > 0
   ) {
     // Handle elif (which is a statement in alternate)
-    if (expressionStatement.alternate[0].kind === "IfStatement") {
-      return evaluate(expressionStatement.alternate[0], environment);
+    if (expressionStatement.alternate.statements[0].kind === "IfStatement") {
+      return evaluate(expressionStatement.alternate.statements[0], environment);
     }
 
-    let lastEvaluated: RuntimeValue = makeNullValue();
-    for (const statement of expressionStatement.alternate) {
-      lastEvaluated = evaluate(statement, environment);
-    }
-
-    return lastEvaluated;
+    return evaluateBlockStatement(expressionStatement.alternate, environment);
   }
 
   return makeNullValue();
@@ -133,8 +124,8 @@ export function evaluateWhileStatement(
     let shouldContinue = false; // Track when to restart the outer loop
 
     let i = 0;
-    while (i < whileStatement.body.length) {
-      const statement = whileStatement.body[i];
+    while (i < whileStatement.body.statements.length) {
+      const statement = whileStatement.body.statements[i];
       try {
         lastEvaluated = evaluate(statement, environment);
       } catch (error) {
@@ -158,6 +149,21 @@ export function evaluateWhileStatement(
 
     if (shouldBreak) break; // Break outer loop
     if (shouldContinue) continue; // Restart outer loop immediately
+  }
+
+  return lastEvaluated;
+}
+
+export function evaluateBlockStatement(
+  blockStatement: BlockStatement,
+  environment: Environment
+): RuntimeValue {
+  let lastEvaluated: RuntimeValue = makeNullValue();
+
+  const scope = new Environment(environment);
+
+  for (const statement of blockStatement.statements) {
+    lastEvaluated = evaluate(statement, scope);
   }
 
   return lastEvaluated;

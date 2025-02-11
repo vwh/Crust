@@ -9,6 +9,7 @@ export type NodeType =
   | "WhileStatement"
   | "BreakStatement"
   | "ContinueStatement"
+  | "BlockStatement"
 
   // Expressions
   | "AssignmentExpression"
@@ -65,7 +66,7 @@ export interface FunctionDeclaration extends Statement {
   kind: "FunctionDeclaration";
   name: string; // The name of the function
   parameters: string[]; // The parameters of the function
-  body: Statement[]; // The code block that runs when the function is called
+  body: BlockStatement; // The code block that runs when the function is called
 }
 
 /**
@@ -75,8 +76,8 @@ export interface FunctionDeclaration extends Statement {
 export interface IfStatement extends Statement {
   kind: "IfStatement";
   condition: Expression; // The condition to check (e.g., x > 0)
-  consequent: Statement[]; // The code block that runs if condition is true
-  alternate?: Statement[]; // The else block (optional)
+  consequent: BlockStatement; // The code block that runs if condition is true
+  alternate?: BlockStatement; // The else block (optional)
 }
 
 /**
@@ -85,7 +86,7 @@ export interface IfStatement extends Statement {
 export interface WhileStatement extends Statement {
   kind: "WhileStatement";
   condition: Expression; // The condition to check (e.g., x > 0)
-  body: Statement[]; // The code block that runs if condition is true
+  body: BlockStatement; // The code block that runs if condition is true
 }
 
 /**
@@ -100,6 +101,14 @@ export interface BreakStatement extends Statement {
  */
 export interface ContinueStatement extends Statement {
   kind: "ContinueStatement";
+}
+
+/**
+ * Represents a block statement.
+ */
+export interface BlockStatement extends Statement {
+  kind: "BlockStatement"; // The kind of the statement
+  statements: Statement[]; // The statements in the block
 }
 
 /**

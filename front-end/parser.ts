@@ -24,6 +24,7 @@ import type {
   WhileStatement,
   BreakStatement,
   ContinueStatement,
+  BlockStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -90,28 +91,11 @@ export default class Parser {
     return previous;
   }
 
-  private parseBlock(): Statement[] {
-    this.expectToken(
-      TokenType.OpenBrace,
-      "Expected opening brace after function declaration"
-    );
-
-    const body: Statement[] = [];
-    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
-      body.push(this.parseStatement());
-    }
-
-    this.expectToken(
-      TokenType.CloseBrace,
-      "Expected closing brace after function declaration"
-    );
-
-    return body;
-  }
-
   // Handle statements parsing
   private parseStatement(): Statement {
     switch (this.tokenAt().type) {
+      case TokenType.OpenBrace:
+        return this.parseBlockStatement();
       case TokenType.Set:
       case TokenType.Keep:
         return this.parseVariableDeclaration();
@@ -139,6 +123,29 @@ export default class Parser {
       default:
         return this.parseExpression();
     }
+  }
+
+  // Handle block statements parsing
+  private parseBlockStatement(): BlockStatement {
+    this.expectToken(
+      TokenType.OpenBrace,
+      "Expected opening brace after function declaration"
+    );
+
+    const body: Statement[] = [];
+    while (this.notEOF() && this.tokenAt().type !== TokenType.CloseBrace) {
+      body.push(this.parseStatement());
+    }
+
+    this.expectToken(
+      TokenType.CloseBrace,
+      "Expected closing brace after function declaration"
+    );
+
+    return {
+      kind: "BlockStatement",
+      statements: body,
+    };
   }
 
   // Handle variable declarations parsing
@@ -210,7 +217,7 @@ export default class Parser {
       parameters.push((arg as Identifier).symbol);
     }
 
-    const body = this.parseBlock();
+    const body = this.parseBlockStatement();
 
     const fn = {
       kind: "FunctionDeclaration",
@@ -228,9 +235,12 @@ export default class Parser {
 
     const condition = this.parseExpression();
 
-    const consequent: Statement[] = this.parseBlock();
+    const consequent = this.parseBlockStatement();
 
-    const alternate: Statement[] = [];
+    const alternate = {
+      kind: "BlockStatement",
+      statements: [],
+    } as BlockStatement;
     if (
       this.tokenAt().type === TokenType.Else ||
       this.tokenAt().type === TokenType.Elif
@@ -238,10 +248,10 @@ export default class Parser {
       const isElif = this.tokenAt().type === TokenType.Elif;
 
       if (isElif) {
-        alternate.push(this.parseStatement());
+        alternate.statements.push(this.parseStatement());
       } else {
         this.eatToken(); // Eat the else token
-        alternate.push(...this.parseBlock()); // The code block that runs if condition is true
+        alternate.statements.push(...this.parseBlockStatement().statements); // The code block that runs if condition is true
       }
     }
 
@@ -258,7 +268,7 @@ export default class Parser {
     this.eatToken(); // Eat the while keyword
 
     const condition = this.parseExpression();
-    const body: Statement[] = this.parseBlock();
+    const body = this.parseBlockStatement();
 
     return {
       kind: "WhileStatement",

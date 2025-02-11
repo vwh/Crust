@@ -6,6 +6,7 @@ import {
   evaluateVariableDeclaration,
   evaluateIfStatement,
   evaluateWhileStatement,
+  evaluateBlockStatement,
 } from "./evaluate/statments";
 import {
   evaluateAssignmentExpression,
@@ -35,6 +36,7 @@ import type {
   IfStatement,
   UnaryExpression,
   WhileStatement,
+  BlockStatement,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -66,6 +68,8 @@ export function evaluate(
       throw Error("break");
     case "ContinueStatement":
       throw Error("continue");
+    case "BlockStatement":
+      return evaluateBlockStatement(ast as BlockStatement, environment);
 
     // Expressions
     case "AssignmentExpression":
