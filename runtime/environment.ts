@@ -26,9 +26,10 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("debug", stdlibLog.debug, true);
   environment.declareVariable("output", stdlibLog.output, true);
   environment.declareVariable("typeof", stdlibFunctions.typeof, true);
-  environment.declareVariable("parseInt", stdlibFunctions.parseInt, true);
-  environment.declareVariable("parseFloat", stdlibFunctions.parseFloat, true);
   environment.declareVariable("input", stdlibFunctions.input, true);
+  environment.declareVariable("String", stdlibFunctions.string, true);
+  environment.declareVariable("Int", stdlibFunctions.parseInt, true);
+  environment.declareVariable("Float", stdlibFunctions.parseFloat, true);
 }
 
 /**

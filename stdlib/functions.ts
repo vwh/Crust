@@ -28,9 +28,22 @@ const input = makeNativeFunctionValue((args) => {
 const parseIntFN = javascriptValueToCrustValue(Number.parseInt);
 const parseFloatFN = javascriptValueToCrustValue(Number.parseFloat);
 
+// String methods
+const string = javascriptValueToCrustValue(
+  (value: string | number | boolean | Record<string, unknown> | null) => {
+    if (value === null) return "null";
+    if (typeof value === "string") return value;
+    if (typeof value === "number") return value.toString();
+    if (typeof value === "object") return JSON.stringify(value);
+    if (typeof value === "boolean") return value.toString();
+    return ""; // TODO: handle Array and other types
+  }
+);
+
 export default {
   typeof: typeofFN,
   parseInt: parseIntFN,
   parseFloat: parseFloatFN,
   input,
+  string,
 };

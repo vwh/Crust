@@ -164,10 +164,10 @@ test("Global Objects", () => {
   const result2 = execute('Date.parse("2023-01-01")') as NumberValue;
   expect(result2.value).toBeGreaterThan(0);
 
-  const result3 = execute("parseInt('100a')") as NumberValue;
+  const result3 = execute("Int('100a')") as NumberValue;
   expect(result3.value).toBe(100);
 
-  const result4 = execute("parseFloat('100.5a')") as NumberValue;
+  const result4 = execute("Float('100.5a')") as NumberValue;
   expect(result4.value).toBe(100.5);
 });
 
