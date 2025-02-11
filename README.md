@@ -21,7 +21,9 @@ Crust Simple toy scripting language, JavaScript-like programming language.
   - Comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`)
   - Logical (`&&`, `!!`)
   - Unary (`!`, `-`, `+`)
+- Exceptions handling with (`try`, `catch`, `throw`)
 - Native Functions Support
+- Standard Library
 
 ### Code Examples
 
@@ -68,12 +70,12 @@ while x > 0 {
 - [ ] String methods and operations
 - [ ] For loops
 - [ ] Bitwise operators
-- [ ] Error handling and stack traces
+- [x] Error handling
 - [ ] Module/import system
-- [ ] Implement standard library
+- [x] Implement standard library
 - [ ] Template strings
 - [ ] Add async/await support
 - [ ] JavaScript block
 - [ ] Optimization
 - [ ] Documentation and Web Playground
-- [ ] VSCode extension for syntax highlighting
+- [x] VSCode extension for syntax highlighting
