@@ -187,9 +187,19 @@ function readStringToken(quoteType: string, src: string[]): Token {
 // Reads a numeric literal token (only integers are handled here)
 function readNumberToken(initial: string, src: string[]): Token {
   let num = initial;
-  while (src.length > 0 && isDigit(src[0])) {
+  // The ( . ) is to handle floating point numbers
+  while (src.length > 0 && (isDigit(src[0]) || src[0] === ".")) {
     num += src.shift();
   }
+
+  // Check how many dots are there
+  const dots = num.split(".").length - 1;
+  if (dots > 1)
+    return throwAnError(
+      "LexerError",
+      `Unexpected token [ ${num} ]: \n Floating point numbers cannot have more than one dot`
+    );
+
   return token(TokenType.Number, num);
 }
 

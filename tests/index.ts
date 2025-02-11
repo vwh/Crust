@@ -48,6 +48,9 @@ test("Boolean Literal", () => {
 test("Numeric Literal", () => {
   const result = execute("100") as NumberValue;
   expect(result.value).toBe(100);
+
+  const result2 = execute("100.5") as NumberValue;
+  expect(result2.value).toBe(100.5);
 });
 
 test("Math Binary Expression", () => {

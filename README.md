@@ -11,7 +11,7 @@ Crust Simple toy scripting language, JavaScript-like programming language.
 - Control Flow (`if`, `elif`, `else`, `while`)
 - Break and Continue statements
 - Basic Data Types
-  - Numbers
+  - Numbers ( Integers and Floating Points )
   - Strings
   - Booleans
   - Null
@@ -63,7 +63,7 @@ while x > 0 {
 ## TODO List
 
 - [x] Comments
-- [ ] Float numbers
+- [x] Float numbers
 - [ ] Arrays with proper array methods
 - [ ] String methods and operations
 - [ ] For loops

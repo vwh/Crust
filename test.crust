@@ -1,8 +1,6 @@
-set x = input("Enter a number: ")
-x = parseInt(x)
+fn add(x, y) {
+  set z = x + y
+  z + 0.5
+};
 
-if x > 10 {
-  output("x is greater than 10")
-} elif x < 10 {
-  output("x is less than 10")
-}
+output(add(100, 100))
