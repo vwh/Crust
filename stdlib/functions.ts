@@ -1,41 +1,14 @@
 // stdlib/functions.ts | Standard library functions
 
-import {
-  makeNativeFunctionValue,
-  makeNumberValue,
-  makeStringValue,
-} from "../runtime/values";
+import { makeNativeFunctionValue, makeStringValue } from "../runtime/values";
 import { throwAnError } from "../utils/errors";
 
-import type { NumberValue, StringValue } from "../runtime/values";
+import type { StringValue } from "../runtime/values";
+import { javascriptValueToCrustValue } from "../utils/javascript";
 
 const typeofFN = makeNativeFunctionValue((args) => {
   const value = args[0];
   return makeStringValue(value.type);
-});
-
-const parseIntFN = makeNativeFunctionValue((args) => {
-  if (args.length === 0) return makeNumberValue(0);
-  if (args[0].type !== "string")
-    return throwAnError("TypeError", "parseInt: expected a string");
-
-  const string = args[0] as StringValue;
-  const radix =
-    args[1]?.type === "number" ? (args[1] as NumberValue).value : 10;
-  return makeNumberValue(Number.parseInt(string.value, radix));
-
-  // TODO: throw and error when it return NaN
-});
-
-const parseFloatFN = makeNativeFunctionValue((args) => {
-  if (args.length === 0) return makeNumberValue(0);
-  if (args[0].type !== "string")
-    return throwAnError("TypeError", "parseFloat: expected a string");
-
-  const string = args[0] as StringValue;
-  return makeNumberValue(Number.parseFloat(string.value));
-
-  // TODO: throw and error when it return NaN
 });
 
 const input = makeNativeFunctionValue((args) => {
@@ -50,6 +23,10 @@ const input = makeNativeFunctionValue((args) => {
   const result = prompt((args[0] as StringValue).value);
   return makeStringValue(result || "");
 });
+
+// Number methods
+const parseIntFN = javascriptValueToCrustValue(Number.parseInt);
+const parseFloatFN = javascriptValueToCrustValue(Number.parseFloat);
 
 export default {
   typeof: typeofFN,
