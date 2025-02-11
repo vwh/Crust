@@ -111,7 +111,7 @@ export function evaluateBinaryExpression(
   const left = evaluate(BinaryExpression.left, environment);
   const right = evaluate(BinaryExpression.right, environment);
 
-  // if left hand side is a number and right hand side is a number
+  // If left hand side is a number and right hand side is a number
   if (left.type === "number" && right.type === "number") {
     return evaluateNumericBinaryExpression(
       left as NumberValue,
@@ -120,7 +120,7 @@ export function evaluateBinaryExpression(
     );
   }
 
-  // if left hand side is a string and right hand side is a string
+  // If left hand side is a string and right hand side is a string
   if (left.type === "string" && right.type === "string") {
     return evaluateStringBinaryExpression(
       left as StringValue,
@@ -129,7 +129,7 @@ export function evaluateBinaryExpression(
     );
   }
 
-  // if left hand side is boolean and right hand side is boolean
+  // If left hand side is boolean and right hand side is boolean
   if (left.type === "boolean" && right.type === "boolean") {
     return evaluateBooleanBinaryExpression(
       left as BooleanValue,
@@ -146,7 +146,7 @@ export function evaluateBinaryExpression(
     );
   }
 
-  // if both sides are not numbers or one of them
+  // If both sides are not numbers or one of them
   return makeNullValue();
 }
 
@@ -344,13 +344,13 @@ export function evaluateNativeFunction(
   const fn = evaluate(node.caller, environment);
 
   if (fn.type === "native-function") {
-    // it will be evaluated in the runtime
+    // It will be evaluated in the runtime
     const result = (fn as NativeFunctionValue).call(args, environment);
 
     return result;
   }
 
-  // user-defined functions
+  // User-defined functions
   if (fn.type === "function") {
     const userfn = fn as FunctionValue;
     const scope = new Environment(userfn.environment);

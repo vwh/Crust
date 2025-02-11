@@ -1,17 +1,14 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
-import {
-  makeNumberValue,
-  makeNullValue,
-  makeBooleanValue,
-  makeNativeFunctionValue,
-  makeStringValue,
-} from "./values";
+import { makeNullValue, makeBooleanValue } from "./values";
 import { throwAnError } from "../utils/errors";
-import { dateObject, jsonObject, mathObject } from "../utils/javascript";
-import { runtimeValueToString } from "../utils/runtime";
 
-import type { NumberValue, RuntimeValue, StringValue } from "./values";
+// Standard library imports
+import stdlibLog from "../stdlib/logging";
+import stdlibFunctions from "../stdlib/functions";
+import stdlibObjects from "../stdlib/objects";
+
+import type { RuntimeValue } from "./values";
 
 // Sets up the global scope
 function setupGlobalScope(environment: Environment) {
@@ -20,50 +17,16 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("false", makeBooleanValue(false), true);
   environment.declareVariable("null", makeNullValue(), true);
 
-  // Global bulit-in objects
-  environment.declareVariable("Math", mathObject, true);
-  environment.declareVariable("Date", dateObject, true);
-  environment.declareVariable("JSON", jsonObject, true);
+  // Global built-in objects
+  environment.declareVariable("Math", stdlibObjects.math, true);
+  environment.declareVariable("Date", stdlibObjects.date, true);
+  environment.declareVariable("JSON", stdlibObjects.json, true);
 
-  // Global bulit-in functions
-  environment.declareVariable(
-    "debug",
-    makeNativeFunctionValue((args) => {
-      console.log(...args);
-      return makeNullValue();
-    }),
-    true
-  );
-  environment.declareVariable(
-    "typeof",
-    makeNativeFunctionValue((args) => {
-      const value = args[0];
-      return makeStringValue(value.type);
-    }),
-    true
-  );
-  environment.declareVariable(
-    "output",
-    makeNativeFunctionValue((args) => {
-      console.log(...args.map((arg) => runtimeValueToString(arg)));
-      return makeNullValue();
-    }),
-    true
-  );
-  environment.declareVariable(
-    "parseInt",
-    makeNativeFunctionValue((args) => {
-      if (args.length === 0) return makeNumberValue(0);
-      if (args[0].type !== "string")
-        return throwAnError("TypeError", "parseInt: expected a string");
-
-      const string = args[0] as StringValue;
-      const radix =
-        args[1]?.type === "number" ? (args[1] as NumberValue).value : 10;
-      return makeNumberValue(Number.parseInt(string.value, radix));
-    }),
-    true
-  );
+  // Global built-in functions
+  environment.declareVariable("debug", stdlibLog.debug, true);
+  environment.declareVariable("output", stdlibLog.output, true);
+  environment.declareVariable("typeof", stdlibFunctions.typeof, true);
+  environment.declareVariable("parseInt", stdlibFunctions.parseInt, true);
 }
 
 /**

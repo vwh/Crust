@@ -198,7 +198,7 @@ export default class Parser {
     const args = this.parseArguments();
 
     // parseArguments returns expressions, but we need to convert them to strings
-    // as we are handling arguments not parameters
+    // As we are handling arguments not parameters
     const parameters: string[] = [];
     for (const arg of args) {
       if (arg.kind !== "Identifier")
@@ -224,7 +224,7 @@ export default class Parser {
 
   // Handle if statements parsing
   private parseIfStatement(): Statement {
-    this.eatToken(); // eat the if keyword
+    this.eatToken(); // Eat the if keyword
 
     const condition = this.parseExpression();
 
@@ -240,7 +240,7 @@ export default class Parser {
       if (isElif) {
         alternate.push(this.parseStatement());
       } else {
-        this.eatToken(); // eat the else token
+        this.eatToken(); // Eat the else token
         alternate.push(...this.parseBlock()); // The code block that runs if condition is true
       }
     }
@@ -255,7 +255,7 @@ export default class Parser {
 
   // Handle while loop statements parsing
   private parseWhileStatement(): Statement {
-    this.eatToken(); // eat the while keyword
+    this.eatToken(); // Eat the while keyword
 
     const condition = this.parseExpression();
     const body: Statement[] = this.parseBlock();
@@ -278,7 +278,7 @@ export default class Parser {
 
     if (this.tokenAt().type === TokenType.Equals) {
       this.eatToken(); // Eat the equals
-      const value = this.parseAssignmentExpression(); // allowing chained assignments like ( x = y = z = 69 )
+      const value = this.parseAssignmentExpression(); // Allowing chained assignments like ( x = y = z = 69 )
       return {
         kind: "AssignmentExpression",
         assignment: left,

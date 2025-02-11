@@ -294,7 +294,7 @@ function readOperatorToken(
 
 // Determines (using a simple heuristic) if an operator should be treated as unary.
 // If there is no previous token or if the previous token is one that implies an operand is expected next,
-// then the current operator (such as '+' or '-') is treated as unary.
+// Then the current operator (such as '+' or '-') is treated as unary.
 function shouldTreatAsUnary(tokens: Token[]): boolean {
   if (tokens.length === 0) return true;
   const prev = tokens[tokens.length - 1];
