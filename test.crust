@@ -1,1 +1,8 @@
-output(4 // 3)
+set x = input("Enter a number: ")
+x = parseInt(x)
+
+if x > 10 {
+  output("x is greater than 10")
+} elif x < 10 {
+  output("x is less than 10")
+}

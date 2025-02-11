@@ -13,8 +13,5 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "readline-sync": "^1.4.10"
   }
 }
