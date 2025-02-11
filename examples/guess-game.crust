@@ -7,7 +7,12 @@ keep player = {
 
 while true {
   while player.tries < 10 {
-    player.guess = Int(input("Guess the number: "))
+    try {
+        player.guess = Int(input("Guess the number: "))
+    } catch {
+        output("Invalid input")
+        continue
+    }
 
     if player.guess == r {
       output("You win!")
