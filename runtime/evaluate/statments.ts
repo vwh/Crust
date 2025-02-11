@@ -76,10 +76,14 @@ export function evaluateIfStatement(
     environment
   ) as BooleanValue;
 
-  // If condition is true, evaluate consequent and return
+  // If condition is true, evaluate all consequent statements
   if (condition.type === "boolean" && condition.value) {
-    for (const statement of expressionStatement.consequent)
-      return evaluate(statement, environment);
+    let lastEvaluated: RuntimeValue = makeNullValue();
+    for (const statement of expressionStatement.consequent) {
+      lastEvaluated = evaluate(statement, environment);
+    }
+
+    return lastEvaluated;
   }
 
   // If condition is false and there's an alternate, evaluate it
@@ -91,10 +95,13 @@ export function evaluateIfStatement(
     if (expressionStatement.alternate[0].kind === "IfStatement") {
       return evaluate(expressionStatement.alternate[0], environment);
     }
-    // Handle else block
+
+    let lastEvaluated: RuntimeValue = makeNullValue();
     for (const statement of expressionStatement.alternate) {
-      return evaluate(statement, environment);
+      lastEvaluated = evaluate(statement, environment);
     }
+
+    return lastEvaluated;
   }
 
   return makeNullValue();
@@ -141,6 +148,8 @@ export function evaluateWhileStatement(
             shouldContinue = true; // Signal outer loop restart
             break; // Exit inner loop immediately
           }
+
+          throw error;
         }
       }
 
