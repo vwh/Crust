@@ -6,6 +6,7 @@ import {
   makeStringValue,
 } from "../runtime/values";
 import { throwAnError } from "../utils/errors";
+import readlineSync from "readline-sync";
 
 import type { NumberValue, StringValue } from "../runtime/values";
 
@@ -25,7 +26,21 @@ const parseIntFN = makeNativeFunctionValue((args) => {
   return makeNumberValue(Number.parseInt(string.value, radix));
 });
 
+const input = makeNativeFunctionValue((args) => {
+  if (args.length === 0) {
+    const result = readlineSync.question(""); // Synchronously wait for input
+    return makeStringValue(result);
+  }
+
+  if (args[0].type !== "string")
+    return throwAnError("TypeError", "input: expected a string");
+
+  const result = readlineSync.question((args[0] as StringValue).value); // Synchronously wait for input
+  return makeStringValue(result);
+});
+
 export default {
   typeof: typeofFN,
   parseInt: parseIntFN,
+  input,
 };

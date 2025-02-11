@@ -8,9 +8,13 @@
     "tests": "bun test ./tests/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/readline-sync": "^1.4.8"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
   }
 }

@@ -1,31 +1,10 @@
-keep xoa = {
-  x: 100,
-  n: {
-    y: 200,
-  }
+
+
+set x = input("Enter a number: ")
+x = parseInt(x)
+
+if x > 10 {
+  output("x is greater than 10")
+} elif x < 10 {
+  output("x is less than 10")
 }
-
-output(xoa.n.y)
-
-fn add(x, y) {
-  set z = x + y
-  z
-};
-
-set x = 0
-set y = 5;
-
-while x <= 5 {
-  x = x + 1
-
-  if x == 2 {
-    y = 5
-    continue
-  } elif x == 4 {
-    break
-  }
-
-  output(x)
-}
-
-output("The End", x, add(x, y))
