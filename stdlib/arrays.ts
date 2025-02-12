@@ -144,6 +144,30 @@ const reverse = makeNativeFunctionValue((args) => {
   return makeNullValue();
 });
 
+const range = makeNativeFunctionValue((args) => {
+  if (args.length === 0) return makeNullValue();
+
+  // implement range python-like range(start, end, step)
+  const start = args[0] as NumberValue;
+  if (start.type !== "number")
+    throwAnError("TypeError", `Expected a number, got ${start.type}`);
+
+  const end = args[1] as NumberValue;
+  if (end.type !== "number")
+    throwAnError("TypeError", `Expected a number, got ${end.type}`);
+
+  const step = (args[2] ?? makeNumberValue(1)) as NumberValue;
+  if (step.type !== "number")
+    throwAnError("TypeError", `Expected a number, got ${step.type}`);
+
+  const array = makeArrayValue([]);
+  for (let i = start.value; i < end.value; i += step.value) {
+    array.elements.push(makeNumberValue(i));
+  }
+
+  return array;
+});
+
 export default {
   Array: array,
   append,
@@ -153,4 +177,5 @@ export default {
   shift,
   unshift,
   reverse,
+  range,
 };

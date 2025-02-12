@@ -38,5 +38,5 @@ const string = makeNativeFunctionValue((args) => {
 });
 
 export default {
-  string,
+  String,
 };

@@ -30,26 +30,16 @@ function setupGlobalScope(environment: Environment) {
     true
   );
 
-  // Global built-in objects
-  environment.declareVariable("Math", stdlibJSObjects.math, true);
-  environment.declareVariable("Date", stdlibJSObjects.date, true);
-  environment.declareVariable("JSON", stdlibJSObjects.json, true);
-
-  // Global built-in functions
-  environment.declareVariable("debug", stdlibLog.debug, true);
-  environment.declareVariable("output", stdlibLog.output, true);
-  environment.declareVariable("typeof", stdlibFunctions.typeof, true);
-  environment.declareVariable("input", stdlibFunctions.input, true);
-  environment.declareVariable("len", stdlibFunctions.len, true);
-
-  environment.declareVariable("String", stdlibStrings.string, true);
-
-  environment.declareVariable("Int", stdlibNumbers.int, true);
-  environment.declareVariable("Float", stdlibNumbers.float, true);
-  environment.declareVariable("fixed", stdlibNumbers.fixed, true);
-
-  for (const [key, value] of Object.entries(stdlibArrays)) {
-    environment.declareVariable(key, value, true);
+  // Add all global built-in functions/objects/values in the global scope
+  for (const [key, value] of Object.entries({
+    ...stdlibLog,
+    ...stdlibFunctions,
+    ...stdlibStrings,
+    ...stdlibNumbers,
+    ...stdlibArrays,
+    ...stdlibJSObjects,
+  })) {
+    environment.declareVariable(key, value as RuntimeValue, true);
   }
 }
 

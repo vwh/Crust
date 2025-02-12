@@ -19,5 +19,5 @@ output(map(x, addFive))
 output(filter(x, isFive))
 output(reduce(x, addFive, 0))
 
-output(x)
+output(range(1, 5, 2))
 

@@ -57,7 +57,7 @@ export const mathObject = javascriptValueToCrustValue({
 });
 
 export default {
-  date: dateObject,
-  json: jsonObject,
-  math: mathObject,
+  Date: dateObject,
+  Json: jsonObject,
+  Math: mathObject,
 };

@@ -53,7 +53,7 @@ const fixed = makeNativeFunctionValue((args) => {
 });
 
 export default {
-  float,
-  int,
+  Float: float,
+  Int: int,
   fixed,
 };
