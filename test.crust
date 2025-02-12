@@ -1,6 +1,11 @@
-keep todos = []
+keep todos = [0.25, "Hello", true, null]
 
-append(todos, "Hello World")
-append(todos, 5)
+todos.0 = "Something"
+todos[5] = 74
 
-output(todos)
+append(todos, "Yo!")
+
+output(todos.1)
+
+output("Length", len(todos))
+

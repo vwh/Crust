@@ -19,6 +19,7 @@ import type {
   MemberExpression,
   UnaryExpression,
   ArrayLiteral,
+  NumericLiteral,
 } from "../../front-end/ast";
 import type {
   ArrayValue,
@@ -48,36 +49,69 @@ export function evaluateAssignmentExpression(
 
   if (node.assignment.kind === "MemberExpression") {
     const member = node.assignment as MemberExpression;
-    const object = evaluate(member.object, environment) as ObjectValue;
-    const property = member.property as Identifier;
+    const objectOrArray = evaluate(member.object, environment);
+    const property = member.property;
     const computed = member.computed;
 
     if (computed) {
-      const propertyValue = evaluate(
-        member.property,
-        environment
-      ) as StringValue;
-      if (propertyValue.type !== "string") {
-        throwAnError(
-          "RuntimeError",
-          `You can only access object properties using strings but got [ ${propertyValue.type} ]`
-        );
+      const propertyValue = evaluate(member.property, environment);
+      if (objectOrArray.type === "object") {
+        const object = objectOrArray as ObjectValue;
+        if (propertyValue.type !== "string") {
+          throwAnError(
+            "RuntimeError",
+            `You can only access object properties using strings but got [ ${propertyValue.type} ]`
+          );
+        }
+
+        object.properties.set((propertyValue as StringValue).value, value);
+        return value;
       }
 
-      object.properties.set(propertyValue.value, value);
-      return value;
-    }
+      if (objectOrArray.type === "array") {
+        const array = objectOrArray as ArrayValue;
+        if (propertyValue.type !== "number") {
+          throwAnError(
+            "RuntimeError",
+            `You can only access object properties using numbers but got [ ${propertyValue.type} ]`
+          );
+        }
 
-    if (property.kind !== "Identifier") {
+        array.elements[(propertyValue as NumberValue).value] = value;
+        return value;
+      }
+
       throwAnError(
         "RuntimeError",
-        `Member Assignment expression must be an identifier but got [ ${property.kind} ]`
+        `The member expression is not supported for [ ${objectOrArray.type} ]`
       );
     }
 
-    object.properties.set(property.symbol, value);
+    if (objectOrArray.type === "object") {
+      const object = objectOrArray as ObjectValue;
+      if (property.kind !== "Identifier") {
+        throwAnError(
+          "RuntimeError",
+          `Member Assignment expression must be an identifier but got [ ${property.kind} ]`
+        );
+      }
 
-    return value;
+      object.properties.set((property as Identifier).symbol, value);
+      return value;
+    }
+
+    if (objectOrArray.type === "array") {
+      const array = objectOrArray as ArrayValue;
+      if (property.kind !== "NumericLiteral") {
+        throwAnError(
+          "RuntimeError",
+          `Member Assignment expression must be a numeric literal but got [ ${property.kind} ]`
+        );
+      }
+
+      array.elements[Number((property as NumericLiteral).value)] = value;
+      return value;
+    }
   }
 
   throwAnError(
