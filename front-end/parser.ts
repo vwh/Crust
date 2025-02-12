@@ -28,6 +28,7 @@ import type {
   TryCatchStatement,
   ArrayLiteral,
   ReturnStatement,
+  ForStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -111,6 +112,8 @@ export default class Parser {
         return this.parseIfStatement();
       case TokenType.While:
         return this.parseWhileStatement();
+      case TokenType.For:
+        return this.parseForStatement();
       case TokenType.Try:
         return this.parseTryStatement();
       case TokenType.Break: {
@@ -292,6 +295,32 @@ export default class Parser {
       condition,
       body,
     } as WhileStatement;
+  }
+
+  // Handle for loop statements parsing
+  private parseForStatement(): Statement {
+    this.eatToken(); // Eat the for keyword
+
+    const variable = this.expectToken(
+      TokenType.Identifier,
+      "Expected identifier name for for loop variable"
+    ).value;
+
+    this.expectToken(
+      TokenType.In,
+      "Expected in keyword after for loop variable"
+    );
+
+    const collection = this.parseExpression();
+
+    const body = this.parseBlockStatement();
+
+    return {
+      kind: "ForStatement",
+      variable,
+      collection,
+      body,
+    } as ForStatement;
   }
 
   private parseTryStatement(): Statement {

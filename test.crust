@@ -21,3 +21,23 @@ output(reduce(x, addFive, 0))
 
 output(range(1, 5, 2))
 
+output("-" * 10)
+
+for x in range(1, 5) {
+    output(x)
+}
+
+output("-" * 10)
+
+for c in "Hello World" {
+    if c == " " {
+        break
+    }
+}
+
+output("-" * 10)
+
+for uwu in { x: 100, y: 31 } {
+    output(uwu)
+}
+

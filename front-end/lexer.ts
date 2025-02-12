@@ -18,6 +18,8 @@ export enum TokenType {
   Else,
   Elif, // else if
   While,
+  For,
+  In,
   Break,
   Continue,
   Try,
@@ -55,6 +57,8 @@ const KEYWORDS: Record<string, TokenType> = {
   else: TokenType.Else,
   elif: TokenType.Elif,
   while: TokenType.While,
+  for: TokenType.For,
+  in: TokenType.In,
   break: TokenType.Break,
   continue: TokenType.Continue,
   try: TokenType.Try,

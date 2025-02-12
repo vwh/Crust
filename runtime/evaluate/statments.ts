@@ -1,7 +1,14 @@
 // statments.ts | Evaluates the statements in the runtime
 
 import { evaluate } from "../interpreter";
-import { makeErrorValue, makeNullValue, makeReturnValue } from "../values";
+import {
+  makeArrayValue,
+  makeErrorValue,
+  makeNullValue,
+  makeNumberValue,
+  makeReturnValue,
+  makeStringValue,
+} from "../values";
 
 import type {
   FunctionDeclaration,
@@ -12,9 +19,17 @@ import type {
   BlockStatement,
   TryCatchStatement,
   ReturnStatement,
+  ForStatement,
 } from "../../front-end/ast";
 import Environment from "../environment";
-import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
+import type {
+  ArrayValue,
+  BooleanValue,
+  FunctionValue,
+  ObjectValue,
+  RuntimeValue,
+  StringValue,
+} from "../values";
 import { CrustError, throwAnError } from "../../utils/errors";
 
 // Evaluates the Program AST
@@ -141,7 +156,6 @@ export function evaluateWhileStatement(
             shouldContinue = true; // Signal outer loop restart
             break; // Exit inner loop immediately
           }
-
           throw error;
         }
       }
@@ -151,6 +165,61 @@ export function evaluateWhileStatement(
 
     if (shouldBreak) break; // Break outer loop
     if (shouldContinue) continue; // Restart outer loop immediately
+  }
+
+  return lastEvaluated;
+}
+
+export function evaluateForStatement(
+  forStatement: ForStatement,
+  environment: Environment
+): RuntimeValue {
+  let lastEvaluated: RuntimeValue = makeNullValue();
+  const collection = evaluate(forStatement.collection, environment);
+
+  let collectionObj: ArrayValue;
+
+  if (collection.type === "array") {
+    collectionObj = collection as ArrayValue;
+  } else if (collection.type === "string") {
+    const array: RuntimeValue[] = [];
+    for (let i = 0; i < (collection as StringValue).value.length; i++) {
+      array.push(makeStringValue((collection as StringValue).value[i]));
+    }
+    collectionObj = makeArrayValue(array);
+  } else if (collection.type === "object") {
+    const array: RuntimeValue[] = [];
+    for (const [key, value] of (collection as ObjectValue).properties) {
+      array.push(makeStringValue(key));
+    }
+    collectionObj = makeArrayValue(array);
+  } else {
+    throwAnError(
+      "RuntimeError",
+      `The collection of the for loop must be an array or a string but got [ ${collection.type} ]`
+    );
+  }
+
+  const loopEnv = new Environment(environment);
+  loopEnv.declareVariable(forStatement.variable, makeNullValue(), false);
+
+  for (let i = 0; i < collectionObj.elements.length; i++) {
+    // Update the loop variable with the current element
+    loopEnv.assignVariable(forStatement.variable, collectionObj.elements[i]);
+
+    try {
+      lastEvaluated = evaluateBlockStatement(forStatement.body, loopEnv);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "break") {
+          break;
+        }
+        if (error.message === "continue") {
+          continue;
+        }
+        throw error;
+      }
+    }
   }
 
   return lastEvaluated;

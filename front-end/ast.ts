@@ -7,6 +7,7 @@ export type NodeType =
   | "FunctionDeclaration"
   | "IfStatement"
   | "WhileStatement"
+  | "ForStatement"
   | "BreakStatement"
   | "ContinueStatement"
   | "BlockStatement"
@@ -89,6 +90,17 @@ export interface IfStatement extends Statement {
 export interface WhileStatement extends Statement {
   kind: "WhileStatement";
   condition: Expression; // The condition to check (e.g., x > 0)
+  body: BlockStatement; // The code block that runs if condition is true
+}
+
+/**
+ * Represents a for loop statement.
+ * - Loop over a collection
+ */
+export interface ForStatement extends Statement {
+  kind: "ForStatement";
+  variable: string; // The variable to use
+  collection: Expression; // The collection to loop on
   body: BlockStatement; // The code block that runs if condition is true
 }
 

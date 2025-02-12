@@ -223,6 +223,13 @@ test("While Loop Statement & Break & Continue", () => {
   expect(result.value).toBe(-1);
 });
 
+test("For Loop Statement", () => {
+  const result = execute(
+    "set x = 0 set y = null for x in range(1, 5) { x = x + 1 if x == 2 { y = 5 continue } elif x == 4 { break } } x - y"
+  ) as NumberValue;
+  expect(result.value).toBe(-5);
+});
+
 test("Block Statement", () => {
   const result = execute("set x = 0; { set x = 5 } x") as NumberValue;
   expect(result.value).toBe(0);
