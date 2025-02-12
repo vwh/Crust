@@ -1,1 +1,25 @@
-output(fixed(100.5555, 2))
+set x = Array(1, 2, 3, 4, 5)
+
+fn map(array, function) {
+    set result = []
+    set i = 0
+    while i < len(array) {
+        append(result, function(array[i]))
+        i = i + 1
+    }
+    
+    result
+}
+
+fn addFive(x) {
+    x + 5
+}
+
+append(x, 6)
+remove(x, 1)
+pop(x)
+reverse(x)
+push(x, 7)
+shift(x)
+
+output(map(x, addFive))

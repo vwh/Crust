@@ -75,7 +75,8 @@ export type ErrorType =
   | "LexerError"
   | "RuntimeError"
   | "TypeError"
-  | "DivisionByZeroError";
+  | "DivisionByZeroError"
+  | "IndexOutOfBoundsError";
 
 /**
  * Represents an error value in the runtime
@@ -125,6 +126,14 @@ export function makeErrorValue(type: ErrorType, error: Error): ErrorValue {
     value: type,
     error,
   } as ErrorValue;
+}
+
+// Creates a new ArrayValue
+export function makeArrayValue(elements: RuntimeValue[]): ArrayValue {
+  return {
+    type: "array",
+    elements,
+  } as ArrayValue;
 }
 
 export type FunctionCall = (

@@ -1,6 +1,11 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
-import { makeNullValue, makeBooleanValue, makeNumberValue } from "./values";
+import {
+  makeNullValue,
+  makeBooleanValue,
+  makeNumberValue,
+  ArrayValue,
+} from "./values";
 import { throwAnError } from "../utils/errors";
 
 // Standard library imports
@@ -48,7 +53,9 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("Float", stdlibNumbers.float, true);
   environment.declareVariable("fixed", stdlibNumbers.fixed, true);
 
-  environment.declareVariable("append", stdlibArrays.append, true);
+  for (const [key, value] of Object.entries(stdlibArrays)) {
+    environment.declareVariable(key, value, true);
+  }
 }
 
 /**
