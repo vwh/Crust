@@ -1,6 +1,6 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
-import { makeNullValue, makeBooleanValue } from "./values";
+import { makeNullValue, makeBooleanValue, makeNumberValue } from "./values";
 import { throwAnError } from "../utils/errors";
 
 // Standard library imports
@@ -19,6 +19,16 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("true", makeBooleanValue(true), true);
   environment.declareVariable("false", makeBooleanValue(false), true);
   environment.declareVariable("null", makeNullValue(), true);
+  environment.declareVariable(
+    "MAX_SAFE_INTEGER",
+    makeNumberValue(Number.MAX_SAFE_INTEGER),
+    true
+  );
+  environment.declareVariable(
+    "MIN_SAFE_INTEGER",
+    makeNumberValue(Number.MIN_SAFE_INTEGER),
+    true
+  );
 
   // Global built-in objects
   environment.declareVariable("Math", stdlibJSObjects.math, true);
@@ -33,8 +43,10 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("len", stdlibFunctions.len, true);
 
   environment.declareVariable("String", stdlibStrings.string, true);
+
   environment.declareVariable("Int", stdlibNumbers.int, true);
   environment.declareVariable("Float", stdlibNumbers.float, true);
+  environment.declareVariable("fixed", stdlibNumbers.fixed, true);
 
   environment.declareVariable("append", stdlibArrays.append, true);
 }

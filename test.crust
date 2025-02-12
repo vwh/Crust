@@ -1,17 +1,1 @@
-
-
-
-
-try {
-    set x = 5 / 0
-    Int('a')
-    output(x)
-} catch (e) {
-    if e == "DivisionByZeroError" {
-        output("You can't divide by zero!")
-    }
-
-    if e == "TypeError" {
-        output("You can't convert that mate!")
-    }
-}
+output(fixed(100.5555, 2))
