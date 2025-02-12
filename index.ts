@@ -5,6 +5,13 @@ import Environment from "./runtime/environment";
 import { evaluate } from "./runtime/interpreter";
 import { log } from "./utils/errors";
 import fs from "node:fs";
+import { readCrustFilesFromStdlib } from "./utils/stdlib";
+
+// Read all crust files from the stdlib folder
+const crustSTDLIB = await readCrustFilesFromStdlib();
+function combineStdlib(input: string) {
+  return `${crustSTDLIB}\n${input}`;
+}
 
 function repl() {
   const parser = new Parser();
@@ -15,7 +22,7 @@ function repl() {
   console.log("Crust REPL");
 
   while (true) {
-    const input = prompt("Crust> ");
+    const input = combineStdlib(prompt("Crust> ") || "");
 
     if (input === "exit" || !input) {
       break;
@@ -42,7 +49,7 @@ function run(fileName: string) {
       throw err;
     }
 
-    const input = data.toString();
+    const input = combineStdlib(data.toString());
 
     // Produce AST from the source code
     const program = parser.produceAst(input);

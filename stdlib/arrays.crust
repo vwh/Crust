@@ -1,0 +1,35 @@
+# stdlib/arrays.crust | Standard library for arrays
+
+fn map(array, function) {
+    set result = []
+    set i = 0
+    while i < len(array) {
+        append(result, function(array[i]))
+        i = i + 1
+    }
+    
+    result
+}
+
+fn filter(array, function) {
+    set result = []
+    set i = 0
+    while i < len(array) {
+        if function(array[i]) {
+            append(result, array[i])
+        }
+        i = i + 1
+    }
+    
+    result
+}
+
+fn reduce(array, function, initial) {
+    set i = 0
+    while i < len(array) {
+        initial = function(initial, array[i])
+        i = i + 1
+    }
+    
+    initial
+}

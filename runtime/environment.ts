@@ -1,11 +1,6 @@
 // environment.ts | Responsible for managing the variables in the runtime
 
-import {
-  makeNullValue,
-  makeBooleanValue,
-  makeNumberValue,
-  ArrayValue,
-} from "./values";
+import { makeNullValue, makeBooleanValue, makeNumberValue } from "./values";
 import { throwAnError } from "../utils/errors";
 
 // Standard library imports

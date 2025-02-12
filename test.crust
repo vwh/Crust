@@ -1,35 +1,23 @@
 set x = Array(1, 2, 3, 4, 5)
 
-fn map(array, function) {
-    set result = []
-    set i = 0
-    while i < len(array) {
-        append(result, function(array[i]))
-        i = i + 1
-    }
-    
-    result
-}
-
-fn testReturn(x) {
-    if x == 0 {
-        return 2
-    }
-    
-    output("Hello World")
-}
-
 fn addFive(x) {
     x + 5
 }
 
-append(x, 6)
+fn isFive(x) {
+    x == 5
+}
+
 remove(x, 1)
 pop(x)
 reverse(x)
 push(x, 7)
 shift(x)
+append(x, 5)
 
 output(map(x, addFive))
+output(filter(x, isFive))
+output(reduce(x, addFive, 0))
 
-output(testReturn(0))
+output(x)
+
