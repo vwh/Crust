@@ -11,6 +11,14 @@ fn map(array, function) {
     result
 }
 
+fn testReturn(x) {
+    if x == 0 {
+        return 2
+    }
+    
+    output("Hello World")
+}
+
 fn addFive(x) {
     x + 5
 }
@@ -23,3 +31,5 @@ push(x, 7)
 shift(x)
 
 output(map(x, addFive))
+
+output(testReturn(0))

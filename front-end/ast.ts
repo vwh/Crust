@@ -10,6 +10,7 @@ export type NodeType =
   | "BreakStatement"
   | "ContinueStatement"
   | "BlockStatement"
+  | "ReturnStatement"
   | "TryCatchStatement"
 
   // Expressions
@@ -111,6 +112,14 @@ export interface ContinueStatement extends Statement {
 export interface BlockStatement extends Statement {
   kind: "BlockStatement"; // The kind of the statement
   statements: Statement[]; // The statements in the block
+}
+
+/**
+ * Represents a return statement.
+ */
+export interface ReturnStatement extends Statement {
+  kind: "ReturnStatement";
+  value?: Expression; // The value to return
 }
 
 /**

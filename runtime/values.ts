@@ -12,6 +12,7 @@ export type ValueType =
   | "array"
   | "native-function"
   | "function"
+  | "return"
   | "string"
   | "error";
 
@@ -68,6 +69,14 @@ export interface ArrayValue extends RuntimeValue {
 export interface StringValue extends RuntimeValue {
   type: "string";
   value: string;
+}
+
+/**
+ * Represents a return value in the runtime
+ */
+export interface ReturnValue extends RuntimeValue {
+  type: "return";
+  value: RuntimeValue;
 }
 
 export type ErrorType =
@@ -134,6 +143,14 @@ export function makeArrayValue(elements: RuntimeValue[]): ArrayValue {
     type: "array",
     elements,
   } as ArrayValue;
+}
+
+// Creates a new ReturnValue
+export function makeReturnValue(value: RuntimeValue): ReturnValue {
+  return {
+    type: "return",
+    value,
+  } as ReturnValue;
 }
 
 export type FunctionCall = (

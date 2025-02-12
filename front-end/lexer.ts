@@ -13,6 +13,7 @@ export enum TokenType {
   Set, // Mutable variable declaration
   Keep, // Constant variable declaration
   Fn, // Function
+  Return,
   If,
   Else,
   Elif, // else if
@@ -49,6 +50,7 @@ const KEYWORDS: Record<string, TokenType> = {
   set: TokenType.Set,
   keep: TokenType.Keep,
   fn: TokenType.Fn,
+  return: TokenType.Return,
   if: TokenType.If,
   else: TokenType.Else,
   elif: TokenType.Elif,

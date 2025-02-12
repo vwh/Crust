@@ -27,6 +27,7 @@ import type {
   BlockStatement,
   TryCatchStatement,
   ArrayLiteral,
+  ReturnStatement,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
@@ -100,6 +101,8 @@ export default class Parser {
         return this.parseBlockStatement();
       case TokenType.Fn:
         return this.parseFunctionDeclaration();
+      case TokenType.Return:
+        return this.parseReturnStatement();
       case TokenType.Set:
       case TokenType.Keep:
         return this.parseVariableDeclaration();
@@ -229,6 +232,18 @@ export default class Parser {
     } as FunctionDeclaration;
 
     return fn;
+  }
+
+  // Handle return statements parsing
+  private parseReturnStatement(): Statement {
+    this.eatToken(); // Eat the return keyword
+
+    const value = this.parseExpression();
+
+    return {
+      kind: "ReturnStatement",
+      value,
+    } as ReturnStatement;
   }
 
   // Handle if statements parsing

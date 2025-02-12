@@ -1,7 +1,7 @@
 // statments.ts | Evaluates the statements in the runtime
 
 import { evaluate } from "../interpreter";
-import { makeErrorValue, makeNullValue } from "../values";
+import { makeErrorValue, makeNullValue, makeReturnValue } from "../values";
 
 import type {
   FunctionDeclaration,
@@ -11,6 +11,7 @@ import type {
   WhileStatement,
   BlockStatement,
   TryCatchStatement,
+  ReturnStatement,
 } from "../../front-end/ast";
 import Environment from "../environment";
 import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
@@ -166,9 +167,26 @@ export function evaluateBlockStatement(
 
   for (const statement of blockStatement.statements) {
     lastEvaluated = evaluate(statement, scope);
+
+    // If the last evaluated value is a return value, return it
+    if (lastEvaluated?.type === "return") {
+      return lastEvaluated;
+    }
   }
 
   return lastEvaluated;
+}
+
+// Evaluates the Return Statement AST
+export function evaluateReturnStatement(
+  returnStatement: ReturnStatement,
+  environment: Environment
+): RuntimeValue {
+  const value = returnStatement.value
+    ? evaluate(returnStatement.value, environment)
+    : makeNullValue();
+
+  return makeReturnValue(value);
 }
 
 // Evaluates the Try-Catch Statement AST

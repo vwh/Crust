@@ -162,6 +162,16 @@ test("Function Declaration", () => {
 
   const result2 = execute("fn add() { 5 } add()") as NumberValue;
   expect(result2.value).toBe(5);
+
+  const result3 = execute(
+    "fn testReturn(x) { if x == 0 { return x } 5 } testReturn(5)"
+  ) as NumberValue;
+  expect(result3.value).toBe(5);
+
+  const result4 = execute(
+    "fn testReturn(x) { if x == 0 { return x } return 5 } testReturn(0)"
+  ) as NumberValue;
+  expect(result4.value).toBe(0);
 });
 
 test("Global Objects", () => {

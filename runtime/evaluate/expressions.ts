@@ -29,6 +29,7 @@ import type {
   NativeFunctionValue,
   NumberValue,
   ObjectValue,
+  ReturnValue,
   RuntimeValue,
   StringValue,
 } from "../values";
@@ -513,6 +514,11 @@ export function evaluateNativeFunction(
     let result: RuntimeValue = makeNullValue();
     for (const statement of userfn.body) {
       result = evaluate(statement, scope);
+
+      // If the last evaluated value is a return value, return it
+      if (result?.type === "return") {
+        return (result as ReturnValue).value;
+      }
     }
 
     return result;

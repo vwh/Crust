@@ -8,6 +8,7 @@ import {
   evaluateWhileStatement,
   evaluateBlockStatement,
   evaluateTryCatchStatement,
+  evaluateReturnStatement,
 } from "./evaluate/statments";
 import {
   evaluateArrayLiteral,
@@ -41,6 +42,7 @@ import type {
   BlockStatement,
   TryCatchStatement,
   ArrayLiteral,
+  ReturnStatement,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -74,6 +76,8 @@ export function evaluate(
       throw Error("continue");
     case "BlockStatement":
       return evaluateBlockStatement(ast as BlockStatement, environment);
+    case "ReturnStatement":
+      return evaluateReturnStatement(ast as ReturnStatement, environment);
     case "TryCatchStatement":
       return evaluateTryCatchStatement(ast as TryCatchStatement, environment);
 
