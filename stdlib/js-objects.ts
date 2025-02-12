@@ -1,4 +1,4 @@
-// stdlib/objects.ts | Standard library objects
+// stdlib/js-objects.ts | Standard library for js objects converted to crust objects
 
 import { javascriptValueToCrustValue } from "../utils/javascript";
 

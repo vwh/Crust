@@ -6,7 +6,10 @@ import { throwAnError } from "../utils/errors";
 // Standard library imports
 import stdlibLog from "../stdlib/logging";
 import stdlibFunctions from "../stdlib/functions";
-import stdlibObjects from "../stdlib/objects";
+import stdlibStrings from "../stdlib/strings";
+import stdlibNumbers from "../stdlib/numbers";
+import stdlibArrays from "../stdlib/arrays";
+import stdlibJSObjects from "../stdlib/js-objects";
 
 import type { RuntimeValue } from "./values";
 
@@ -18,9 +21,9 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("null", makeNullValue(), true);
 
   // Global built-in objects
-  environment.declareVariable("Math", stdlibObjects.math, true);
-  environment.declareVariable("Date", stdlibObjects.date, true);
-  environment.declareVariable("JSON", stdlibObjects.json, true);
+  environment.declareVariable("Math", stdlibJSObjects.math, true);
+  environment.declareVariable("Date", stdlibJSObjects.date, true);
+  environment.declareVariable("JSON", stdlibJSObjects.json, true);
 
   // Global built-in functions
   environment.declareVariable("debug", stdlibLog.debug, true);
@@ -29,11 +32,11 @@ function setupGlobalScope(environment: Environment) {
   environment.declareVariable("input", stdlibFunctions.input, true);
   environment.declareVariable("len", stdlibFunctions.len, true);
 
-  environment.declareVariable("String", stdlibFunctions.string, true);
-  environment.declareVariable("Int", stdlibFunctions.parseInt, true);
-  environment.declareVariable("Float", stdlibFunctions.parseFloat, true);
+  environment.declareVariable("String", stdlibStrings.string, true);
+  environment.declareVariable("Int", stdlibNumbers.int, true);
+  environment.declareVariable("Float", stdlibNumbers.float, true);
 
-  environment.declareVariable("append", stdlibFunctions.append, true);
+  environment.declareVariable("append", stdlibArrays.append, true);
 }
 
 /**
