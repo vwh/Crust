@@ -1,11 +1,17 @@
-keep todos = [0.25, "Hello", true, null]
 
-todos.0 = "Something"
-todos[5] = 74
 
-append(todos, "Yo!")
 
-output(todos.1)
 
-output("Length", len(todos))
+try {
+    set x = 5 / 0
+    Int('a')
+    output(x)
+} catch (e) {
+    if e == "DivisionByZeroError" {
+        output("You can't divide by zero!")
+    }
 
+    if e == "TypeError" {
+        output("You can't convert that mate!")
+    }
+}

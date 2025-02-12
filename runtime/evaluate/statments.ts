@@ -14,7 +14,7 @@ import type {
 } from "../../front-end/ast";
 import Environment from "../environment";
 import type { BooleanValue, FunctionValue, RuntimeValue } from "../values";
-import { throwAnError } from "../../utils/errors";
+import { CrustError, throwAnError } from "../../utils/errors";
 
 // Evaluates the Program AST
 export function evaluateProgram(
@@ -183,17 +183,23 @@ export function evaluateTryCatchStatement(
     const scope = new Environment(environment);
     // Check if the error symbol is declared
     if (tryCatchStatement.errorSymbol) {
-      if (error instanceof Error) {
+      if (error instanceof CrustError) {
         scope.declareVariable(
           tryCatchStatement.errorSymbol,
-          makeErrorValue("TypeError", error),
-          false
+          makeErrorValue(error.type, error),
+          true
+        );
+      } else if (error instanceof Error) {
+        scope.declareVariable(
+          tryCatchStatement.errorSymbol,
+          makeErrorValue("RuntimeError", error),
+          true
         );
       } else {
         scope.declareVariable(
           tryCatchStatement.errorSymbol,
           makeErrorValue("RuntimeError", new Error("Unknown error")),
-          false
+          true
         );
       }
     }

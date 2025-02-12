@@ -57,19 +57,13 @@ export function getNameOfToken(token: TokenType) {
 }
 
 export class CrustError extends Error {
+  type: ErrorType;
   constructor(type: ErrorType, message: string) {
-    super(`${message}`);
-  }
-}
-
-export class CrTypeError extends CrustError {
-  constructor(message: string) {
-    super("TypeError", message);
+    super(`${type}: ${message}`);
+    this.type = type;
   }
 }
 
 export function throwAnError(type: ErrorType, message: string): never {
-  if (type === "TypeError") throw new CrTypeError(message);
-
   throw new CrustError(type, message);
 }

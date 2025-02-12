@@ -13,7 +13,7 @@ import type {
 
 // Converts the given runtime value to a javascript string
 // Used on global output() function
-export function runtimeValueToString(valueObject: RuntimeValue) {
+export function runtimeValueToString(valueObject: RuntimeValue): string {
   if (!valueObject) return "null";
   if (valueObject.type === "null") return "null";
 

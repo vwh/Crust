@@ -348,7 +348,8 @@ export function evaluateNumericBinaryExpression(
   } else if (operator === "*") {
     resultN = left.value * right.value;
   } else if (operator === "/") {
-    // TODO: Handle division by zero
+    if (right.value === 0)
+      throwAnError("DivisionByZeroError", "Division by zero");
     resultN = left.value / right.value;
   } else if (operator === "%") {
     resultN = left.value % right.value;

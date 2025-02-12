@@ -74,7 +74,8 @@ export type ErrorType =
   | "ParseError"
   | "LexerError"
   | "RuntimeError"
-  | "TypeError";
+  | "TypeError"
+  | "DivisionByZeroError";
 
 /**
  * Represents an error value in the runtime
