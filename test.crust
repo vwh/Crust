@@ -1,7 +1,2 @@
-try {
-    throw("test", "TestError")
-} catch (e) {
-    if e == "TestError" {
-        output("Caught TestError")
-    }
-}
+
+JSON.parse('{"x": 10, "y": 20, "z": 30}')

@@ -58,6 +58,6 @@ export const mathObject = javascriptValueToCrustValue({
 
 export default {
   Date: dateObject,
-  Json: jsonObject,
+  JSON: jsonObject,
   Math: mathObject,
 };
