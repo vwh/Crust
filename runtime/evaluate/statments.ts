@@ -139,12 +139,13 @@ export function evaluateWhileStatement(
 
     let shouldBreak = false; // Track when to break the outer loop
     let shouldContinue = false; // Track when to restart the outer loop
+    const scopeEnv = new Environment(environment);
 
     let i = 0;
     while (i < whileStatement.body.statements.length) {
       const statement = whileStatement.body.statements[i];
       try {
-        lastEvaluated = evaluate(statement, environment);
+        lastEvaluated = evaluate(statement, scopeEnv);
       } catch (error) {
         // Break/Continue signals
         if (error instanceof Error) {
