@@ -1,0 +1,52 @@
+keep todos = []
+
+fn addTodo(task) {
+  append(todos, task)
+  output("Added: " + task)
+}
+
+fn removeTodo(index) {
+  index = index - 1
+  if index < 0 || index >= len(todos) {
+    output("Invalid index")
+    return 0
+  }
+  
+  keep removed = todos[index]
+  remove(todos, index)
+  output("Removed: ", removed)
+}
+
+fn listTodos() {
+  if len(todos) == 0 {
+    output("No todos yet!")
+    return 0
+  }
+
+  output("Your Todos:")
+  set i = 0
+  for todo in todos {
+    i += 1
+    output(i, "->", todo)
+  }
+}
+
+while true {
+  output("\n1. Add Todo\n2. Remove Todo\n3. List Todos\n4. Exit")
+  set choice = Int(input("Choose an option: "))
+
+  if choice == 1 {
+    set task = input("Enter a new todo: ")
+    addTodo(task)
+  } elif choice == 2 {
+    listTodos()
+    set index = Int(input("Enter the index to remove: "))
+    removeTodo(index)
+  } elif choice == 3 {
+    listTodos()
+  } elif choice == 4 {
+    break
+  } else {
+    output("Invalid choice!")
+  }
+}
