@@ -1,2 +1,11 @@
+fn addFive(x) {
+    x + 5
+}
 
-JSON.parse('{"x": 10, "y": 20, "z": 30}')
+keep array = [1, 2, 3, 4, 5]
+
+output(map(array, addFive))
+
+output(join(array))
+
+output(null == null)

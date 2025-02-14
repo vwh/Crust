@@ -1,6 +1,14 @@
 # stdlib/arrays.crust | Standard library for arrays
 
 fn map(array, function) {
+    if typeof(array) != "array" {
+        throw("TypeError", "Expected an array but got " + typeof(array))
+    }
+
+    if typeof(function) != "function" {
+        throw("TypeError", "Expected a function but got " + typeof(function))
+    }
+
     set result = []
     set i = 0
     while i < len(array) {
@@ -12,6 +20,14 @@ fn map(array, function) {
 }
 
 fn filter(array, function) {
+    if typeof(array) != "array" {
+        throw("TypeError", "Expected an array but got " + typeof(array))
+    }
+
+    if typeof(function) != "function" {
+        throw("TypeError", "Expected a function but got " + typeof(function))
+    }
+
     set result = []
     set i = 0
     while i < len(array) {
@@ -25,6 +41,14 @@ fn filter(array, function) {
 }
 
 fn reduce(array, function, initial) {
+    if typeof(array) != "array" {
+        throw("TypeError", "Expected an array but got " + typeof(array))
+    }
+
+    if typeof(function) != "function" {
+        throw("TypeError", "Expected a function but got " + typeof(function))
+    }
+
     set i = 0
     while i < len(array) {
         initial = function(initial, array[i])

@@ -28,6 +28,7 @@ import type {
   ErrorValue,
   FunctionValue,
   NativeFunctionValue,
+  NullValue,
   NumberValue,
   ObjectValue,
   ReturnValue,
@@ -170,6 +171,17 @@ export function evaluateUnaryExpression(
     );
   }
 
+  if (value.type === "null") {
+    if (node.operator === "!") {
+      return makeBooleanValue(false);
+    }
+
+    throwAnError(
+      "RuntimeError",
+      `The operator [ ${node.operator} ] is not supported for unary expressions with null`
+    );
+  }
+
   throwAnError(
     "RuntimeError",
     `The operator [ ${node.operator} ] is not supported for unary expressions`
@@ -275,6 +287,7 @@ export function evaluateBinaryExpression(
     );
   }
 
+  // If left hand side is string and right hand side is number
   if (left.type === "string" || right.type === "number") {
     return evaluateStringAndNumberBinaryExpression(
       left as StringValue,
@@ -283,6 +296,7 @@ export function evaluateBinaryExpression(
     );
   }
 
+  // If left hand side is error and right hand side is string
   if (left.type === "error" || right.type === "string") {
     return evaluateErrorAndStringBinaryExpression(
       left as ErrorValue,
@@ -291,10 +305,36 @@ export function evaluateBinaryExpression(
     );
   }
 
+  // If left hand side is null and right is null
+  if (left.type === "null" && right.type === "null") {
+    return evaluateNullAndNullBinaryExpression(
+      left as NullValue,
+      right as NullValue,
+      BinaryExpression.operator
+    );
+  }
+
   // If both sides are not numbers or one of them
   return makeNullValue();
 }
 
+// Evaluates the Null and Null Binary Expression
+export function evaluateNullAndNullBinaryExpression(
+  left: NullValue,
+  right: NullValue,
+  operator: string
+): RuntimeValue {
+  if (operator === "==") {
+    return makeBooleanValue(true);
+  }
+
+  throwAnError(
+    "RuntimeError",
+    `The operator [ ${operator}= ] is not supported for null and null binary expressions`
+  );
+}
+
+// Evaluates the Error and String Binary Expression
 export function evaluateErrorAndStringBinaryExpression(
   left: ErrorValue,
   right: StringValue,
@@ -316,6 +356,7 @@ export function evaluateErrorAndStringBinaryExpression(
   return makeBooleanValue(resultB);
 }
 
+// Evaluates the Boolean Binary Expression
 export function evaluateBooleanBinaryExpression(
   left: BooleanValue,
   right: BooleanValue,
@@ -573,7 +614,11 @@ export function evaluateNativeFunction(
     for (let i = 0; i < userfn.parameters.length; i++) {
       // TODO: check args/parameters bounds and throw an error if needed
       const varname = userfn.parameters[i];
-      scope.declareVariable(varname, args[i], false);
+
+      // If the argument is undefined, set it to null
+      const value = args[i] ?? makeNullValue();
+
+      scope.declareVariable(varname, value, false);
     }
 
     let result: RuntimeValue = makeNullValue();

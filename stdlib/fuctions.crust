@@ -1,0 +1,25 @@
+fn join(array, separator) {
+    if typeof(array) != "array" {
+        throw("TypeError", "Expected an array but got " + typeof(array))
+    }
+
+    if separator == null {
+        separator = ", "
+    }
+
+    if typeof(separator) != "string" {
+        throw("TypeError", "Expected a string but got " + typeof(separator))
+    }
+
+    set result = ""
+    set i = 0
+    while i < len(array) {
+        if i > 0 {
+            result = result + separator
+        }
+        result = result + String(array[i])
+        i = i + 1
+    }
+    
+    result
+}
