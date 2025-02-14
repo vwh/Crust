@@ -9,3 +9,9 @@ output(map(array, addFive))
 output(join(array))
 
 output(null == null)
+
+try {
+    22 / 0
+} catch (e) {
+    throw(e)
+}
