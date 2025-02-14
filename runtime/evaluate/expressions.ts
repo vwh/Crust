@@ -463,6 +463,8 @@ export function evaluateNumericBinaryExpression(
   } else if (operator === "**") {
     resultN = left.value ** right.value;
   } else if (operator === "//") {
+    if (right.value === 0)
+      throwAnError("DivisionByZeroError", "Division by zero");
     resultN = Math.floor(left.value / right.value);
   } else if (operator === "==") {
     isComparison = true;

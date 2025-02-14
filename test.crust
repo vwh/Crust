@@ -1,17 +1,5 @@
-fn addFive(x) {
-    x + 5
-}
+set x = 10
 
-keep array = [1, 2, 3, 4, 5]
 
-output(map(array, addFive))
-
-output(join(array))
-
-output(null == null)
-
-try {
-    22 / 0
-} catch (e) {
-    throw(e)
-}
+x /= 0
+output(x)
