@@ -10,6 +10,7 @@ import stdlibStrings from "../stdlib/strings";
 import stdlibNumbers from "../stdlib/numbers";
 import stdlibArrays from "../stdlib/arrays";
 import stdlibJSObjects from "../stdlib/js-objects";
+import stdlibErrors from "../stdlib/errors";
 
 import type { RuntimeValue } from "./values";
 
@@ -38,6 +39,7 @@ function setupGlobalScope(environment: Environment) {
     ...stdlibNumbers,
     ...stdlibArrays,
     ...stdlibJSObjects,
+    ...stdlibErrors,
   })) {
     environment.declareVariable(key, value as RuntimeValue, true);
   }

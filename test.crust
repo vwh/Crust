@@ -1,31 +1,7 @@
-
-set x = 10
-
-x = x + 1
-output("x = x + 1", x)
-
-x = x - 1
-output("x = x - 1", x)
-
-x += 1
-output("x += 1", x)
-
-x -= 1
-output("x -= 1", x)
-
-x *= 2
-output("x *= 2", x)
-
-x /= 2
-output("x /= 2", x)
-
-x **= 2
-output("x **= 2", x)
-
-x //= 2
-output("x //= 2", x)
-
-set y = "Hello"
-y += " World"
-
-output(y)
+try {
+    throw("test", "TestError")
+} catch (e) {
+    if e == "TestError" {
+        output("Caught TestError")
+    }
+}
