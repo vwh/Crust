@@ -1,5 +1,1 @@
-set x = 10
-
-
-x /= 0
-output(x)
+output("hello\nman \"world\" \n\'nxas")

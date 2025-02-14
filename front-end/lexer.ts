@@ -190,12 +190,39 @@ function getSingleCharToken(char: string): Token {
 function readStringToken(quoteType: string, src: string[]): Token {
   let str = "";
   while (src.length > 0 && src[0] !== quoteType) {
-    str += src.shift();
+    const char = src.shift();
+    if (char === "\\" && src.length > 0) {
+      const next = src.shift();
+      switch (next) {
+        case "n":
+          str += "\n";
+          break;
+        case "t":
+          str += "\t";
+          break;
+        case "r":
+          str += "\r";
+          break;
+        case "\\":
+          str += "\\";
+          break;
+        case '"':
+          str += '"';
+          break;
+        case "'":
+          str += "'";
+          break;
+        default:
+          str += "\\" + next; // If unknown escape, keep it as is
+      }
+    } else {
+      str += char;
+    }
   }
   if (src.length === 0)
     throwAnError(
       "LexerError",
-      `Unterminated string literal: Missing closing [ ${quoteType} ] at position ${src.length}`
+      `Unterminated string literal: Missing closing [ ${quoteType} ]`
     );
   src.shift(); // consume the closing quote
   return token(TokenType.String, str);
