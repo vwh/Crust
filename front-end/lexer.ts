@@ -30,6 +30,7 @@ export enum TokenType {
   ComparisonOperator, // ==, !=, <, >, <=, >=
   LogicalOperator, // &&, ||
   UnaryOperator, // +, -, !
+  CompoundAssignment, // +=, -=, *=, /=, %=, **=, //=
   Equals, // =
   Comma, // ,
   Colon, // :
@@ -261,11 +262,11 @@ function readOperatorToken(
 ): Token {
   let op = initial;
 
-  // Handle multi-character operators such as:
-  //   - Comparison operators: ==, !=, <=, >=
-  //   - Power operator: **
+  // Handle multi-character operators
   if (src.length > 0) {
     const next = src[0];
+
+    // Handle comparison operators with '=': ==, !=, <=, >=
     if (
       (initial === "=" ||
         initial === "!" ||
@@ -276,17 +277,28 @@ function readOperatorToken(
       op += src.shift();
       return token(TokenType.ComparisonOperator, op);
     }
-    // Handle power operator
+
+    // Handle power operator: '**' possibly with '=' for compound assignment (i.e. '**=')
     if (initial === "*" && next === "*") {
-      op += src.shift();
+      op += src.shift(); // now op is '**'
+      if (src.length > 0 && src[0] === "=") {
+        op += src.shift();
+        return token(TokenType.CompoundAssignment, op);
+      }
       return token(TokenType.Power, op);
     }
-    // Handle floor divide operator
+
+    // Handle floor divide operator: '//' possibly with '=' for compound assignment (i.e. '//=')
     if (initial === "/" && next === "/") {
-      op += src.shift();
+      op += src.shift(); // now op is '//'
+      if (src.length > 0 && src[0] === "=") {
+        op += src.shift();
+        return token(TokenType.CompoundAssignment, op);
+      }
       return token(TokenType.FloorDivide, op);
     }
-    // Handle logical operators (and, or)
+
+    // Handle logical operators (&&, ||)
     if (initial === "&" && next === "&") {
       op += src.shift();
       return token(TokenType.LogicalOperator, op);
@@ -297,26 +309,40 @@ function readOperatorToken(
     }
   }
 
-  // For '+' , '-' and '!' decide if they are unary or binary
-  // (For example, if they appear at the start of an expression or immediately after an operator or an opening parenthesis,
-  //  we treat them as unary.)
-  if (initial === "+" || initial === "-" || initial === "!") {
+  // For '+' and '-', compound assignment (+= or -=)
+  if (initial === "+" || initial === "-") {
+    // If not used as a unary operator and the next char is '=', it's compound assignment.
+    if (!shouldTreatAsUnary(tokens) && src.length > 0 && src[0] === "=") {
+      op += src.shift();
+      return token(TokenType.CompoundAssignment, op);
+    }
+    // Otherwise, decide based on context (unary or binary).
     if (shouldTreatAsUnary(tokens)) {
       return token(TokenType.UnaryOperator, op);
     }
-
     return token(TokenType.BinaryOperator, op);
   }
 
-  // '=' is always the assignment operator
+  // For '*' , '/' , '%' (when not part of '**' or '//') support compound assignment.
+  if (initial === "*" || initial === "/" || initial === "%") {
+    if (src.length > 0 && src[0] === "=") {
+      op += src.shift();
+      return token(TokenType.CompoundAssignment, op);
+    }
+    return token(TokenType.BinaryOperator, op);
+  }
+
+  // The '=' character by itself is always the simple assignment operator.
   if (initial === "=") {
     return token(TokenType.Equals, op);
   }
 
-  // For other operators, default to binary or comparison operators
-  if (initial === "*" || initial === "/" || initial === "%") {
-    return token(TokenType.BinaryOperator, op);
+  // For '!' (if not followed by '='; the '!=' case was handled above), treat it as a unary operator.
+  if (initial === "!") {
+    return token(TokenType.UnaryOperator, op);
   }
+
+  // For '<' and '>' (when not followed by '=' since that was handled earlier), treat them as comparison operators.
   if (initial === "<" || initial === ">") {
     return token(TokenType.ComparisonOperator, op);
   }

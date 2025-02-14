@@ -81,6 +81,20 @@ test("Unary Expression", () => {
   expect(result5.value).toBe(-52);
 });
 
+test("Compound Assignment Expression", () => {
+  const result = execute("set x = 100; x += 100") as NumberValue;
+  expect(result.value).toBe(200);
+
+  const result2 = execute("set x = 100; x -= 100") as NumberValue;
+  expect(result2.value).toBe(0);
+
+  const result3 = execute("set x = 100; x *= 100") as NumberValue;
+  expect(result3.value).toBe(10000);
+
+  const result4 = execute("set x = 100; x /= 100") as NumberValue;
+  expect(result4.value).toBe(1);
+});
+
 test("Strings Concatenation", () => {
   const result = execute('"Hello " + "World" + ("!" * 3) ') as StringValue;
   expect(result.value).toBe("Hello World!!!");

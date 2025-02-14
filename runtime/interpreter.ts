@@ -15,6 +15,7 @@ import {
   evaluateArrayLiteral,
   evaluateAssignmentExpression,
   evaluateBinaryExpression,
+  evaluateCompoundAssignmentExpression,
   evaluateIdentifier,
   evaluateMemberExpression,
   evaluateNativeFunction,
@@ -45,6 +46,7 @@ import type {
   ArrayLiteral,
   ReturnStatement,
   ForStatement,
+  CompoundAssignmentExpression,
 } from "../front-end/ast";
 import type { RuntimeValue } from "./values";
 import type Environment from "./environment";
@@ -74,10 +76,6 @@ export function evaluate(
       return evaluateWhileStatement(ast as WhileStatement, environment);
     case "ForStatement":
       return evaluateForStatement(ast as ForStatement, environment);
-    case "BreakStatement":
-      throw Error("break");
-    case "ContinueStatement":
-      throw Error("continue");
     case "BlockStatement":
       return evaluateBlockStatement(ast as BlockStatement, environment);
     case "ReturnStatement":
@@ -101,6 +99,11 @@ export function evaluate(
       return makeStringValue((ast as StringLiteral).value);
     case "BinaryExpression":
       return evaluateBinaryExpression(ast as BinaryExpression, environment);
+    case "CompoundAssignmentExpression":
+      return evaluateCompoundAssignmentExpression(
+        ast as CompoundAssignmentExpression,
+        environment
+      );
     case "UnaryExpression":
       return evaluateUnaryExpression(ast as UnaryExpression, environment);
     case "Identifier":
@@ -109,6 +112,12 @@ export function evaluate(
       return evaluateMemberExpression(ast as MemberExpression, environment);
     case "CallExpression":
       return evaluateNativeFunction(ast as CallExpression, environment);
+
+    // Signals
+    case "BreakStatement":
+      throw Error("break");
+    case "ContinueStatement":
+      throw Error("continue");
 
     // Unhandled AST node
     default: {

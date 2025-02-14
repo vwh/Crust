@@ -29,10 +29,12 @@ import type {
   ArrayLiteral,
   ReturnStatement,
   ForStatement,
+  CompoundAssignmentExpression,
 } from "./ast";
 
 // --- Orders Of Expression Precedence ---
 // AssignmentExpression ( Lowest )
+// CompoundAssignmentExpression (+=, -=, *=, /=, %=, **=, //=)
 // ObjectExpression
 // LogicalExpression (&&, ||)
 // ComparisonExpression (==, !=, <, >, <=, >=)
@@ -370,7 +372,7 @@ export default class Parser {
 
   // Handle assignment expressions parsing assignment expressions
   private parseAssignmentExpression(): Expression {
-    const left = this.parseObjectExpression();
+    const left = this.parseCompoundAssignmentExpression();
 
     if (this.tokenAt().type === TokenType.Equals) {
       this.eatToken(); // Eat the equals
@@ -380,6 +382,25 @@ export default class Parser {
         assignment: left,
         value,
       } as AssignmentExpression;
+    }
+
+    return left;
+  }
+
+  // Handle compound assignment expressions parsing
+  private parseCompoundAssignmentExpression(): Expression {
+    const left = this.parseObjectExpression();
+
+    if (this.tokenAt().type === TokenType.CompoundAssignment) {
+      const operator = this.eatToken();
+      const right = this.parseObjectExpression();
+
+      return {
+        kind: "CompoundAssignmentExpression",
+        left,
+        operator: operator.value,
+        right,
+      } as CompoundAssignmentExpression;
     }
 
     return left;

@@ -20,6 +20,7 @@ import type {
   UnaryExpression,
   ArrayLiteral,
   NumericLiteral,
+  CompoundAssignmentExpression,
 } from "../../front-end/ast";
 import type {
   ArrayValue,
@@ -173,6 +174,70 @@ export function evaluateUnaryExpression(
     "RuntimeError",
     `The operator [ ${node.operator} ] is not supported for unary expressions`
   );
+}
+
+// Applies a binary operator to two values.
+// Used for compound assignment expressions.
+function applyBinaryOperator(
+  left: RuntimeValue,
+  operator: string,
+  right: RuntimeValue
+): RuntimeValue {
+  if (left.type === "number" && right.type === "number") {
+    // Reuse your numeric binary evaluation
+    return evaluateNumericBinaryExpression(
+      left as NumberValue,
+      right as NumberValue,
+      operator
+    );
+  }
+
+  if (left.type === "string" && right.type === "string") {
+    // For strings, only '+' (concatenation) is typically supported.
+    if (operator === "+") {
+      return evaluateStringBinaryExpression(
+        left as StringValue,
+        right as StringValue,
+        operator
+      );
+    }
+  }
+
+  throwAnError(
+    "RuntimeError",
+    `Compound operator [ ${operator}= ] is not supported for types [ ${left.type} ] and [ ${right.type} ]`
+  );
+}
+
+// Evaluates the CompoundAssignmentExpression AST
+export function evaluateCompoundAssignmentExpression(
+  node: CompoundAssignmentExpression,
+  environment: Environment
+): RuntimeValue {
+  // Expect the left-hand side to be an Identifier.
+  const identifier = node.left as Identifier;
+  if (identifier.kind !== "Identifier") {
+    throwAnError(
+      "RuntimeError",
+      `Compound assignment expression is not supported for [ ${node.left.kind} ]`
+    );
+  }
+
+  // Get the current value of the variable.
+  const oldValue = environment.getVariable(identifier.symbol);
+  // Evaluate the right-hand side expression.
+  const rightValue = evaluate(node.right, environment);
+
+  // Remove the trailing '=' from the compound operator.
+  // For example, "+=" becomes "+".
+  const binaryOperator = node.operator.slice(0, -1);
+
+  // Apply the binary operation using our helper.
+  const result = applyBinaryOperator(oldValue, binaryOperator, rightValue);
+
+  // Update the variable with the new value.
+  environment.assignVariable(identifier.symbol, result);
+  return result;
 }
 
 // Evaluates the BinaryExpression AST

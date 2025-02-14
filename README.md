@@ -20,6 +20,7 @@ Crust Simple toy scripting language, JavaScript-like programming language.
 - Operators
   - Arithmetic (`+`, `-`, `*`, `/`, `%`, `**`, `//`)
   - Comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`)
+  - Compound Assignment (`+=`, `-=`, `*=`, `/=`, `%=`, `**=`, `//=`)
   - Logical (`&&`, `!!`)
   - Unary (`!`, `-`, `+`)
 - Exceptions handling with (`try`, `catch`, `throw`)
@@ -69,8 +70,7 @@ while x > 0 {
 - [x] Float numbers
 - [x] Arrays with proper array methods
 - [x] String methods and operations
-- [ ] For loops
-- [ ] Bitwise operators
+- [x] For loops
 - [x] Error handling
 - [ ] Module/import system
 - [x] Implement standard library

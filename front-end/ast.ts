@@ -17,6 +17,7 @@ export type NodeType =
   // Expressions
   | "AssignmentExpression"
   | "BinaryExpression"
+  | "CompoundAssignmentExpression"
   | "UnaryExpression"
   | "MemberExpression"
   | "CallExpression"
@@ -193,6 +194,17 @@ export interface BinaryExpression extends Expression {
   right: Expression; // The right side of the expression
   operator: string; // The operator to use
 }
+
+/**
+ * Represents a compound assignment expression.
+ * - Supported Operators: += | -= | *= | /= | %= | **= | //=
+ */
+export type CompoundAssignmentExpression = {
+  kind: "CompoundAssignmentExpression";
+  left: Expression; // The left side of the expression
+  operator: string; // The operator to use
+  right: Expression; // The right side of the expression
+};
 
 /**
  * Represents a unary expression.
