@@ -211,7 +211,7 @@ export function evaluateForStatement(
     try {
       lastEvaluated = evaluateBlockStatement(forStatement.body, loopEnv);
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof Signal) {
         if (error.message === "break") {
           break;
         }

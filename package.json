@@ -5,10 +5,14 @@
   "scripts": {
     "repl": "bun run index.ts",
     "test": "bun run index.ts test.crust",
-    "tests": "bun test ./tests/index.ts"
+    "tests": "bun test ./tests/index.ts",
+    "knip": "knip"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node": "^22.13.4",
+    "knip": "^5.44.1",
+    "typescript": "^5.7.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

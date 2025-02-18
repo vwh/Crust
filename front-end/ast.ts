@@ -1,6 +1,6 @@
 //  ast.ts | Defines the structure of our languages AST
 
-export type NodeType =
+type NodeType =
   // Statements
   | "Program"
   | "VariableDeclaration"

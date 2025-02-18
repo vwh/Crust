@@ -4,7 +4,7 @@ import type { Statement } from "../front-end/ast";
 import type Environment from "./environment";
 
 // Represents the type of a value in the runtime
-export type ValueType =
+type ValueType =
   | "null"
   | "number"
   | "boolean"
@@ -153,10 +153,7 @@ export function makeReturnValue(value: RuntimeValue): ReturnValue {
   } as ReturnValue;
 }
 
-export type FunctionCall = (
-  args: RuntimeValue[],
-  env: Environment
-) => RuntimeValue;
+type FunctionCall = (args: RuntimeValue[], env: Environment) => RuntimeValue;
 
 /**
  * Represents a native function value in the runtime

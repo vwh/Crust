@@ -3,20 +3,20 @@
 import { javascriptValueToCrustValue } from "../utils/javascript";
 
 // Converts a javascript Date object to a crust Date object
-export const dateObject = javascriptValueToCrustValue({
+const dateObject = javascriptValueToCrustValue({
   now: Date.now,
   parse: Date.parse,
   UTC: Date.UTC,
 });
 
 // Converts a javascript JSON object to a crust JSON object
-export const jsonObject = javascriptValueToCrustValue({
+const jsonObject = javascriptValueToCrustValue({
   parse: JSON.parse,
   stringify: JSON.stringify,
 });
 
 // Converts a javascript Math object to a crust Math object
-export const mathObject = javascriptValueToCrustValue({
+const mathObject = javascriptValueToCrustValue({
   PI: Math.PI,
   E: Math.E,
   abs: Math.abs,

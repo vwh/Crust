@@ -319,7 +319,7 @@ export function evaluateBinaryExpression(
 }
 
 // Evaluates the Null and Null Binary Expression
-export function evaluateNullAndNullBinaryExpression(
+function evaluateNullAndNullBinaryExpression(
   left: NullValue,
   right: NullValue,
   operator: string
@@ -335,7 +335,7 @@ export function evaluateNullAndNullBinaryExpression(
 }
 
 // Evaluates the Error and String Binary Expression
-export function evaluateErrorAndStringBinaryExpression(
+function evaluateErrorAndStringBinaryExpression(
   left: ErrorValue,
   right: StringValue,
   operator: string
@@ -357,7 +357,7 @@ export function evaluateErrorAndStringBinaryExpression(
 }
 
 // Evaluates the Boolean Binary Expression
-export function evaluateBooleanBinaryExpression(
+function evaluateBooleanBinaryExpression(
   left: BooleanValue,
   right: BooleanValue,
   operator: string
@@ -383,7 +383,7 @@ export function evaluateBooleanBinaryExpression(
 }
 
 // Evaluates the String and Number Binary Expression
-export function evaluateStringAndNumberBinaryExpression(
+function evaluateStringAndNumberBinaryExpression(
   left: StringValue,
   right: NumberValue,
   operator: string
@@ -399,7 +399,7 @@ export function evaluateStringAndNumberBinaryExpression(
 }
 
 // Evaluates the String Binary Expression
-export function evaluateStringBinaryExpression(
+function evaluateStringBinaryExpression(
   left: StringValue,
   right: StringValue,
   operator: string
@@ -439,7 +439,7 @@ export function evaluateStringBinaryExpression(
 }
 
 // Evaluates the Numeric Binary Expression
-export function evaluateNumericBinaryExpression(
+function evaluateNumericBinaryExpression(
   left: NumberValue,
   right: NumberValue,
   operator: string

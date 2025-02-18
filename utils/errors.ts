@@ -56,6 +56,7 @@ export function getNameOfToken(token: TokenType) {
   }
 }
 
+// Runtime crust errors
 export class CrustError extends Error {
   type: ErrorType;
   constructor(type: ErrorType, message: string) {
@@ -84,6 +85,7 @@ export class CrustError extends Error {
   }
 }
 
+// Signals like in break and continue
 export class Signal {
   constructor(public readonly message: string) {}
 }
