@@ -30,7 +30,7 @@ import type {
   RuntimeValue,
   StringValue,
 } from "../values";
-import { CrustError, throwAnError } from "../../utils/errors";
+import { CrustError, Signal, throwAnError } from "../../utils/errors";
 
 // Evaluates the Program AST
 export function evaluateProgram(
@@ -148,7 +148,7 @@ export function evaluateWhileStatement(
         lastEvaluated = evaluate(statement, scopeEnv);
       } catch (error) {
         // Break/Continue signals
-        if (error instanceof Error) {
+        if (error instanceof Signal) {
           if (error.message === "break") {
             shouldBreak = true; // Signal outer loop break
             break; // Exit inner loop immediately

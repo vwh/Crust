@@ -84,6 +84,10 @@ export class CrustError extends Error {
   }
 }
 
+export class Signal {
+  constructor(public readonly message: string) {}
+}
+
 export function throwAnError(type: ErrorType, message: string): never {
   throw new CrustError(type, message);
 }

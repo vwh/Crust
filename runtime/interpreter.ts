@@ -23,7 +23,7 @@ import {
   evaluateUnaryExpression,
 } from "./evaluate/expressions";
 import { makeNumberValue, makeStringValue } from "./values";
-import { log, throwAnError } from "../utils/errors";
+import { log, Signal, throwAnError } from "../utils/errors";
 
 import type {
   Statement,
@@ -115,9 +115,9 @@ export function evaluate(
 
     // Signals
     case "BreakStatement":
-      throw Error("break");
+      throw new Signal("break");
     case "ContinueStatement":
-      throw Error("continue");
+      throw new Signal("continue");
 
     // Unhandled AST node
     default: {
